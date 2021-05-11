@@ -6,6 +6,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-family: "Verdana";
 }
 
 .stack-container{
@@ -91,7 +92,7 @@
 
 .next-button{
     width: 100px;
-    height: 37px;
+    height: 40px;
     background-color: white;
     border-radius: 5px;
     margin:0 auto;
@@ -109,14 +110,13 @@
     font-size: 22px;
     color: #1a75ff;
     font-weight: bold;
-    margin-top: 2px;
+    margin-top: 3px;
 }
 
 .pop-main-button-text{
-    font-size: 16px;
+    font-size: 14px;
     color: #1a75ff;
     font-weight: bold;
-    margin-top: 4px;
 }
 
 .paused-container{
