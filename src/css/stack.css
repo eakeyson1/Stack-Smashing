@@ -1,0 +1,368 @@
+.flex{
+    display: flex;
+}
+
+.main-stack-frame-container{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.stack-container{
+    margin-left: 5%;
+}
+
+.stack-start-address-text{
+    color: white;
+    font-size: 15px;
+}
+
+.stack-end-address-text{
+    color: white;
+    font-size: 15px;
+    margin-top: 20px;
+}
+
+.start-of-stack{
+    height: 60px;
+    width: 500px;
+    background-color: white;
+    margin-top: 20px;
+    border: 3px solid #1a75ff;
+}
+
+.stack-title-text{
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.stack-title-text-start{
+    color: #1a75ff;
+    font-weight: bold;
+    font-size: 22px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.heap-container{
+    height: 150px;
+    width: 500px;
+    margin-top: 10px;
+    background-color: #035263;
+}
+
+.heap-title-text{
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.data-container{
+    height: 75px;
+    width: 500px;
+    background-color: #05829E;
+}
+
+.code-container{
+    height: 75px;
+    width: 500px;
+    background-color: #61DEFA; 
+}
+
+.back-button{
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 10px;
+    border: 2px solid #1a75ff;
+    box-shadow: 3px 3px rgb(202, 202, 202);
+}
+
+.back-button-text{
+    color: #1a75ff;
+    font-weight: bold;
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+.next-button{
+    width: 100px;
+    height: 37px;
+    background-color: white;
+    border-radius: 5px;
+    margin:0 auto;
+    display:block;
+    border: 2px solid #1a75ff;
+    box-shadow: 3px 3px rgb(202, 202, 202);
+}
+
+.next-button:focus{
+    outline: none !important;
+    outline-offset: none !important;
+}
+
+.next-button-text{
+    font-size: 22px;
+    color: #1a75ff;
+    font-weight: bold;
+    margin-top: 2px;
+}
+
+.pop-main-button-text{
+    font-size: 16px;
+    color: #1a75ff;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+.paused-container{
+    height: 50px;
+    margin-top: 20px;
+}
+
+.paused{
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.run-program-container{
+    margin:0 auto;
+    display:block;
+}
+.run-program-button{
+    height: 37px;
+    width: 100px;
+    background-color: white;
+    border-radius: 5px;
+    margin-left: 20px;
+    border: 2px solid #1a75ff;
+    box-shadow: 3px 3px rgb(202, 202, 202);
+}
+
+.run-program-button:focus{
+    outline: none !important;
+    outline-offset: none !important;
+}
+
+.run-program-button-text{
+    font-size: 18px;
+    color: #1a75ff;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.user-input{
+    height: 35px;
+    margin-right: 20px;
+    border-bottom: 2px solid #1a75ff;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    outline: none !important;
+    outline-offset: none !important;
+    color: #1a75ff;
+}
+
+.max-func-error{
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.seg-fault{
+    color: white;
+    font-size: 16px;
+}
+
+.running-container{
+    height: 50px;
+    margin-top: 20px;
+}
+
+.running{
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.main-code-spacer{
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+.program-code-container-stack{
+    width: 425px;
+    height: 550px;
+    background-color: white;
+    border-radius: 5px;
+    margin-top: 12%;
+}
+
+.program-buttons-container{
+    margin:0 auto;
+    display:block;
+}
+
+.program-name-container{
+    border-bottom: 2px solid #1a75ff;
+}
+
+.program-name-text-style{
+    color: #1a75ff;
+    font-size: 19px;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 8px;
+}
+
+.code-lines-spacer{
+    margin-left: 7.5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.program-code-text-style{
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.margin-left-7{
+    margin-left: 7.5px;
+}
+
+.height-5{
+    height: 5px;
+}
+
+.program-functions{
+    margin-top: 5px;
+    margin-left: 5px;
+}
+
+.functions-flex{
+    display: flex;
+}
+
+.main-stack-param-text{
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.main-stack-param-container{
+    border-bottom: 1px solid white;
+}
+
+.main-stack-params-main-container{
+    background-color: #003559;
+    width: 500px;
+}
+
+.first-user-input-param-container{
+    border-top: 1px solid white;
+}
+
+.exe-code-text{
+    color: #1a75ff;
+    font-size: 17px;
+    margin-top: 7px;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.exe-code-container{
+    height: 35px;
+    width: 70px;
+    background-color: white;
+    border: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.stack-frame-container{
+    background-color: blue;
+}
+
+.stack-frame-param-container{
+    background-color: #003559;
+}
+
+.main-stack-title-container{
+    background-color: #0B1D51;
+    width: 500px;
+    border: 1px solid white;
+    margin-top: 25px;
+}
+
+.stackframe-main-text{
+    color: white;
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+.stack-frame-text{
+    font-size: 16px;
+    color: white;
+}
+
+.return-address-container{
+    background-color: #0353A4;
+    width: 500px;
+}
+
+.saved-frame-pointer-container{
+    background-color: #006DAA;
+    width: 500px;
+}
+
+.main-stack-second-container{
+    display: flex;
+    border-bottom: 1px solid white;
+}
+
+.main-stack-value-container{
+    width: 60%;
+    border-right: 1px solid white;
+    display: block;
+    margin:auto
+}
+
+.argv-one-container{
+    background-color: #416788;
+}
+
+.stack-frame-variable-container{
+    background-color: #416788;
+}
+
+.functions-arrow-stack{
+    margin-top: 7px;
+    margin-right: 7px;
+}
+
+.stack-frame-function-name-text{
+    font-size: 18px;
+    color: white;
+    font-weight: 400px;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.center{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.second-main-container{
+    margin-left: 150px;
+    margin-top: 60px;
+}

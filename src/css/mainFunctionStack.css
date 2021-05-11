@@ -1,0 +1,59 @@
+.main-stack-container{
+    background-color: blue;
+    border: 1px solid white;
+    width: 350px;
+}
+
+.stackframe-main-text{
+    color: white;
+    font-size: 16px;
+    text-align: center;
+    font-weight: 300;
+    text-decoration-color: white;
+    text-decoration: underline;
+}
+
+.container{
+    display: flex;
+    border-bottom: 1px solid white;
+}
+
+.main-stack-text{
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    margin-top: 5px;
+}
+
+.param-ui-container{
+    margin-left: auto;
+    margin-right: 5px;
+}
+
+.param-ui-text{
+    color: white;
+    font-size: 15px;
+    text-align: right;
+    margin-top: 5px;
+}
+
+.sfp-container{
+    display: flex;
+}
+
+.sfp-text-container{
+    margin-left: 10px;
+}
+
+.sfp-address-container{
+    margin-left: auto;
+    margin-right: 10px;
+}
+
+.bottom-spacer{
+    height: 60px;
+    background-color: blue;
+    width: 350px;
+}
+
+

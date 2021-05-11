@@ -1,0 +1,31 @@
+.start-page {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  font-family: "Roboto Mono";
+}
+
+.start-btn {
+  width: 50vh;
+  border: 1px solid #1a75ff;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.start-page-header-text{
+  color: #1a75ff;
+}
+
+.start-page-sub-header-text{
+  color: #1a75ff;
+}
+
+.start-button-text{
+  font-size: 20px;
+  color: #1a75ff;
+}
