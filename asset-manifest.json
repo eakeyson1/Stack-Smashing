@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/Stack-Smashing/static/css/main.7cc6b47d.chunk.css",
+    "main.js": "/Stack-Smashing/static/js/main.9291bd6f.chunk.js",
+    "main.js.map": "/Stack-Smashing/static/js/main.9291bd6f.chunk.js.map",
+    "runtime-main.js": "/Stack-Smashing/static/js/runtime-main.404f9add.js",
+    "runtime-main.js.map": "/Stack-Smashing/static/js/runtime-main.404f9add.js.map",
+    "static/css/2.3b24c0bb.chunk.css": "/Stack-Smashing/static/css/2.3b24c0bb.chunk.css",
+    "static/js/2.0e375389.chunk.js": "/Stack-Smashing/static/js/2.0e375389.chunk.js",
+    "static/js/2.0e375389.chunk.js.map": "/Stack-Smashing/static/js/2.0e375389.chunk.js.map",
+    "static/js/3.572f2ce9.chunk.js": "/Stack-Smashing/static/js/3.572f2ce9.chunk.js",
+    "static/js/3.572f2ce9.chunk.js.map": "/Stack-Smashing/static/js/3.572f2ce9.chunk.js.map",
+    "index.html": "/Stack-Smashing/index.html",
+    "static/css/2.3b24c0bb.chunk.css.map": "/Stack-Smashing/static/css/2.3b24c0bb.chunk.css.map",
+    "static/css/main.7cc6b47d.chunk.css.map": "/Stack-Smashing/static/css/main.7cc6b47d.chunk.css.map",
+    "static/js/2.0e375389.chunk.js.LICENSE.txt": "/Stack-Smashing/static/js/2.0e375389.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.404f9add.js",
+    "static/css/2.3b24c0bb.chunk.css",
+    "static/js/2.0e375389.chunk.js",
+    "static/css/main.7cc6b47d.chunk.css",
+    "static/js/main.9291bd6f.chunk.js"
+  ]
+}
