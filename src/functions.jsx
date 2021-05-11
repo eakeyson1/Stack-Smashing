@@ -673,7 +673,6 @@ class Functions extends Component {
           <input
             value={this.state.functionName}
             type="text"
-            placeholder="Type..."
             id="inputID"
             onChange={this.updateFunctionName}
             className="function-name-input-style"
