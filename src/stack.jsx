@@ -92,6 +92,147 @@ class Stack extends Component {
       this.setState({displayNextButton: true})
     }
 
+
+    for(var k=0; k<this.props.stackFrameDataArr.length; k++){
+      // Checking if function contains strcpy and updating stack accordingly
+      if(this.props.stackFrameDataArr[k].unsafeFunctions.length !== 0){
+
+        // checking in params and local varables for param2 of strcpy and getting value
+        var param1Name = this.props.stackFrameDataArr[k].unsafeFunctions[0].param1Name
+        var param2Name = this.props.stackFrameDataArr[k].unsafeFunctions[0].param2Name
+        var newValue = ""
+        var oldValue = ""
+
+        for(var i=0; i<this.props.stackFrameDataArr[k].mainLocalVariables.length; i++){
+          if(this.props.stackFrameDataArr[k].mainLocalVariables[i].name === param2Name){
+            newValue = this.props.stackFrameDataArr[k].mainLocalVariables[i].value
+            break
+          }
+        }
+        for(var i=0; i<this.props.stackFrameDataArr[k].parameterDetails.length; i++){
+          if(this.props.stackFrameDataArr[k].parameterDetails[i].name === param2Name){
+            newValue = this.props.stackFrameDataArr[k].parameterDetails[i].value
+            break
+          }
+        }
+
+        for(var i=0; i<this.props.stackFrameDataArr[k].mainLocalVariables.length; i++){
+          if(this.props.stackFrameDataArr[k].mainLocalVariables[i].name === param1Name){
+            oldValue = this.props.stackFrameDataArr[k].mainLocalVariables[i].value
+            break
+          }
+        }
+        for(var i=0; i<this.props.stackFrameDataArr[k].parameterDetails.length; i++){
+          if(this.props.stackFrameDataArr[k].parameterDetails[i].name === param1Name){
+            oldValue = this.props.stackFrameDataArr[k].parameterDetails[i].value
+            break
+          }
+        }
+
+        // if the new value is less than the old value, we copy the string
+        if(newValue.length < oldValue.length){
+
+          var tempVariableString = this.props.stackFrameDataArr[k].localVariablesLetterArray.reverse().join("")
+          var newVarString = tempVariableString.replace(oldValue, newValue)
+
+          var localVariableArr = newVarString.split("").reverse()
+          this.props.stackFrameDataArr[k].localVariablesLetterArray = localVariableArr
+        }
+
+        // Buffer overflow occurs
+        else{
+          var tempVariableString = this.props.stackFrameDataArr[k].localVariablesLetterArray.reverse().join("")
+          var newVarString = tempVariableString.replace(oldValue, newValue)
+
+          var localVariableArr = newVarString.split("").reverse()
+          var newLocalVariableArr = []
+          for(var i=0; i<16; i++){
+            newLocalVariableArr.push(localVariableArr[i])
+          }
+          this.props.stackFrameDataArr[k].localVariablesLetterArray = newLocalVariableArr
+
+          if(localVariableArr.length > 16){
+            
+          }
+        }
+
+      }
+    }
+
+    // Checking if function contains strcpy and updating stack accordingly
+    /*if(this.props.stackFrameDataArr.length === 1 && 
+      this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0){
+
+      // checking in params and local varables for param2 of strcpy and getting value
+      var param1Name = this.props.stackFrameDataArr[0].unsafeFunctions[0].param1Name
+      var param2Name = this.props.stackFrameDataArr[0].unsafeFunctions[0].param2Name
+      var newValue = ""
+      var oldValue = ""
+
+      for(var i=0; i<this.props.stackFrameDataArr[0].mainLocalVariables.length; i++){
+        if(this.props.stackFrameDataArr[0].mainLocalVariables[i].name === param2Name){
+          newValue = this.props.stackFrameDataArr[0].mainLocalVariables[i].value
+          break
+        }
+      }
+      for(var i=0; i<this.props.stackFrameDataArr[0].parameterDetails.length; i++){
+        if(this.props.stackFrameDataArr[0].parameterDetails[i].name === param2Name){
+          newValue = this.props.stackFrameDataArr[0].parameterDetails[i].value
+          break
+        }
+      }
+
+      for(var i=0; i<this.props.stackFrameDataArr[0].mainLocalVariables.length; i++){
+        if(this.props.stackFrameDataArr[0].mainLocalVariables[i].name === param1Name){
+          oldValue = this.props.stackFrameDataArr[0].mainLocalVariables[i].value
+          break
+        }
+      }
+      for(var i=0; i<this.props.stackFrameDataArr[0].parameterDetails.length; i++){
+        if(this.props.stackFrameDataArr[0].parameterDetails[i].name === param1Name){
+          oldValue = this.props.stackFrameDataArr[0].parameterDetails[i].value
+          break
+        }
+      }
+
+      // if the new value is less than the old value, we copy the string
+      if(newValue.length < oldValue.length){
+        var localVariableArr = newValue.split("")
+        this.props.stackFrameDataArr[0].localVariablesLetterArray = localVariableArr
+      }
+
+    }*/
+
+    // Checking buffer overflow
+
+    if(this.props.stackFrameDataArr.length === 1 && 
+      this.props.stackFrameDataArr[0].parameterDetails.length !== 0 &&
+      this.props.stackFrameDataArr[0].parameterDetails[0].name === "userInput" &&
+      this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0
+
+      ){
+
+      var length = 0
+
+      // looping through local variable of func1 to find matching name
+      for(var i=0; i<this.props.stackFrameDataArr[0].mainLocalVariables.length; i++){
+
+        // if matching name, get length of buffer that is copied into
+        if(this.props.stackFrameDataArr[0].mainLocalVariables[i].name === this.props.stackFrameDataArr[0].unsafeFunctions[0].param1Name){
+          length = this.props.stackFrameDataArr[0].mainLocalVariables[i].value.length
+          break
+        }
+      }
+
+      var overflowLength = 0
+      if(this.state.userInput.length > length){
+        overflowLength = this.state.userInput.length - length
+      }
+
+      console.log(overflowLength)
+      var overflowString = this.state.userInput
+    }
+
     this.setState({
       running: true, 
       segFault: false, 
@@ -3136,6 +3277,9 @@ class Stack extends Component {
     return(
       <div>
         <div className="program-code-container-stack">
+          {this.state.displaySegFault && (
+            <h1 className="seg-fault">Segmentation Fault</h1>
+          )}
           <div className="program-name-container">
             <h1 className="program-name-text-style">intro.c</h1>
           </div>
