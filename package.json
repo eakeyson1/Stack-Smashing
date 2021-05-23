@@ -26,6 +26,7 @@
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
+    "ignorePatterns": ["src/*", "!src/test.js"],
     "extends": [
       "react-app",
       "react-app/jest"

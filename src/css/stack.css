@@ -287,19 +287,32 @@
     border-bottom-left-radius: 5px;
 }
 
+.stack-frame-open-button{
+    background-color: #0B1D51;
+    width: 500px;
+    border: 1px solid white;
+    margin-top: 25px;
+    height:50px;
+}
+
+.stack-frame-button-text{
+    color: white;
+    font-size: 15px;
+    margin-top: 8%;
+}
+
+.center-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .stack-frame-container{
     background-color: blue;
 }
 
 .stack-frame-param-container{
     background-color: #003559;
-}
-
-.main-stack-title-container{
-    background-color: #0B1D51;
-    width: 500px;
-    border: 1px solid white;
-    margin-top: 25px;
 }
 
 .stackframe-main-text{

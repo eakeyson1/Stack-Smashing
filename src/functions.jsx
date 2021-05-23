@@ -411,6 +411,9 @@ class Functions extends Component {
       result[i] = temp
     }
 
+    var returnAddressArr = ["\\xAB", "\\xCE", "\\x00", "\\x00"]
+    var sfpArr = ["\\x00", "\\x00", "\\x00", "\\x00"]
+
     savedFramePointer = result
 
     var stackFrame = {
@@ -428,6 +431,9 @@ class Functions extends Component {
       disableButton: false,
       unsafeFunctions: this.state.unsafeFunctions,
       parameterDetails: parameterDetailsArr,
+      displayStackFrame: false,
+      returnAddressArr: returnAddressArr,
+      sfpArr: sfpArr,
     }
 
     var joined = this.state.stackFrameDataArray.concat(stackFrame)
@@ -537,7 +543,7 @@ class Functions extends Component {
 
     var funcParams = {
       param1Name: this.state.strcpyParam1,
-      param2Name: this.state.strcpyParam2
+      param2Name: this.state.strcpyParam2,
     }
 
     var unsafeFunctions = this.state.unsafeFunctions.concat(funcParams)
@@ -991,8 +997,13 @@ class Functions extends Component {
     this.props.onStartClick(e.target.value)
   }*/
 
-  onClick = (stackFrameDataArray) => {
-    this.props.onStartClick(stackFrameDataArray)
+  onClick = () => {
+
+    const constCleanStackFrameDataArray = this.state.stackFrameDataArray
+    var varStackFrameDataArray = this.state.stackFrameDataArray
+
+    this.props.onStartClick(varStackFrameDataArray)
+    this.props.sendCleanStackFrameArray(constCleanStackFrameDataArray)
   }
 
   returnProgram(){
@@ -1002,7 +1013,7 @@ class Functions extends Component {
 
     return(
       <div>
-          <button className="view-stack-button" onClick={() => this.onClick(this.state.stackFrameDataArray)}>
+          <button className="view-stack-button" onClick={() => this.onClick()}>
             <div className="activity-button-container">
               <h1 className="activity-button-text">View Interactive Stack</h1>
               <AiOutlineArrowRight className="functions-arrow" color={"#1a75ff"} size={23}/>
