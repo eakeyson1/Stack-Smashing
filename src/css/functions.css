@@ -24,16 +24,15 @@ html, body, #root, .App {
 
 .create-function-title-container{
     border-bottom: 2.5px solid #1a75ff;
-    background-color: white;
+    display: flex;
+    justify-content: center;
 }
 
 .create-function-title-style{
     color: #1a75ff;
     font-size: 20px;
     font-weight: bold;
-    text-align: center;
-    margin-bottom: 7.5px;
-    margin-top: 7.5px;
+    padding-top: 8px;
 }
 
 .return-function-form-container{
@@ -438,6 +437,7 @@ html, body, #root, .App {
     text-align: center;
     font-weight: bold;
     padding-top: 8px;
+    padding-right: 20px;
 }
 
 .program-name-intro-container{
@@ -445,9 +445,7 @@ html, body, #root, .App {
 }
 
 .view-stack-button{
-    height: 40px;
-    width: 450px;
-    margin-bottom: 40px;
+    margin-bottom: 10px;
     border-radius: 5px;
     background-color: white;
     vertical-align: middle;
@@ -576,7 +574,7 @@ html, body, #root, .App {
 }
 
 .addon-container{
-    margin-left: 40px;
+    margin-left: 3%;
 }
 
 .margin-left-7{
@@ -593,21 +591,16 @@ html, body, #root, .App {
     margin: auto;
 }
 
-.functions-arrow{
-    margin-left: 40px;
-    margin-top: 5px;
-}
-
 .activity-button-container{
     display: flex;
+    padding-top: 3px;
 }
 
 .activity-button-text{
     color: #1a75ff;
-    font-size: 20px;
-    font-weight: 500;
-    margin-left: 30%;
-    margin-top: 5px;
+    font-size: 18px;
+    font-weight: bold;
+    padding-top: 2px;
 }
 
 .clear-button{
@@ -619,6 +612,17 @@ html, body, #root, .App {
     font-size: 15px;
     color: #1a75ff;
     margin-left: 45%;
+}
+
+.instruction-step{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #ff4d4d;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    color: white;
 }
 
 

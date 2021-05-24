@@ -113,37 +113,66 @@ class Functions extends Component {
     var parameterName = this.state.parameterName
 
     // Check if maximum number of parameters is exceeded
-    if(this.state.parameters.length > 4){
-      this.setState({parameterError: "Maximum of 5 parameters allowed"})
+    if(this.state.parameters.length > 2){
+      this.setState({parameterError: "Maximum of 3 parameters allowed"})
       return
     }
 
     //Check if input is a single character
     if(this.state.parameterType === "char" && this.state.parameterValue.length > 1){
       this.setState({parameterError: "char contains only 1 character"})
+      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
       return
     }
 
     // Check if input is an integer
     if(this.state.parameterType === "int" && isNaN(this.state.parameterValue)){
       this.setState({parameterError: "That is not an integer"})
+      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
       return
     }
 
     // Check if input is a float
     if(this.state.parameterType === "float" && isNaN(this.state.parameterValue)){
       this.setState({parameterError: "That is not a float"})
+      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
       return
     }
 
 
     // Check if input is empty
     if(this.state.parameterName === ""){
-      this.setState({parameterNameError: true, parameterError: ""})
+      this.setState({parameterError: "Please enter a parameter name"})
+      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
       return
     }
     if(this.state.parameterValue === ""){
       this.setState({parameterError: "Please enter a value"})
+      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+      return
+    }
+
+    // Check if name is already used
+    for(var i=0; i<this.state.parameters.length; i++){
+      if(this.state.parameters[i].name === this.state.parameterName){
+        this.setState({parameterError: "That name is aleady being used"})
+        setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+        return
+      }
+    }
+
+    for(var i=0; i<this.state.localVariables.length; i++){
+      if(this.state.localVariables[i].name === this.state.parameterName){
+        this.setState({parameterError: "That name is aleady being used"})
+        setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+        return
+      }
+    }
+
+    // Check if name equals "userinput"
+    if(this.state.parameterName === "userInput"){
+      this.setState({parameterError: "Cannot have 'userInput' as a parameter name"})
+      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
       return
     }
 
@@ -177,20 +206,23 @@ class Functions extends Component {
     var localVariableValue = this.state.localVariableValue
 
     // Check if maximum number of local variables is exceeded
-    if(this.state.localVariables.length > 4){
-      this.setState({localVariableError: "Maximum of 5 parameters allowed"})
+    if(this.state.localVariables.length > 2){
+      this.setState({localVariableError: "Maximum of 3 parameters allowed"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
       return
     }
 
     //Check if input is a single character
     if(this.state.localVariableType === "char" && this.state.localVariableValue.length > 1){
       this.setState({localVariableError: "char contains only 1 character"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
       return
     }
 
     // Check if input is an integer
     if(this.state.localVariableType === "int" && isNaN(this.state.localVariableValue)){
       this.setState({localVariableError: "That is not an integer"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
       return
     }
 
@@ -202,6 +234,7 @@ class Functions extends Component {
     // Check if input is a float
     if(this.state.localVariableType === "float" && isNaN(this.state.localVariableValue)){
       this.setState({localVariableError: "That is not a float"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
       return
     }
     
@@ -212,12 +245,38 @@ class Functions extends Component {
 
     // Check if input is empty
     if(this.state.localVariableName === ""){
-      this.setState({localVariableNameError: true})
+      this.setState({localVariableError: "Please enter a name"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
       return
     }
 
     if(this.state.localVariableValue === ""){
       this.setState({localVariableError: "Please enter a value"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      return
+    }
+
+    // Check if name is already used
+    for(var i=0; i<this.state.parameters.length; i++){
+      if(this.state.parameters[i].name === this.state.localVariableName){
+        this.setState({localVariableError: "That name is aleady being used"})
+        setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+        return
+      }
+    }
+
+    for(var i=0; i<this.state.localVariables.length; i++){
+      if(this.state.localVariables[i].name === this.state.localVariableName){
+        this.setState({localVariableError: "That name is aleady being used"})
+        setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+        return
+      }
+    }
+
+    // Check if name equals "userinput"
+    if(this.state.localVariableName === "userInput"){
+      this.setState({localVariableError: "Cannot have 'userInput' as a local variable name"})
+      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
       return
     }
 
@@ -315,6 +374,7 @@ class Functions extends Component {
 
     if(this.state.functionName === ""){
       this.setState({functionNameError: "Please enter a name"})
+      setTimeout(() => { this.setState({functionNameError: ""}) }, 5000);
       return
     }
 
@@ -327,6 +387,7 @@ class Functions extends Component {
     for(var i=0; i<this.state.stackFrameDataArray.length; i++){
       if(this.state.stackFrameDataArray[i].functionName === this.state.functionName){
         this.setState({functionNameError: "Cannot have multiple functions with the same name"})
+        setTimeout(() => { this.setState({functionNameError: ""}) }, 10000);
         return
       }
     }
@@ -334,17 +395,9 @@ class Functions extends Component {
     var functionNameArr = this.state.functionName.split(" ")
     if(functionNameArr.length > 1){
       this.setState({functionNameError: "Function names cannot contain spaces"})
+      setTimeout(() => { this.setState({functionNameError: ""}) }, 10000);
       return
     }
-
-    /*this.state.stackFrameDataArray.map((stackframe) => {
-      if(stackframe.functionName === this.state.functionName){
-        this.setState({functionNameError: "Cannot have multiple functions with the same name"})
-        return
-      }
-    })*/
-
-
 
     var numOfFunctions = this.state.numOfFunctions + 1
     this.setState({numOfFunctions: numOfFunctions})
@@ -567,10 +620,24 @@ class Functions extends Component {
   }
   
   displayAdditionalFunctionCallOptions(){
+
+    if(this.state.additionalFunctionCalls.length > 0){
+      this.setState({functionNameError: "Only 1 additional function call allowed"})
+      setTimeout(() => { this.setState({functionNameError: ""}) }, 8000);
+      return
+    }
+
     this.setState({displayAdditionalFunctionCalls: !this.state.displayAdditionalFunctionCalls, addUnsafeFunctionBool: false})
   }
 
   displayAddUnsafeFunction(){
+
+    if(this.state.unsafeFunctions.length > 0){
+      this.setState({functionNameError: "Only 1 unsafe function allowed"})
+      setTimeout(() => { this.setState({functionNameError: ""}) }, 8000);
+      return
+    }
+
     this.setState({
       addUnsafeFunctionBool: !this.state.addUnsafeFunctionBool, 
       displayAdditionalFunctionCalls: false,
@@ -817,6 +884,7 @@ class Functions extends Component {
 
         </div>
         <h1 className="error-input-text-style">{this.state.functionNameError}</h1>
+        <h1 className="error-input-text-style">{this.state.localVariableError}</h1>
       </div>
     )
   }
@@ -909,40 +977,46 @@ class Functions extends Component {
             </div>
           </div>
           <div className="addon-container">
-            <div className="functions-input-container">
-                <button className="code-unsafe-addon-button-style"  onClick={this.displayAddUnsafeFunction}>
+            <div style={{marginLeft: 40}}>
+
+              <div className="functions-input-container">
+                  <button className="code-unsafe-addon-button-style"  onClick={this.displayAddUnsafeFunction}>
+                    <div style = {{display:'flex'}}>
+                      <GiHazardSign color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 10, marginLeft:5}}/>
+                      <h1 className="code-addon-button-text-style">Unsafe Functions</h1>
+                    </div>           
+                  </button> 
+              </div>
+              {!this.state.userInputBool && (
+                <button button className="code-addon-button-style" onClick={this.addUserInput}>
                   <div style = {{display:'flex'}}>
-                    <GiHazardSign color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 10, marginLeft:5}}/>
-                    <h1 className="code-addon-button-text-style">Unsafe Functions</h1>
+                    <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:5}}/>
+                    <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
                   </div>           
-                </button> 
+                </button>
+              )}
+              {this.state.userInputBool && (
+                
+                <button className="code-addon-button-style" onClick={this.removeUserInput}>
+                  <div style = {{display:'flex'}}>
+                    <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:8}}/>
+                    <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
+                  </div>           
+                </button>
+              )}
+              <div>
+                <button className="code-addon-button-style" onClick={() => this.displayAdditionalFunctionCallOptions()}>
+                  <div style = {{display:'flex'}}>
+                    <AiOutlinePlus color={"#1a75ff"} size={20} style={{marginTop:8}}/>
+                    <h1 className="code-addon-button-text-style">Call Another Function</h1>
+                  </div>
+                </button>
+              </div>
             </div>
-            {!this.state.userInputBool && (
-              <button button className="code-addon-button-style" onClick={this.addUserInput}>
-                <div style = {{display:'flex'}}>
-                  <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:5}}/>
-                  <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
-                </div>           
-              </button>
-            )}
-            {this.state.userInputBool && (
-              
-              <button className="code-addon-button-style" onClick={this.removeUserInput}>
-                <div style = {{display:'flex'}}>
-                  <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:8}}/>
-                  <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
-                </div>           
-              </button>
-            )}
-            <div>
-              <button className="code-addon-button-style" onClick={() => this.displayAdditionalFunctionCallOptions()}>
-                <div style = {{display:'flex'}}>
-                  <AiOutlinePlus color={"#1a75ff"} size={20} style={{marginTop:8}}/>
-                  <h1 className="code-addon-button-text-style">Call Another Function</h1>
-                </div>
-              </button>
-            </div>
-            <div>
+            <div style={{display: 'flex'}}>
+              <div style={{paddingTop: 18}}>
+                <div className="instruction-step">2</div>
+              </div>
               <button className="add-to-program-button-style" onClick={this.addFunctionToProgram}>
                 <div style = {{display:'flex'}}>
                   <AiFillFileAdd color={"white"} size={20} style={{marginTop:5, marginRight:9, marginLeft: 3}}/>
@@ -1047,19 +1121,25 @@ class Functions extends Component {
 
     return(
       <div>
-          <button className="view-stack-button" onClick={() => this.onClick()}>
-            <div className="activity-button-container">
-              <h1 className="activity-button-text">View Interactive Stack</h1>
-              <AiOutlineArrowRight className="functions-arrow" color={"#1a75ff"} size={23}/>
-            </div>
-          </button>
           
         <div className="program-code-container">
           <div className="program-name-intro-container">
-            <div style={{marginLeft:"43%"}}>
+            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
               <div style={{display: 'flex'}}>
                 <h1 className="program-name-text-intro-style">intro.c</h1>
-                <button className="clear-button" type="button" onClick={this.clearProgram}>Clear</button>
+                <div style={{display: 'flex'}}>
+                  <div style={{paddingRight: 10}}>
+                    <div className="instruction-step">3</div>
+                  </div>
+                  <button className="view-stack-button" onClick={() => this.onClick()}>
+                    <div className="activity-button-container">
+                      <h1 className="activity-button-text">Stack</h1>
+                      <div style={{paddingLeft: 5}}>
+                        <AiOutlineArrowRight color={"#1a75ff"} size={25}/>
+                      </div>
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1074,6 +1154,7 @@ class Functions extends Component {
           </div>
           {this.returnFunctions()}
         </div>
+        <button className="clear-button" type="button" onClick={this.clearProgram}>Clear</button>
         <div className="height-5">&nbsp;</div>
       </div>
     )
@@ -1086,7 +1167,12 @@ class Functions extends Component {
         <div className="main-container">
           <div className="create-function-container">
             <div className="create-function-title-container">
-              <h1 className="create-function-title-style">Create a function</h1>
+              <div style={{display: 'flex', marginBottom: 5}}>
+                <div style={{paddingRight: 20}}>
+                  <div className="instruction-step">1</div>
+                </div>
+                <h1 className="create-function-title-style">Create a function</h1>
+              </div>
             </div>
             {this.returnParamVariableInput()}
             <div className="return-function-form-container">
