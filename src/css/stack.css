@@ -11,25 +11,24 @@
 
 .stack-container{
     margin-left: 5%;
+    margin-top: 2%;
+}
+
+.stack-container-border{
+    border-top: 3px solid #1a75ff;
+    border-bottom: 3px solid #1a75ff;
 }
 
 .stack-start-address-text{
-    color: white;
-    font-size: 15px;
+    color: #1a75ff;
+    font-size: 12px;
+    padding: 5px;
 }
 
 .stack-end-address-text{
-    color: white;
-    font-size: 15px;
+    color: #1a75ff;
+    font-size: 12px;
     margin-top: 20px;
-}
-
-.start-of-stack{
-    height: 60px;
-    width: 500px;
-    background-color: white;
-    margin-top: 20px;
-    border: 3px solid #1a75ff;
 }
 
 .stack-title-text{
@@ -44,8 +43,8 @@
     color: #1a75ff;
     font-weight: bold;
     font-size: 22px;
-    padding-top: 10px;
     text-align: center;
+    padding-top: 5px;
 }
 
 .heap-container{
@@ -291,7 +290,7 @@
     background-color: #0B1D51;
     width: 500px;
     border: 1px solid white;
-    margin-top: 25px;
+    margin-top: 10px;
     height:50px;
 }
 

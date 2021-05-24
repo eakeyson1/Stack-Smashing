@@ -610,3 +610,15 @@ html, body, #root, .App {
     margin-top: 5px;
 }
 
+.clear-button{
+    height: 30px;
+    width: 70px;
+    border-radius: 5px;
+    background-color: white;
+    border: 2px solid #1a75ff;
+    font-size: 15px;
+    color: #1a75ff;
+    margin-left: 45%;
+}
+
+

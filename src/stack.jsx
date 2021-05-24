@@ -17,10 +17,8 @@ class Stack extends Component {
   constructor(props) {
     super(props)
     this.startProgram = this.startProgram.bind(this)
-    this.stopProgram = this.stopProgram.bind(this)
     this.updateUserInput = this.updateUserInput.bind(this);
     this.returnStackFrames = this.returnStackFrames.bind(this);
-    this.completeMaliciousExecution = this.completeMaliciousExecution.bind(this)
     this.programNext = this.programNext.bind(this)
     this.programFinish = this.programFinish.bind(this)
     this.returnProgramFunctionsLocalVariables = this.returnProgramFunctionsLocalVariables.bind(this)
@@ -51,15 +49,20 @@ class Stack extends Component {
       displayFinishButton: false,
       displayNextButton: false,
       mainStackOpen: false,
+      segFaultFuncNameArr: [],
     }
-  }
-
-  setStackFrame(){
-    console.log("setting stack frame")
   }
 
 
   startProgram(){
+
+    /***** Must create a deep copy of the stackFrameDataArr prop *****/
+    var stackDataArr = []
+    for(var i=0; i<this.props.stackFrameDataArr.length; i++){
+      stackDataArr.push(JSON.parse(JSON.stringify(this.props.stackFrameDataArr[i])))
+    }
+
+    /***** parameters for main() *****/
     var startUserInput = "./intro " + this.state.userInput
     var userInputArray = startUserInput.split(" ")
     var argc = userInputArray.length
@@ -99,7 +102,8 @@ class Stack extends Component {
     var startAddress = 2882404352
     var endParametersAddress = startAddress - (reversedUserInputArray.length + 1)
 
-    if(this.props.stackFrameDataArr.length === 0){
+    /***** Displaying pop main is main is the only function in program *****/
+    if(stackDataArr.length === 0){
       this.setState({displayFinishButton: true})
     }
     else{
@@ -107,257 +111,293 @@ class Stack extends Component {
     }
 
 
-    // Updating values if function contains strcpy and userinput is empty
-    if(this.state.userInput === ""){
+    /***** Updating values if function contains strcpy without user input *****/
+    for(var k=0; k<stackDataArr.length; k++){
 
-      for(var k=0; k<this.props.stackFrameDataArr.length; k++){
+      var bool = false
+      stackDataArr[k].parameterDetails.map((param) => {
+        if(param.name === "userInput"){
+          bool = true
+        }
+      })
+
+      if(bool === false){
 
         // Checking if function contains strcpy and updating stack accordingly
-        if(this.props.stackFrameDataArr[k].unsafeFunctions.length !== 0){
+        if(stackDataArr[k].unsafeFunctions.length !== 0){
 
           // checking in params and local varables for param2 of strcpy and getting value
-          var param1Name = this.props.stackFrameDataArr[k].unsafeFunctions[0].param1Name
-          var param2Name = this.props.stackFrameDataArr[k].unsafeFunctions[0].param2Name
+          var param1Name = stackDataArr[k].unsafeFunctions[0].param1Name
+          var param2Name = stackDataArr[k].unsafeFunctions[0].param2Name
           var newValue = ""
           var oldValue = ""
 
-          for(var i=0; i<this.props.stackFrameDataArr[k].mainLocalVariables.length; i++){
-            if(this.props.stackFrameDataArr[k].mainLocalVariables[i].name === param2Name){
-              newValue = this.props.stackFrameDataArr[k].mainLocalVariables[i].value
+          for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
+            if(stackDataArr[k].mainLocalVariables[i].name === param2Name){
+              newValue = stackDataArr[k].mainLocalVariables[i].value
               break
             }
           }
-          for(var i=0; i<this.props.stackFrameDataArr[k].parameterDetails.length; i++){
-            if(this.props.stackFrameDataArr[k].parameterDetails[i].name === param2Name){
-              newValue = this.props.stackFrameDataArr[k].parameterDetails[i].value
-              break
-            }
-          }
-
-          for(var i=0; i<this.props.stackFrameDataArr[k].mainLocalVariables.length; i++){
-            if(this.props.stackFrameDataArr[k].mainLocalVariables[i].name === param1Name){
-              oldValue = this.props.stackFrameDataArr[k].mainLocalVariables[i].value
-              break
-            }
-          }
-          for(var i=0; i<this.props.stackFrameDataArr[k].parameterDetails.length; i++){
-            if(this.props.stackFrameDataArr[k].parameterDetails[i].name === param1Name){
-              oldValue = this.props.stackFrameDataArr[k].parameterDetails[i].value
+          for(var i=0; i<stackDataArr[k].parameterDetails.length; i++){
+            if(stackDataArr[k].parameterDetails[i].name === param2Name){
+              newValue = stackDataArr[k].parameterDetails[i].value
               break
             }
           }
 
-          // if the new value is less than the old value, we copy the string
+          for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
+            if(stackDataArr[k].mainLocalVariables[i].name === param1Name){
+              oldValue = stackDataArr[k].mainLocalVariables[i].value
+              break
+            }
+          }
+          for(var i=0; i<stackDataArr[k].parameterDetails.length; i++){
+            if(stackDataArr[k].parameterDetails[i].name === param1Name){
+              oldValue = stackDataArr[k].parameterDetails[i].value
+              break
+            }
+          }
+
+          /* 
+            *  If the new value length is less than the old value length:
+            *    Retrieve all local variable besides the old value
+            *    Add new value onto local variable arr
+            */
+
           if(newValue.length < oldValue.length){
 
-            var tempVariableString = this.props.stackFrameDataArr[k].localVariablesLetterArray.reverse().join("")
-            var newVarString = tempVariableString.replace(oldValue, newValue)
+            var variableArr = []
+            stackDataArr[k].mainLocalVariables.map(variable =>{
+        
+              if(variable.value !== oldValue){
+                var variableValArr = variable.value.split("")
+                variableValArr.push("\\0")
+                variableArr = variableArr.concat(variableValArr)  
+              }      
+            })
 
-            var localVariableArr = newVarString.split("").reverse()
-            this.props.stackFrameDataArr[k].localVariablesLetterArray = localVariableArr
+            var newValArr = newValue.split("")
+            newValArr.push("\\0") 
+            variableArr = variableArr.concat(newValArr)
+            variableArr.reverse()
+
+            stackDataArr[k].localVariablesLetterArray = variableArr
           }
 
           // Buffer overflow occurs
           else{
-            var tempVariableString = this.props.stackFrameDataArr[k].localVariablesLetterArray.reverse().join("")
-            var newVarString = tempVariableString.replace(oldValue, newValue)
 
-            var localVariableArr = newVarString.split("").reverse()
-            var newLocalVariableArr = []
-            for(var i=0; i<16; i++){
-              newLocalVariableArr.push(localVariableArr[i])
-            }
-            this.props.stackFrameDataArr[k].localVariablesLetterArray = newLocalVariableArr
+            var variableArr = []
+            stackDataArr[k].mainLocalVariables.map(variable =>{
+        
+              if(variable.value !== oldValue){
+                var variableValArr = variable.value.split("")
+                variableValArr.push("\\0")
+                variableArr = variableArr.concat(variableValArr)  
+              }      
+            })
 
-            if(localVariableArr.length > 16){
-              
-            }
+            var newValArr = newValue.split("")
+            newValArr.push("\\0") 
+            variableArr = variableArr.concat(newValArr)
+            variableArr.reverse()
+
+            stackDataArr[k].localVariablesLetterArray = variableArr
+
+            /***** Adding function to seg fault function list *****/
+            var segFaultFuncNameArr = this.state.segFaultFuncNameArr.concat(stackDataArr[k].functionName)
+            this.setState({segFaultFuncNameArr: segFaultFuncNameArr})
+
           }
-
         }
       }
     }
+    
+    // Checking for userinput and strcpy
+    for(var k=0; k<stackDataArr.length; k++){
+      if(stackDataArr[k].parameterDetails.length !== 0 && stackDataArr[k].unsafeFunctions.length !== 0){
 
-
-    // Checking buffer overflow for userinput and strcpy
-    if(this.props.stackFrameDataArr.length === 1 && 
-      this.props.stackFrameDataArr[0].parameterDetails.length !== 0 &&
-      this.props.stackFrameDataArr[0].parameterDetails[0].name === "userInput" &&
-      this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0
-
-      ){
-
-      var length = 0
-
-      // looping through local variable of func1 to find matching name
-      for(var i=0; i<this.props.stackFrameDataArr[0].mainLocalVariables.length; i++){
-
-        // if matching name, get length of buffer that is copied into
-        if(this.props.stackFrameDataArr[0].mainLocalVariables[i].name === this.props.stackFrameDataArr[0].unsafeFunctions[0].param1Name){
-          length = this.props.stackFrameDataArr[0].mainLocalVariables[i].value.length
-          break
-        }
-      }
-
-      var overflowLength = 0
-      var userInputArr = this.state.userInput.split(" ")
-
-      
-      // checking in params and local varables for param2 of strcpy and getting value
-      var param1Name = this.props.stackFrameDataArr[0].unsafeFunctions[0].param1Name
-      var oldValue = ""
-
-      for(var i=0; i<this.props.stackFrameDataArr[0].mainLocalVariables.length; i++){
-        if(this.props.stackFrameDataArr[0].mainLocalVariables[i].name === param1Name){
-          oldValue = this.props.stackFrameDataArr[0].mainLocalVariables[i].value
-          break
-        }
-      }
-      for(var i=0; i<this.props.stackFrameDataArr[0].parameterDetails.length; i++){
-        if(this.props.stackFrameDataArr[0].parameterDetails[i].name === param1Name){
-          oldValue = this.props.stackFrameDataArr[0].parameterDetails[i].value
-          break
-        }
-      }
-
-      
-      var localVars = this.props.stackFrameDataArr[0].localVariablesLetterArray.reverse().join("")
-      var replaceLVArr = localVars.replace(oldValue, "").split("")
-      var concatLV = replaceLVArr.concat(userInputArr[0].split("")).concat("\\0")
-
-      // User input length is greater than buffer length
-      if(userInputArr[0].length > length){
-
-        overflowLength = userInputArr[0].length - length
-
-        // Updating local variables and parameters
-
-          // if new length with variable replaced in greater than 16, updated SFP and return address
-        if(concatLV.length > 16){
-
-          var sfpOverFlowLength = concatLV.length - 16
-
-          var partLVArray = []
-          for(i=0; i<16; i++){
-            partLVArray.push(concatLV[i])
+        /***** Checking if parameters contains userinput *****/
+        var bool = false
+        stackDataArr[k].parameterDetails.map((param) => {
+          if(param.name === "userInput"){
+            bool = true
           }
+        })
 
-          this.props.stackFrameDataArr[0].localVariablesLetterArray = partLVArray
+        if(bool === true){
 
-          var tempParamArr = this.props.stackFrameDataArr[0].parametersLetterArray.concat(userInputArr)
-          this.props.stackFrameDataArr[0].parametersLetterArray = tempParamArr
+          /***** Checking is userinput is copied into local variable *****/
+          var param2Name = stackDataArr[k].unsafeFunctions[0].param2Name
+          if(param2Name === "userInput"){
 
-          // Updating SFP values
-          if(sfpOverFlowLength === 1){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-          }
-          if(sfpOverFlowLength === 2){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-          }
-          if(sfpOverFlowLength === 3){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-            this.props.stackFrameDataArr[0].sfpArr[1] = concatLV[18]
-          }
-          if(sfpOverFlowLength === 4){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-            this.props.stackFrameDataArr[0].sfpArr[1] = concatLV[18]
-            this.props.stackFrameDataArr[0].sfpArr[0] = concatLV[19]
-          }
+            /***** Getting length of buffer that is being copied into *****/
+            for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
+              if(stackDataArr[k].mainLocalVariables[i].name === stackDataArr[k].unsafeFunctions[0].param1Name){
+                length = stackDataArr[k].mainLocalVariables[i].value.length
+                break
+              }
+            }
 
-          // Updating SFP values and return address
+            var userInputArr = this.state.userInput.split(" ")
 
-          if(sfpOverFlowLength === 5){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-            this.props.stackFrameDataArr[0].sfpArr[1] = concatLV[18]
-            this.props.stackFrameDataArr[0].sfpArr[0] = concatLV[19]
-            this.props.stackFrameDataArr[0].returnAddressArr[3] = concatLV[20]
-          }
-          if(sfpOverFlowLength === 6){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-            this.props.stackFrameDataArr[0].sfpArr[1] = concatLV[18]
-            this.props.stackFrameDataArr[0].sfpArr[0] = concatLV[19]
-            this.props.stackFrameDataArr[0].returnAddressArr[3] = concatLV[20]
-            this.props.stackFrameDataArr[0].returnAddressArr[2] = concatLV[21]
+            /***** Getting value of param2 or source array *****/
+            var param1Name = stackDataArr[k].unsafeFunctions[0].param1Name
+            var oldValue = ""
 
-          }
-          if(sfpOverFlowLength === 7){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-            this.props.stackFrameDataArr[0].sfpArr[1] = concatLV[18]
-            this.props.stackFrameDataArr[0].sfpArr[0] = concatLV[19]
-            this.props.stackFrameDataArr[0].returnAddressArr[3] = concatLV[20]
-            this.props.stackFrameDataArr[0].returnAddressArr[2] = concatLV[21]
-            this.props.stackFrameDataArr[0].returnAddressArr[1] = concatLV[22]
-          }
-          if(sfpOverFlowLength === 8){
-            this.props.stackFrameDataArr[0].sfpArr[3] = concatLV[16]
-            this.props.stackFrameDataArr[0].sfpArr[2] = concatLV[17]
-            this.props.stackFrameDataArr[0].sfpArr[1] = concatLV[18]
-            this.props.stackFrameDataArr[0].sfpArr[0] = concatLV[19]
-            this.props.stackFrameDataArr[0].returnAddressArr[3] = concatLV[20]
-            this.props.stackFrameDataArr[0].returnAddressArr[2] = concatLV[21]
-            this.props.stackFrameDataArr[0].returnAddressArr[1] = concatLV[22]
-            this.props.stackFrameDataArr[0].returnAddressArr[0] = concatLV[23]
-          }
+            for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
+              if(stackDataArr[k].mainLocalVariables[i].name === param1Name){
+                oldValue = stackDataArr[k].mainLocalVariables[i].value
+                break
+              }
+            }
+            for(var i=0; i<stackDataArr[k].parameterDetails.length; i++){
+              if(stackDataArr[k].parameterDetails[i].name === param1Name){
+                oldValue = stackDataArr[k].parameterDetails[i].value
+                break
+              }
+            }
 
-        }
-        else{
-          
-          var userInputArr = this.state.userInput.split(" ")
-          var tempUserInput = userInputArr[0]
-          var tempUserInputArr = []
-          for(var j=0; j<tempUserInput.length; j++){
-            if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
-              var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
-              tempUserInputArr.push(val)
-              j +=3
+            /****** Pushing full machine code command if inputted *****/
+            var userInputArr = this.state.userInput.split(" ")
+            var tempUserInput = userInputArr[0].split("")
+            var tempUserInputArr = []
+            for(var j=0; j<tempUserInput.length; j++){
+              if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
+                var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
+                tempUserInputArr.push(val)
+                j +=3
+              }
+              else{
+                tempUserInputArr.push(tempUserInput[j])
+              }
+            }
+            tempUserInputArr.push("\\0")
+
+            /***** Reconstrucing parameters *****/
+
+            var paramArr = []
+            stackDataArr[k].parameterDetails.map(param =>{
+              if(param.value !== oldValue){
+                var paramValArr = param.value.split("")
+                paramValArr.push("\\0")
+                paramArr = paramArr.concat(paramValArr)  
+              }      
+            })
+
+            paramArr.splice(-1,1)
+            paramArr = paramArr.concat(tempUserInputArr)
+            paramArr.reverse()
+
+
+            stackDataArr[k].parametersLetterArray = paramArr
+
+            /***** Reconstructing local variables *****/
+
+            var variableArr = []
+            stackDataArr[k].mainLocalVariables.map(variable =>{
+        
+              if(variable.value !== oldValue){
+                var variableValArr = variable.value.split("")
+                variableValArr.push("\\0")
+                variableArr = variableArr.concat(variableValArr)  
+              }      
+            })
+
+            variableArr = variableArr.concat(tempUserInputArr)
+            variableArr.reverse()
+
+            var sfpOverFlowLength = variableArr.length - 16
+            var concatLV = variableArr
+    
+
+            /* If new length with variable replaced in greater than 16:
+            *   updated SFP and return address
+            */
+            if(sfpOverFlowLength > 0){
+
+
+              var partLVArray = []
+              for(i=sfpOverFlowLength; i<sfpOverFlowLength+16; i++){
+                partLVArray.push(variableArr[i])
+              }
+
+              stackDataArr[k].localVariablesLetterArray = partLVArray
+
+              // Updating SFP values
+              if(sfpOverFlowLength === 1){
+                stackDataArr[k].sfpArr[3] = concatLV[0]
+              }
+              if(sfpOverFlowLength === 2){
+                stackDataArr[k].sfpArr[3] = concatLV[1]
+                stackDataArr[k].sfpArr[2] = concatLV[0]
+              }
+              if(sfpOverFlowLength === 3){
+                stackDataArr[k].sfpArr[3] = concatLV[2]
+                stackDataArr[k].sfpArr[2] = concatLV[1]
+                stackDataArr[k].sfpArr[1] = concatLV[0]
+              }
+              if(sfpOverFlowLength === 4){
+                stackDataArr[k].sfpArr[3] = concatLV[3]
+                stackDataArr[k].sfpArr[2] = concatLV[2]
+                stackDataArr[k].sfpArr[1] = concatLV[1]
+                stackDataArr[k].sfpArr[0] = concatLV[0]
+              }
+
+              // Updating SFP values and return address
+
+              if(sfpOverFlowLength === 5){
+                stackDataArr[k].sfpArr[3] = concatLV[4]
+                stackDataArr[k].sfpArr[2] = concatLV[3]
+                stackDataArr[k].sfpArr[1] = concatLV[2]
+                stackDataArr[k].sfpArr[0] = concatLV[1]
+                stackDataArr[k].returnAddressArr[3] = concatLV[0]
+              }
+              if(sfpOverFlowLength === 6){
+                stackDataArr[k].sfpArr[3] = concatLV[5]
+                stackDataArr[k].sfpArr[2] = concatLV[4]
+                stackDataArr[k].sfpArr[1] = concatLV[3]
+                stackDataArr[k].sfpArr[0] = concatLV[2]
+                stackDataArr[k].returnAddressArr[3] = concatLV[1]
+                stackDataArr[k].returnAddressArr[2] = concatLV[0]
+
+              }
+              if(sfpOverFlowLength === 7){
+                stackDataArr[k].sfpArr[3] = concatLV[6]
+                stackDataArr[k].sfpArr[2] = concatLV[5]
+                stackDataArr[k].sfpArr[1] = concatLV[4]
+                stackDataArr[k].sfpArr[0] = concatLV[3]
+                stackDataArr[k].returnAddressArr[3] = concatLV[2]
+                stackDataArr[k].returnAddressArr[2] = concatLV[1]
+                stackDataArr[k].returnAddressArr[1] = concatLV[0]
+              }
+              if(sfpOverFlowLength === 8){
+                stackDataArr[k].sfpArr[3] = concatLV[7]
+                stackDataArr[k].sfpArr[2] = concatLV[6]
+                stackDataArr[k].sfpArr[1] = concatLV[5]
+                stackDataArr[k].sfpArr[0] = concatLV[4]
+                stackDataArr[k].returnAddressArr[3] = concatLV[3]
+                stackDataArr[k].returnAddressArr[2] = concatLV[2]
+                stackDataArr[k].returnAddressArr[1] = concatLV[1]
+                stackDataArr[k].returnAddressArr[0] = concatLV[0]
+              }
+              if(sfpOverFlowLength > 8){
+                stackDataArr[k].sfpArr[3] = concatLV[8]
+                stackDataArr[k].sfpArr[2] = concatLV[7]
+                stackDataArr[k].sfpArr[1] = concatLV[6]
+                stackDataArr[k].sfpArr[0] = concatLV[5]
+                stackDataArr[k].returnAddressArr[3] = concatLV[4]
+                stackDataArr[k].returnAddressArr[2] = concatLV[3]
+                stackDataArr[k].returnAddressArr[1] = concatLV[2]
+                stackDataArr[k].returnAddressArr[0] = concatLV[1]
+              }
+
             }
             else{
-              tempUserInputArr.push(tempUserInput[j])
+              stackDataArr[k].localVariablesLetterArray = variableArr
             }
           }
-          tempUserInputArr.push("\\0")
-          
-          var paramArr = tempUserInput.split("")
-          paramArr.push("\\0")
-
-          //var tempLVarr = this.props.stackFrameDataArr[0].localVariablesLetterArray.concat(concatLV)
-          var tempParamArr = this.props.stackFrameDataArr[0].parametersLetterArray.concat(paramArr.reverse())
-          this.props.stackFrameDataArr[0].localVariablesLetterArray = concatLV.reverse()
-          this.props.stackFrameDataArr[0].parametersLetterArray = tempParamArr
-
-
         }
-      }
-      else{
-
-        var userInputArr = this.state.userInput.split(" ")
-        var tempUserInput = userInputArr[0]
-        var tempUserInputArr = []
-        for(var j=0; j<tempUserInput.length; j++){
-          if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
-            var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
-            tempUserInputArr.push(val)
-            j +=3
-          }
-          else{
-            tempUserInputArr.push(tempUserInput[j])
-          }
-        }
-        tempUserInputArr.push("\\0")
-
-        var paramArr = tempUserInput.split("")
-        paramArr.push("\\0")
-        
-        //var tempLVarr = this.props.stackFrameDataArr[0].localVariablesLetterArray.concat(tempUserInputArr)
-        var tempParamArr = this.props.stackFrameDataArr[0].parametersLetterArray.concat(paramArr.reverse())
-        this.props.stackFrameDataArr[0].localVariablesLetterArray = concatLV.reverse()
-        this.props.stackFrameDataArr[0].parametersLetterArray = tempParamArr
       }
     }
 
@@ -367,54 +407,9 @@ class Stack extends Component {
       displaySegFault: false,
       mainStackParams: reversedUserInputArray, 
       argvOne: argvOne,
-      endParametersAddress: endParametersAddress
+      endParametersAddress: endParametersAddress,
+      stackFrameDataArray: stackDataArr
     })
-  }
-
-  stopProgram(){
-
-    var stackFrameDataArray = this.state.stackFrameDataArray
-    for(var i=0; i<stackFrameDataArray.length; i++){
-      stackFrameDataArray[i].disableButton = false
-    }
-
-    this.setState({
-      stackFrameDataArray: stackFrameDataArray,
-      running: false, 
-      stackFrameRunningFunctions: [], 
-      maliciousPayload: false,
-      maliciousExecution: false,
-    })
-  }
-
-  completeMaliciousExecution(address){
-
-    var tempArr = this.state.stackFrameRunningFunctions
-    for(var i=0; i<tempArr.length; i++){
-      if(tempArr[i].address === address){
-        var newArr = tempArr.slice(0, i).concat(tempArr.slice(i + 1))
-        break
-      }
-    }
-
-    var stackFrameDataArray = this.state.stackFrameDataArray
-    for(var i=0; i<stackFrameDataArray.length; i++){
-      if(stackFrameDataArray[i].address === address){
-        stackFrameDataArray[i].disableButton = false
-        break
-      }
-    }
-
-    this.setState({
-      stackFrameDataArray: stackFrameDataArray,
-      stackFrameRunningFunctions: newArr, 
-      maliciousPayload: false,
-      maliciousExecution: false,
-    })
-  }
-
-  updateUserInput(event){
-    this.setState({userInput: event})
   }
 
   programNext(){
@@ -449,8 +444,7 @@ class Stack extends Component {
     if(this.state.stepProgramClickNumber === 0){
 
       // Always pushing func1
-
-      var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+      var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
       this.setState({
         stackFrameRunningFunctions: runningFunctions,
         stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -475,7 +469,6 @@ class Stack extends Component {
 
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length === 0){
 
-        // func1
         if(this.props.stackFrameDataArr. length === 1){
           this.setState({
             displayFinishButton: true, 
@@ -528,7 +521,7 @@ class Stack extends Component {
       // PUSHING FUNC2
 
       else if(this.props.stackFrameDataArr[0].unsafeFunctions.length === 0){
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[1])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -728,7 +721,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -940,7 +933,7 @@ class Stack extends Component {
         
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[1])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1115,7 +1108,7 @@ class Stack extends Component {
           this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0)
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[2])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1220,7 +1213,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1349,7 +1342,7 @@ class Stack extends Component {
         this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0  && 
         this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[1])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1557,7 +1550,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[2])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1792,7 +1785,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[1])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1851,7 +1844,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -1929,7 +1922,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -2148,7 +2141,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[2])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
@@ -2300,7 +2293,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[1])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
@@ -2332,7 +2325,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
@@ -2387,7 +2380,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[2])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -2522,7 +2515,7 @@ class Stack extends Component {
         
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[1])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -2543,7 +2536,7 @@ class Stack extends Component {
         
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -2729,7 +2722,7 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[0])
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -3052,14 +3045,9 @@ class Stack extends Component {
       stackFrameRunningFunctions: [], 
       running:false, 
       displayFinishButton: false,
-      stepProgramClickNumber: 0
+      stepProgramClickNumber: 0,
+      stackFrameDataArray: [],
     })
-
-    /*for(var i=0; i<cleanStackFrameArr.length; i++){
-      //console.log(this.props.stackFrameDataArr[i])
-      //console.log(this.props.cleanStackFrameDataArr[i])
-      this.props.stackFrameDataArr[i] = cleanStackFrameArr[i]
-    }*/
   }
 
   openStackFrame(functionName){
@@ -3086,6 +3074,10 @@ class Stack extends Component {
         break
       }
     }
+  }
+
+  updateUserInput(event){
+    this.setState({userInput: event})
   }
 
   returnStackFrames(){
@@ -3330,11 +3322,6 @@ class Stack extends Component {
 
   render() {
 
-    console.log("DIRTY")
-    console.log(this.props.stackFrameDataArr[0])
-    console.log("CLEAN")
-    console.log(this.props.cleanStackFrameDataArr[0])
-
     return(
       <div className="main-stack-frame-container">
         <div className="flex">
@@ -3348,125 +3335,130 @@ class Stack extends Component {
         </div>
         <div className="stack-container">
           <h1 className="stack-start-address-text">High Memory Address (Bottom of Stack)</h1>
-          <div className="start-of-stack"> 
-            <h1 className="stack-title-text-start">Stack</h1>
-          </div>
-          {this.state.running && (
-            // Returning main stackframe
-            <div>
-               {!this.state.mainStackOpen && (
-                <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
-                  <div style={{display: 'flex'}}>
-                    <div style={{marginLeft: '35%'}}>
-                      <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
-                    </div>
-                    <div style={{marginLeft: "20%"}}>
-                      <RiArrowDropRightLine size={45} color={"white"}/>
-                    </div>
-                  </div>
-                </button>
-               )}
-               {this.state.mainStackOpen && (
-                 <div>
+          <div className="stack-container-border">
+            <div className="center-div"> 
+              <h1 className="stack-title-text-start">Stack</h1>
+            </div>
+            {this.state.running && (
+              // Returning main stackframe
+              <div>
+                {!this.state.mainStackOpen && (
                   <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
                     <div style={{display: 'flex'}}>
                       <div style={{marginLeft: '35%'}}>
                         <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
                       </div>
                       <div style={{marginLeft: "20%"}}>
-                        <RiArrowDropDownLine size={45} color={"white"}/>
+                        <RiArrowDropRightLine size={45} color={"white"}/>
                       </div>
                     </div>
                   </button>
-                  <div className="main-stack-params-main-container">
-                    {this.returnMainStackParams()}
+                )}
+                {this.state.mainStackOpen && (
+                  <div>
+                    <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
+                      <div style={{display: 'flex'}}>
+                        <div style={{marginLeft: '35%'}}>
+                          <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
+                        </div>
+                        <div style={{marginLeft: "20%"}}>
+                          <RiArrowDropDownLine size={45} color={"white"}/>
+                        </div>
+                      </div>
+                    </button>
+                    <div className="main-stack-params-main-container">
+                      {this.returnMainStackParams()}
+                    </div>
+                    <div className="return-address-container">
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{(this.state.endParametersAddress.toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xCE"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\x00"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xAC"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="saved-frame-pointer-container">
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xCD"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xFF"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                      <div className="main-stack-second-container">
+                        <div className="main-stack-value-container">
+                          <h1 className="main-stack-param-text">{"\\xF2"}</h1>
+                        </div>
+                        <div className="center">
+                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="return-address-container">
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xAB"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{(this.state.endParametersAddress.toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xCE"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\x00"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xAC"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="saved-frame-pointer-container">
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xAB"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xCD"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xFF"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                    <div className="main-stack-second-container">
-                      <div className="main-stack-value-container">
-                        <h1 className="main-stack-param-text">{"\\xF2"}</h1>
-                      </div>
-                      <div className="center">
-                        <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-               )}
+                )}
+              </div>
+
+            )}
+            <div style={{marginBottom: 10}}>
+              {this.returnStackFrames()}
+            </div>
+            <h1 className="stack-end-address-text">Stack Limit</h1>
+          </div>
+          <div style={{marginLeft: 2}}>
+            <div className="heap-container"> 
+              <h1 className="heap-title-text">Heap</h1>
             </div>
 
-          )}
-          <div>
-            {this.returnStackFrames()}
-          </div>
-          <div className="heap-container"> 
-            <h1 className="heap-title-text">Heap</h1>
-          </div>
+            <div className="data-container"> 
+              <h1 className="stack-title-text">Data</h1>
+            </div>
 
-          <div className="data-container"> 
-            <h1 className="stack-title-text">Data</h1>
-          </div>
-
-          <div className="code-container"> 
-            <h1 className="stack-title-text">Code</h1>
+            <div className="code-container"> 
+              <h1 className="stack-title-text">Code</h1>
+            </div>
           </div>
           <h1 className="stack-end-address-text">Low Memory Address</h1>
         </div>

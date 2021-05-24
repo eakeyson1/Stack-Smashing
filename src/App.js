@@ -20,8 +20,6 @@ function App() {
   const [index, setIndex] = useState(0);
   const [showControls, setShowControls] = useState(false);
   const [stackFrameDataArr, setStackFrameDataArr] = useState([]);
-  const [cleanStackFrameDataArr, setCleanStackFrameDataArr] = useState([]);
-
 
   /* ##########################################################################################
    * View handler as specified in React Carousel documentations.
@@ -52,10 +50,6 @@ function App() {
     handleSelect(views.FUNCTIONS_VIEW);
   };
 
-  const sendCleanStackFrameArray = (cleanStackFrameDataArr) => {
-    setCleanStackFrameDataArr(cleanStackFrameDataArr)
-  }
-
 
 
   /*##########################################################################################*/
@@ -74,10 +68,10 @@ function App() {
           <StartPage onStartClick={handleStartClick} />
         </Carousel.Item>
         <Carousel.Item id="function-view">
-          <Functions onStartClick={handleStackClick} sendCleanStackFrameArray={sendCleanStackFrameArray}/>
+          <Functions onStartClick={handleStackClick}/>
         </Carousel.Item>
         <Carousel.Item id="stack-view">
-          <Stack stackFrameDataArr={stackFrameDataArr} cleanStackFrameDataArr={cleanStackFrameDataArr} goBack={goBack}/>
+          <Stack stackFrameDataArr={stackFrameDataArr} goBack={goBack}/>
         </Carousel.Item>
       </Carousel>
 

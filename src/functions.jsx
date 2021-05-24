@@ -53,8 +53,9 @@ class Functions extends Component {
     this.changeStrcpyParam2 = this.changeStrcpyParam2.bind(this)
     this.changeLocalVariableType = this.changeLocalVariableType.bind(this)
     this.addFunctionCall = this.addFunctionCall.bind(this)
-    this.onClick=this.onClick.bind(this)
     this.isInt = this.isInt.bind(this)
+    this.onClick = this.onClick.bind(this)
+    this.clearProgram = this.clearProgram.bind(this)
 
 
     this.state = {
@@ -324,7 +325,7 @@ class Functions extends Component {
     var tempLocalFuncParams = ""
     var parameterDetailsArr = []
 
-    var stringParameters = ""
+    var paramArr = []
 
 
     this.state.parameters.map(parameter =>{
@@ -336,7 +337,11 @@ class Functions extends Component {
         value: parameter.value
       }
 
-      stringParameters += parameter.value
+      /***** Formatting parameters *****/
+      var paramValArr = parameter.value.split("")
+      paramValArr.push("\\0")
+      paramArr = paramArr.concat(paramValArr)
+
 
       parameterDetailsArr.push(param)
 
@@ -371,7 +376,7 @@ class Functions extends Component {
     var localFuncParams = tempLocalFuncParams.slice(0, -2)
     var mainLocalVariables = []
 
-    var stringLocalVariables = ""
+    var variableArr = []
 
     this.state.localVariables.map((variable) =>{
       localVariables += variable.value
@@ -380,15 +385,18 @@ class Functions extends Component {
         type: variable.type,
         value: variable.value
       }
-      stringLocalVariables += variable.value
+
+      /***** Formatting local variables *****/
+      var variableValArr = variable.value.split("")
+      variableValArr.push("\\0")
+      variableArr = variableArr.concat(variableValArr)
+
       mainLocalVariables.push(variable)
     })
 
 
-    var reversedParameters = stringParameters.split("").reverse()
-    var reverseLocalVariables = stringLocalVariables.split("").reverse()
-
-    console.log(reversedParameters)
+    paramArr.reverse()
+    variableArr.reverse()
 
 
     var LVarr = localVariables.match(/.{1,4}/g)
@@ -425,8 +433,8 @@ class Functions extends Component {
       address: hexAddress,
       mainLocalVariables: mainLocalVariables,
       localVariables: LVarr,
-      localVariablesLetterArray: reverseLocalVariables,
-      parametersLetterArray: reversedParameters,
+      localVariablesLetterArray: variableArr,
+      parametersLetterArray: paramArr,
       savedFramePointer: savedFramePointer,
       disableButton: false,
       unsafeFunctions: this.state.unsafeFunctions,
@@ -456,6 +464,10 @@ class Functions extends Component {
       additionalFunctionCallName: ""
     })
     
+  }
+
+  clearProgram(){
+    this.setState({stackFrameDataArray: []})
   }
 
 
@@ -823,13 +835,13 @@ class Functions extends Component {
               <div className="strcpy-param-dropdown-container">
                 <Dropdown options={strcpyParams1} onChange={(type) => this.changeStrcpyParam1(type)} value={strcpyDefault} />
               </div> 
-              <h1 className="strcpy-param-title-style">Parameter 1</h1>
+              <h1 className="strcpy-param-title-style">Destination</h1>
             </div>
             <div style={{marginLeft: 30}}> 
               <div className="strcpy-param-dropdown-container">
                 <Dropdown options={strcpyParams2} onChange={(type) => this.changeStrcpyParam2(type)} value={strcpyDefault} />
               </div> 
-              <h1 className="strcpy-param-title-style">Parameter 2</h1>
+              <h1 className="strcpy-param-title-style">Source</h1>
             </div>
             <div className="add-unsafe-func-button-container"> 
               <button className="add-unsafe-func-button" onClick={this.addUnsafeFunctionToProgram}>
@@ -998,12 +1010,7 @@ class Functions extends Component {
   }*/
 
   onClick = () => {
-
-    const constCleanStackFrameDataArray = this.state.stackFrameDataArray
-    var varStackFrameDataArray = this.state.stackFrameDataArray
-
-    this.props.onStartClick(varStackFrameDataArray)
-    this.props.sendCleanStackFrameArray(constCleanStackFrameDataArray)
+    this.props.onStartClick(this.state.stackFrameDataArray)
   }
 
   returnProgram(){
@@ -1022,7 +1029,12 @@ class Functions extends Component {
           
         <div className="program-code-container">
           <div className="program-name-intro-container">
-            <h1 className="program-name-text-intro-style">intro.c</h1>
+            <div style={{marginLeft:"43%"}}>
+              <div style={{display: 'flex'}}>
+                <h1 className="program-name-text-intro-style">intro.c</h1>
+                <button className="clear-button" type="button" onClick={this.clearProgram}>Clear</button>
+              </div>
+            </div>
           </div>
           <div className="code-lines-spacer">
             <h1 className="program-code-text-style">{"#include <stdio.h>"}</h1>
