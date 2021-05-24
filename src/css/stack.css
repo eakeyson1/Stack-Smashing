@@ -91,6 +91,9 @@
     display:block;
     border: 2px solid #1a75ff;
     box-shadow: 3px 3px rgb(202, 202, 202);
+    font-size: 22px;
+    color: #1a75ff;
+    font-weight: bold;
 }
 
 .next-button:focus{
@@ -98,11 +101,23 @@
     outline-offset: none !important;
 }
 
-.next-button-text{
-    font-size: 22px;
+.pop-main-button{
+    width: 100px;
+    height: 40px;
+    background-color: white;
+    border-radius: 5px;
+    margin:0 auto;
+    display:block;
+    border: 2px solid #1a75ff;
+    box-shadow: 3px 3px rgb(202, 202, 202);
+    font-size: 14px;
     color: #1a75ff;
-    font-weight: bold;
-    margin-top: 3px;
+    font-weight: 500;
+}
+
+.pop-main-button:focus{
+    outline: none !important;
+    outline-offset: none !important;
 }
 
 .pop-main-button-text{
@@ -127,25 +142,21 @@
     display:block;
 }
 .run-program-button{
-    height: 37px;
+    height: 40px;
     width: 100px;
     background-color: white;
     border-radius: 5px;
     margin-left: 20px;
     border: 2px solid #1a75ff;
     box-shadow: 3px 3px rgb(202, 202, 202);
+    font-size: 22px;
+    color: #1a75ff;
+    font-weight: bold;
 }
 
 .run-program-button:focus{
     outline: none !important;
     outline-offset: none !important;
-}
-
-.run-program-button-text{
-    font-size: 18px;
-    color: #1a75ff;
-    font-weight: bold;
-    margin-top: 3px;
 }
 
 .user-input{
@@ -249,10 +260,6 @@
     margin-top: 5px;
 }
 
-.main-stack-param-container{
-    border-bottom: 1px solid white;
-}
-
 .main-stack-params-main-container{
     background-color: #003559;
     width: 500px;
@@ -263,6 +270,14 @@
 }
 
 .exe-code-text{
+    color: #1a75ff;
+    font-size: 17px;
+    margin-top: 7px;
+    margin-left: 10px;
+    margin-right: 5px;
+}
+
+.user-input-static-text{
     color: #1a75ff;
     font-size: 17px;
     margin-top: 7px;
@@ -281,6 +296,15 @@
 
 .stack-frame-open-button{
     background-color: #0B1D51;
+    width: 500px;
+    border: 1px solid white;
+    margin-top: 10px;
+    height:50px;
+    margin-bottom: 2px;
+}
+
+.stack-frame-open-button-strcpy{
+    background-color: #ff4d4d;
     width: 500px;
     border: 1px solid white;
     margin-top: 10px;
@@ -331,6 +355,20 @@
 .main-stack-second-container{
     display: flex;
     border-bottom: 1px solid white;
+}
+
+.main-stack-element-title{
+    margin: auto;
+    border-bottom: 1px solid white;
+}
+
+.main-stack-element-title-text{
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    padding-top: 10px;
+    padding-bottom: 4px;
+    font-weight: 500;
 }
 
 .main-stack-value-container{

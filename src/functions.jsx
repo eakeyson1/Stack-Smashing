@@ -89,8 +89,6 @@ class Functions extends Component {
       maliciousPayload: false,
       maliciousExecution: false,
       segFault: false,
-      addFunctionError: false,
-      maxFunctionsError: false,
       parameterError: "",
       parameterNameError: false,
       localVariableNameError: false,
@@ -105,6 +103,8 @@ class Functions extends Component {
       additionalFunctionCallName: "",
       additionalFunctionCalls: [],
       strcpyParamError: "",
+      functionNameError: "",
+      addFunctionError: ""
     }
   }
 
@@ -311,10 +311,40 @@ class Functions extends Component {
 
   addFunctionToProgram(){
 
+    /***** Error checking *****/
+
     if(this.state.functionName === ""){
-      this.setState({addFunctionError: true})
+      this.setState({functionNameError: "Please enter a name"})
       return
     }
+
+    if(this.state.stackFrameDataArray.length > 2){
+      this.setState({functionNameError: "Maximum of 3 functions allowed"})
+      setTimeout(() => { this.setState({functionNameError: ""}) }, 5000);
+      return
+    }
+
+    for(var i=0; i<this.state.stackFrameDataArray.length; i++){
+      if(this.state.stackFrameDataArray[i].functionName === this.state.functionName){
+        this.setState({functionNameError: "Cannot have multiple functions with the same name"})
+        return
+      }
+    }
+
+    var functionNameArr = this.state.functionName.split(" ")
+    if(functionNameArr.length > 1){
+      this.setState({functionNameError: "Function names cannot contain spaces"})
+      return
+    }
+
+    /*this.state.stackFrameDataArray.map((stackframe) => {
+      if(stackframe.functionName === this.state.functionName){
+        this.setState({functionNameError: "Cannot have multiple functions with the same name"})
+        return
+      }
+    })*/
+
+
 
     var numOfFunctions = this.state.numOfFunctions + 1
     this.setState({numOfFunctions: numOfFunctions})
@@ -442,6 +472,7 @@ class Functions extends Component {
       displayStackFrame: false,
       returnAddressArr: returnAddressArr,
       sfpArr: sfpArr,
+      strcpy: false,
     }
 
     var joined = this.state.stackFrameDataArray.concat(stackFrame)
@@ -455,7 +486,8 @@ class Functions extends Component {
       localVariableName: "",
       localVariableType: "char",
       displayAddFrame: false,
-      addFunctionError: false,
+      addFunctionError: "",
+      functionNameError: "",
       parameterError: "",
       localVariableError: false,
       unsafeFunctions: [],
@@ -784,13 +816,7 @@ class Functions extends Component {
           </div>
 
         </div>
-
-        {this.state.maxFunctionsError && (
-          <h1 className="error-input-text-style">Maximum of 5 functions allowed</h1>
-        )}
-        {this.state.addFunctionError && (
-            <h1 className="error-input-text-style">Please give function a name</h1>
-        )}
+        <h1 className="error-input-text-style">{this.state.functionNameError}</h1>
       </div>
     )
   }
@@ -895,7 +921,7 @@ class Functions extends Component {
               <button button className="code-addon-button-style" onClick={this.addUserInput}>
                 <div style = {{display:'flex'}}>
                   <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:5}}/>
-                  <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Add User input</h1>
+                  <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
                 </div>           
               </button>
             )}
@@ -904,7 +930,7 @@ class Functions extends Component {
               <button className="code-addon-button-style" onClick={this.removeUserInput}>
                 <div style = {{display:'flex'}}>
                   <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:8}}/>
-                  <h1 className="code-addon-button-text-style">Remove User input</h1>
+                  <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
                 </div>           
               </button>
             )}
@@ -924,6 +950,7 @@ class Functions extends Component {
                 </div>
               </button>
             </div>
+            <h1 className="error-input-text-style">{this.state.addFunctionError}</h1>
           </div>
         </div>
       </div>
