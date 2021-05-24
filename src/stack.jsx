@@ -50,6 +50,8 @@ class Stack extends Component {
       displayNextButton: false,
       mainStackOpen: false,
       segFaultFuncNameArr: [],
+      malFuncNameArr: [],
+      malExeMessage: "",
     }
   }
 
@@ -381,7 +383,42 @@ class Stack extends Component {
                 stackDataArr[k].returnAddressArr[1] = concatLV[1]
                 stackDataArr[k].returnAddressArr[0] = concatLV[0]
               }
-              if(sfpOverFlowLength > 8){
+
+              /***** Correctly overwrritten return address *****/
+              if(sfpOverFlowLength === 9){
+                stackDataArr[k].sfpArr[3] = concatLV[8]
+                stackDataArr[k].sfpArr[2] = concatLV[7]
+                stackDataArr[k].sfpArr[1] = concatLV[6]
+                stackDataArr[k].sfpArr[0] = concatLV[5]
+                stackDataArr[k].returnAddressArr[3] = concatLV[4]
+                stackDataArr[k].returnAddressArr[2] = concatLV[3]
+                stackDataArr[k].returnAddressArr[1] = concatLV[2]
+                stackDataArr[k].returnAddressArr[0] = concatLV[1]
+
+                var tempReturnAddress = concatLV[1] + concatLV[2] + concatLV[3] + concatLV[4]
+                var returnAddressHex = tempReturnAddress.replaceAll("\\x", "")
+                var newReturnAddressInt = parseInt(returnAddressHex, 16)
+
+                var startAddress = 2882404344 - reversedUserInputArray.length
+                var currentStackFrameAddressLength = stackDataArr[k].parametersLetterArray.length + 8
+
+                var totalLen = 0
+                for(var j=0; j < this.state.stackFrameRunningFunctions.length-1; j++){
+                  totalLen += this.state.stackFrameRunningFunctions[j].parametersLetterArray.length + this.state.stackFrameRunningFunctions[j].localVariablesLetterArray.length + 8
+                }
+                
+                var finalLen = currentStackFrameAddressLength + totalLen
+                var lowBoundAddress = startAddress - finalLen
+                var highBoundHigh = lowBoundAddress - 16
+                if(newReturnAddressInt < lowBoundAddress && newReturnAddressInt > highBoundHigh){
+                  var malFuncNameArr = this.state.malFuncNameArr
+                  malFuncNameArr.push(stackDataArr[k].functionName)
+                  this.setState({malFuncNameArr: malFuncNameArr})
+                }
+              }
+
+              // seg fault
+              if(sfpOverFlowLength > 9){
                 stackDataArr[k].sfpArr[3] = concatLV[8]
                 stackDataArr[k].sfpArr[2] = concatLV[7]
                 stackDataArr[k].sfpArr[1] = concatLV[6]
@@ -444,6 +481,13 @@ class Stack extends Component {
     if(this.state.stepProgramClickNumber === 0){
 
       // Always pushing func1
+
+      this.state.malFuncNameArr.map((name) => {
+        if(this.state.stackFrameDataArray[0].functionName === name){
+          this.setState({maliciousExecution: true, malExeMessage: "Malicious execution in Functions: " + name})
+        }
+      })
+
       var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
       this.setState({
         stackFrameRunningFunctions: runningFunctions,
@@ -506,6 +550,12 @@ class Stack extends Component {
 
     else if(this.state.stepProgramClickNumber === 2){
 
+      this.state.malFuncNameArr.map((name) => {
+        if(this.state.stackFrameDataArray[1].functionName === name){
+          this.setState({maliciousExecution: true, malExeMessage: "Malicious execution in Functions: " + name})
+        }
+      })
+
       // POPPING FUNCTION
 
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0){
@@ -543,6 +593,12 @@ class Stack extends Component {
     }
 
     else if(this.state.stepProgramClickNumber === 3){
+
+      this.state.malFuncNameArr.map((name) => {
+        if(this.state.stackFrameDataArray[0].functionName === name){
+          this.setState({maliciousExecution: true, malExeMessage: "Malicious execution in Functions: " + name})
+        }
+      })
 
       // POPPING FUNCTION
 
@@ -3047,6 +3103,8 @@ class Stack extends Component {
       displayFinishButton: false,
       stepProgramClickNumber: 0,
       stackFrameDataArray: [],
+      malExeMessage: "",
+      maliciousExecution: false,
     })
   }
 
@@ -3264,6 +3322,9 @@ class Stack extends Component {
           {this.state.displaySegFault && (
             <h1 className="seg-fault">Segmentation Fault</h1>
           )}
+          {this.state.maliciousExecution && (
+            <h1 className="seg-fault">{this.state.malExeMessage}</h1>
+          )}
           <div className="program-name-container">
             <h1 className="program-name-text-style">intro.c</h1>
           </div>
@@ -3286,7 +3347,6 @@ class Stack extends Component {
   returnMainStackParams(){
 
     var startAddress = 2882404352
-
     return(
       this.state.mainStackParams.map((param) => 
         <div className="main-stack-param-container">
@@ -3322,15 +3382,13 @@ class Stack extends Component {
 
   render() {
 
+
     return(
       <div className="main-stack-frame-container">
         <div className="flex">
         <div className="main-code-spacer">
           <button className="back-button" onClick={this.props.goBack}>
-            <div className="flex">
-              <AiOutlineArrowLeft className="functions-arrow-stack" color={"#1a75ff"} size={23}/>
-              <h1 className="back-button-text">{"Functions"}</h1>
-            </div>
+            <AiOutlineArrowLeft className="functions-arrow-stack" color={"#1a75ff"} size={30}/>
           </button>
         </div>
         <div className="stack-container">

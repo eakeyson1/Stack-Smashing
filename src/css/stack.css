@@ -82,13 +82,6 @@
     box-shadow: 3px 3px rgb(202, 202, 202);
 }
 
-.back-button-text{
-    color: #1a75ff;
-    font-weight: bold;
-    font-size: 22px;
-    margin-top: 5px;
-}
-
 .next-button{
     width: 100px;
     height: 40px;
@@ -176,7 +169,7 @@
 }
 
 .seg-fault{
-    color: white;
+    color: green;
     font-size: 16px;
 }
 
@@ -356,8 +349,7 @@
 }
 
 .functions-arrow-stack{
-    margin-top: 7px;
-    margin-right: 7px;
+    padding: 5px;
 }
 
 .stack-frame-function-name-text{
