@@ -10,88 +10,90 @@
 }
 
 .stack-container{
-    margin-left: 5%;
+    margin-left: 2%;
     margin-top: 2%;
+    width: 60vh;
+    height: 100%;
+    background-color: blueviolet;
 }
 
 .stack-container-border{
-    border-top: 3px solid #1a75ff;
-    border-bottom: 3px solid #1a75ff;
+    border-top: 0.35vh solid #1a75ff;
+    border-bottom: 0.35vh solid #1a75ff;
 }
 
 .stack-start-address-text{
     color: #1a75ff;
-    font-size: 12px;
-    padding: 5px;
+    font-size: 1.6vh;
 }
 
 .stack-end-address-text{
     color: #1a75ff;
-    font-size: 12px;
-    margin-top: 20px;
+    font-size: 1.6vh;
+    margin-top: 5%;
 }
 
 .stack-title-text{
     color: white;
     font-weight: bold;
-    font-size: 18px;
-    padding-top: 10px;
+    font-size: 2.5vh;
+    padding-top: 2%;
     text-align: center;
 }
 
 .stack-title-text-start{
     color: #1a75ff;
     font-weight: bold;
-    font-size: 22px;
+    font-size: 2.8vh;
     text-align: center;
-    padding-top: 5px;
+    padding-top: 2%;
 }
 
 .heap-container{
-    height: 150px;
-    width: 500px;
-    margin-top: 10px;
+    height: 26vh;
+    width: 100%;
+    margin-top: 1%;
     background-color: #035263;
 }
 
 .heap-title-text{
     color: white;
     font-weight: bold;
-    font-size: 18px;
-    padding-top: 10px;
+    font-size: 2.5vh;
+    padding-top: 2%;
     text-align: center;
 }
 
 .data-container{
-    height: 75px;
-    width: 500px;
+    height: 13vh;
+    width: 100%;
     background-color: #05829E;
 }
 
 .code-container{
-    height: 75px;
-    width: 500px;
+    height: 13vh;
+    width: 100%;
     background-color: #61DEFA; 
 }
 
 .back-button{
     background-color: white;
-    border-radius: 5px;
-    margin-top: 10px;
-    border: 2px solid #1a75ff;
-    box-shadow: 3px 3px rgb(202, 202, 202);
+    border-radius: 0.5vh;
+    margin-top: 1%;
+    border: 0.25vh solid #1a75ff;
+    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
+    height: 5vh;
+    width: 6vh;
 }
 
 .next-button{
-    width: 100px;
-    height: 40px;
+    width: 7vh;
+    height: 4vh;
+    border-radius: 0.5vh;
     background-color: white;
-    border-radius: 5px;
-    margin:0 auto;
-    display:block;
-    border: 2px solid #1a75ff;
-    box-shadow: 3px 3px rgb(202, 202, 202);
-    font-size: 22px;
+    border: 0.35vh solid #1a75ff;
+    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
+    font-size: 2vh;
     color: #1a75ff;
     font-weight: bold;
 }
@@ -102,17 +104,15 @@
 }
 
 .pop-main-button{
-    width: 100px;
-    height: 40px;
+    width: 12vh;
+    height: 4vh;
     background-color: white;
-    border-radius: 5px;
-    margin:0 auto;
-    display:block;
-    border: 2px solid #1a75ff;
-    box-shadow: 3px 3px rgb(202, 202, 202);
-    font-size: 14px;
+    border-radius: 0.5vh;
+    border: 0.25vh solid #1a75ff;
+    box-shadow: 0.25vh 0.35vh rgb(202, 202, 202);
+    font-size: 1.5vh;
     color: #1a75ff;
-    font-weight: 500;
+    font-weight: bold;
 }
 
 .pop-main-button:focus{
@@ -120,38 +120,16 @@
     outline-offset: none !important;
 }
 
-.pop-main-button-text{
-    font-size: 14px;
-    color: #1a75ff;
-    font-weight: bold;
-}
-
-.paused-container{
-    height: 50px;
-    margin-top: 20px;
-}
-
-.paused{
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.run-program-container{
-    margin:0 auto;
-    display:block;
-}
 .run-program-button{
-    height: 40px;
-    width: 100px;
-    background-color: white;
-    border-radius: 5px;
-    margin-left: 20px;
-    border: 2px solid #1a75ff;
-    box-shadow: 3px 3px rgb(202, 202, 202);
-    font-size: 22px;
+    height: 4vh;
+    width: 7vh;
+    border-radius: 0.5vh;
+    border: 0.25vh solid #1a75ff;
+    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
+    font-size: 2vh;
     color: #1a75ff;
     font-weight: bold;
+    background-color: white;
 }
 
 .run-program-button:focus{
@@ -160,51 +138,30 @@
 }
 
 .user-input{
-    height: 35px;
-    margin-right: 20px;
-    border-bottom: 2px solid #1a75ff;
+    height: 4vh;
+    border-bottom: 0.25vh solid #1a75ff;
     border-top: none;
     border-left: none;
     border-right: none;
     outline: none !important;
     outline-offset: none !important;
     color: #1a75ff;
-}
-
-.max-func-error{
-    color: red;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-    margin-left: 10px;
+    font-size: 2vh;
 }
 
 .seg-fault{
     color: green;
-    font-size: 16px;
-}
-
-.running-container{
-    height: 50px;
-    margin-top: 20px;
-}
-
-.running{
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
+    font-size: 2.2vh;
 }
 
 .main-code-spacer{
-    margin-top: 20px;
-    margin-left: 50px;
+    margin-top: 1%;
+    margin-left: 1%;
 }
 
 .program-code-container-stack{
-    width: 425px;
-    height: 550px;
-    background-color: white;
-    border-radius: 5px;
+    width: 60vh;
+    height: 75vh;
     margin-top: 12%;
 }
 
@@ -214,39 +171,30 @@
 }
 
 .program-name-container{
-    border-bottom: 2px solid #1a75ff;
+    border-bottom: 0.25vh solid #1a75ff;
 }
 
 .program-name-text-style{
     color: #1a75ff;
-    font-size: 19px;
+    font-size: 2.5vh;
     text-align: center;
     font-weight: bold;
-    padding-top: 8px;
 }
 
 .code-lines-spacer{
-    margin-left: 7.5px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-left: 2%;
+    margin-top: 3%;
+    margin-bottom: 3%;
 }
 
 .program-code-text-style{
-    font-size: 14px;
+    font-size: 1.7vh;
     font-weight: 400;
 }
 
-.margin-left-7{
-    margin-left: 7.5px;
-}
-
-.height-5{
-    height: 5px;
-}
-
 .program-functions{
-    margin-top: 5px;
-    margin-left: 5px;
+    margin-top: 1%;
+    margin-left: 1%;
 }
 
 .functions-flex{
@@ -255,14 +203,9 @@
 
 .main-stack-param-text{
     color: white;
-    font-size: 15px;
+    font-size: 1.8vh;
     text-align: center;
-    margin-top: 5px;
-}
-
-.main-stack-params-main-container{
-    background-color: #003559;
-    width: 500px;
+    margin-top: 1%;
 }
 
 .first-user-input-param-container{
@@ -271,10 +214,10 @@
 
 .exe-code-text{
     color: #1a75ff;
-    font-size: 17px;
-    margin-top: 7px;
-    margin-left: 10px;
-    margin-right: 5px;
+    font-size: 2.1vh;
+    margin-top: 15%;
+    margin-left: 1%;
+    margin-right: 0.5%;
 }
 
 .user-input-static-text{
@@ -286,26 +229,23 @@
 }
 
 .exe-code-container{
-    height: 35px;
-    width: 70px;
-    background-color: white;
-    border: none;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
+    height: 5%;
+    width: 10%;
+    margin-left: 2%;
 }
 
 .stack-frame-open-button{
     background-color: #0B1D51;
-    width: 500px;
+    width: 60vh;
     border: 1px solid white;
     margin-top: 10px;
-    height:50px;
+    height:7vh;
     margin-bottom: 2px;
 }
 
 .stack-frame-open-button-strcpy{
     background-color: #ff4d4d;
-    width: 500px;
+    width: 600px;
     border: 1px solid white;
     margin-top: 10px;
     height:50px;
@@ -313,7 +253,7 @@
 
 .stack-frame-button-text{
     color: white;
-    font-size: 15px;
+    font-size: 1.9vh;
     margin-top: 8%;
 }
 
@@ -323,12 +263,17 @@
     align-items: center;
 }
 
-.stack-frame-container{
-    background-color: blue;
-}
-
 .stack-frame-param-container{
     background-color: #003559;
+    width: 40vh;
+}
+
+.stack-frame-param-title-container{
+    background-color: #003559;
+    width: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .stackframe-main-text{
@@ -344,21 +289,31 @@
 
 .return-address-container{
     background-color: #0353A4;
-    width: 500px;
+    width: 40vh;
+}
+
+.return-address-title-container{
+    background-color: #0353A4;
+    width: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .saved-frame-pointer-container{
     background-color: #006DAA;
-    width: 500px;
+    width: 40vh;
 }
 
+.saved-frame-pointer-title-container{
+    background-color: #006DAA;
+    width: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .main-stack-second-container{
     display: flex;
-    border-bottom: 1px solid white;
-}
-
-.main-stack-element-title{
-    margin: auto;
     border-bottom: 1px solid white;
 }
 
@@ -372,10 +327,10 @@
 }
 
 .main-stack-value-container{
-    width: 60%;
+    width: 50%;
     border-right: 1px solid white;
-    display: block;
-    margin:auto
+    display: flex;
+    justify-content: center;
 }
 
 .argv-one-container{
@@ -384,10 +339,19 @@
 
 .stack-frame-variable-container{
     background-color: #416788;
+    width: 300px;
+}
+
+.stack-frame-variable-title-container{
+    background-color: #416788;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .functions-arrow-stack{
-    padding: 5px;
+    padding: 2%;
 }
 
 .stack-frame-function-name-text{
@@ -405,6 +369,98 @@
 }
 
 .second-main-container{
-    margin-left: 150px;
-    margin-top: 60px;
+    margin-top: 2.5%;
 }
+
+.instruction-step{
+    width: 5vh;
+    height: 5vh;
+    border-radius: 2.5vh;
+    background-color: #ff4d4d;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3vh;
+}
+
+.instruction-sub-step{
+    width: 4vh;
+    height: 4vh;
+    border-radius: 2vh;
+    background-color: #ff4d4d;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.6vh;
+}
+
+.construct-payload-text{
+    font-size: 2.7vh;
+    color: #1a75ff;
+    font-weight: bold;
+}
+
+.construct-payload-sub-text{
+    font-size: 1.9vh;
+    color: #1a75ff;
+    font-weight: bold;
+}
+
+.construct-payload-container{
+    margin-top: 2%;
+    width: 30%;
+    background-color: blue;
+}
+
+.info-symbol{
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    border: 1px solid black;
+}
+
+.hints-title{
+    font-size: 1.6vh;
+    color: #ff3399;
+    font-weight: bold;
+}
+
+.hints{
+    font-size: 1.5vh;
+    color: #ff3399;
+}
+
+.construct-payload-part-container{
+    display: flex;
+    margin-top: 5%;
+}
+
+.malicious-execution-title-text{
+    font-size: 17px;
+}
+
+.malicious-execution-text{
+    font-size: 15px;
+}
+
+.malicious-execution-failed-title-text{
+    font-size: 17px;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgb(214, 214, 214);
+    font-size: 2vh;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: rgb(161, 161, 161);
+    font-size: 1.9vh;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: rgb(161, 161, 161);
+    font-size: 2vh;
+  }

@@ -6,6 +6,10 @@ import MainFunctionStack from "./mainFunctionStack"
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { RiArrowDropRightLine } from "react-icons/ri";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { BsInfoCircle } from "react-icons/bs"
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+import Button from 'react-bootstrap/Button'
 
 
 /**
@@ -17,7 +21,6 @@ class Stack extends Component {
   constructor(props) {
     super(props)
     this.startProgram = this.startProgram.bind(this)
-    this.updateUserInput = this.updateUserInput.bind(this);
     this.returnStackFrames = this.returnStackFrames.bind(this);
     this.programNext = this.programNext.bind(this)
     this.programFinish = this.programFinish.bind(this)
@@ -31,27 +34,38 @@ class Stack extends Component {
     this.returnArgvOne = this.returnArgvOne.bind(this)
     this.openStackFrame = this.openStackFrame.bind(this)
     this.closeStackFrame = this.closeStackFrame.bind(this)
+    this.goBack = this.goBack.bind(this)
+    this.nopSledDef = this.nopSledDef.bind(this)
+    this.shellcodeDef = this.shellcodeDef.bind(this)
+    this.returnAddressDef = this.returnAddressDef.bind(this)
+    this.updateNopSled = this.updateNopSled.bind(this)
+    this.updateShellCode = this.updateShellCode.bind(this)
+    this.updateReturnAddress = this.updateReturnAddress.bind(this)
 
     this.state = {
       displaySegFault: false,
       displayAddFrame: false,
+      displayFinishButton: false,
+      displayNextButton: false,
+      displayMaliciousExecution: false,
+      displayFailedMaliciousExecution: false,
       running: false,
       stackFrameDataArray:[],
       stackFrameRunningFunctions: [],
       userInput: "",
       maliciousPayload: false,
-      maliciousExecution: false,
       segFault: false,
       mainStackParams: [],
       argvOne: "",
       endParametersAddress: 0,
       stepProgramClickNumber: 0,
-      displayFinishButton: false,
-      displayNextButton: false,
       mainStackOpen: false,
       segFaultFuncNameArr: [],
       malFuncNameArr: [],
       malExeMessage: "",
+      nopSled: "",
+      shellcode: "",
+      returnAddress: "",
     }
   }
 
@@ -65,11 +79,12 @@ class Stack extends Component {
     }
 
     /***** parameters for main() *****/
-    var startUserInput = "./intro " + this.state.userInput
+    var startUserInput = "./intro " + this.state.nopSled + this.state.shellcode + this.state.returnAddress
+    var payload = this.state.nopSled + this.state.shellcode + this.state.returnAddress
     var userInputArray = startUserInput.split(" ")
     var argc = userInputArray.length
 
-    if(this.state.userInput === ""){
+    if(payload === ""){
       argc = 1
     }
     var argcArr = []
@@ -94,7 +109,7 @@ class Stack extends Component {
     var reversedUserInputArray = tempUserInputArray.reverse().concat(argcArr)
     var argvOne = []
 
-    if(this.state.userInput === ""){
+    if(payload === ""){
       reversedUserInputArray.splice(reversedUserInputArray, 1)
     }
     else{
@@ -241,7 +256,7 @@ class Stack extends Component {
               }
             }
 
-            var userInputArr = this.state.userInput.split(" ")
+            var userInputArr = payload.split(" ")
 
             /***** Getting value of param2 or source array *****/
             var param1Name = stackDataArr[k].unsafeFunctions[0].param1Name
@@ -261,7 +276,7 @@ class Stack extends Component {
             }
 
             /****** Pushing full machine code command if inputted *****/
-            var userInputArr = this.state.userInput.split(" ")
+            var userInputArr = payload.split(" ")
             var tempUserInput = userInputArr[0].split("")
             var tempUserInputArr = []
             for(var j=0; j<tempUserInput.length; j++){
@@ -395,7 +410,7 @@ class Stack extends Component {
                 stackDataArr[k].returnAddressArr[1] = concatLV[2]
                 stackDataArr[k].returnAddressArr[0] = concatLV[1]
 
-                var tempReturnAddress = concatLV[1] + concatLV[2] + concatLV[3] + concatLV[4]
+                var tempReturnAddress = concatLV[4] + concatLV[3] + concatLV[2] + concatLV[1]
                 var returnAddressHex = tempReturnAddress.replaceAll("\\x", "")
                 var newReturnAddressInt = parseInt(returnAddressHex, 16)
 
@@ -423,10 +438,10 @@ class Stack extends Component {
                 stackDataArr[k].sfpArr[2] = concatLV[7]
                 stackDataArr[k].sfpArr[1] = concatLV[6]
                 stackDataArr[k].sfpArr[0] = concatLV[5]
-                stackDataArr[k].returnAddressArr[3] = concatLV[4]
-                stackDataArr[k].returnAddressArr[2] = concatLV[3]
-                stackDataArr[k].returnAddressArr[1] = concatLV[2]
-                stackDataArr[k].returnAddressArr[0] = concatLV[1]
+                stackDataArr[k].returnAddressArr[3] = []
+                stackDataArr[k].returnAddressArr[2] = []
+                stackDataArr[k].returnAddressArr[1] = []
+                stackDataArr[k].returnAddressArr[0] = []
               }
 
             }
@@ -445,7 +460,9 @@ class Stack extends Component {
       mainStackParams: reversedUserInputArray, 
       argvOne: argvOne,
       endParametersAddress: endParametersAddress,
-      stackFrameDataArray: stackDataArr
+      stackFrameDataArray: stackDataArr,
+      displayMaliciousExecution: false,
+      displayFailedMaliciousExecution: false,
     })
   }
 
@@ -482,12 +499,6 @@ class Stack extends Component {
     if(this.state.stepProgramClickNumber === 0){
 
       // Always pushing func1
-
-      this.state.malFuncNameArr.map((name) => {
-        if(this.state.stackFrameDataArray[0].functionName === name){
-          this.setState({maliciousExecution: true, malExeMessage: "Malicious execution in Functions: " + name})
-        }
-      })
 
       var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
       this.setState({
@@ -551,12 +562,6 @@ class Stack extends Component {
 
     else if(this.state.stepProgramClickNumber === 2){
 
-      this.state.malFuncNameArr.map((name) => {
-        if(this.state.stackFrameDataArray[1].functionName === name){
-          this.setState({maliciousExecution: true, malExeMessage: "Malicious execution in Functions: " + name})
-        }
-      })
-
       // POPPING FUNCTION
 
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0){
@@ -594,12 +599,6 @@ class Stack extends Component {
     }
 
     else if(this.state.stepProgramClickNumber === 3){
-
-      this.state.malFuncNameArr.map((name) => {
-        if(this.state.stackFrameDataArray[0].functionName === name){
-          this.setState({maliciousExecution: true, malExeMessage: "Malicious execution in Functions: " + name})
-        }
-      })
 
       // POPPING FUNCTION
 
@@ -3098,6 +3097,14 @@ class Stack extends Component {
   }
 
   programFinish(){
+
+    if(this.state.malFuncNameArr.length !== 0){
+      this.setState({displayMaliciousExecution: true})
+    }
+    else{
+      this.setState({displayFailedMaliciousExecution: true})
+    }
+
     this.setState({
       stackFrameRunningFunctions: [], 
       running:false, 
@@ -3105,7 +3112,7 @@ class Stack extends Component {
       stepProgramClickNumber: 0,
       stackFrameDataArray: [],
       malExeMessage: "",
-      maliciousExecution: false,
+      mainStackOpen: false,
     })
   }
 
@@ -3135,8 +3142,16 @@ class Stack extends Component {
     }
   }
 
-  updateUserInput(event){
-    this.setState({userInput: event})
+  updateNopSled(event){
+    this.setState({nopSled: event})
+  }
+
+  updateShellCode(event){
+    this.setState({shellcode: event})
+  }
+
+  updateReturnAddress(event){
+    this.setState({returnAddress: event})
   }
 
   returnStackFrames(){
@@ -3162,77 +3177,88 @@ class Stack extends Component {
                     </div>
                   </button>
 
-                <div className="stack-frame-container">
+                <div>
 
-                  <div className="stack-frame-param-container">
-                    <div className="main-stack-element-title">
-                      <h1 className="main-stack-element-title-text">Parameters</h1>
-                    </div>
-                  </div> 
-                  {stackFrame.parametersLetterArray.map((param) =>
-                    <div className="stack-frame-param-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{param}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>                
-                  )}
-
-                  <div className="return-address-container">
-                    <div className="main-stack-element-title">
-                      <h1 className="main-stack-element-title-text">Return Address</h1>
-                    </div>
-                  </div>  
-                  {stackFrame.returnAddressArr.map((ra) =>
-                    <div className="return-address-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{ra}</h1>
-                        </div>
-                        <div className="center">
-                        <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>                
-                  )}
-                  <div className="saved-frame-pointer-container">
-                    <div className="main-stack-element-title">
-                      <h1 className="main-stack-element-title-text">Saved Frame Pointer</h1>
-                    </div>
-                  </div> 
-                  {stackFrame.sfpArr.map((sfp) =>
-                    <div className="saved-frame-pointer-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{sfp}</h1>
-                        </div>
-                        <div className="center">
-                        <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>                
-                  )}
-                  <div className="stack-frame-variable-container">
-                    <div className="main-stack-element-title">
-                      <h1 className="main-stack-element-title-text">Local Variables</h1>
-                    </div>
-                  </div> 
-                  {stackFrame.localVariablesLetterArray.map((variable) => 
-                    <div className="stack-frame-variable-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{variable}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
+                  <div style={{display: 'flex'}}>
+                    <div className="stack-frame-param-title-container">
+                      <div><h1 className="main-stack-element-title-text">Parameters</h1></div>
                     </div> 
-                  )}
+                    <div>
+                      {stackFrame.parametersLetterArray.map((param) =>
+                        <div className="stack-frame-param-container">
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{param}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                        </div>                
+                      )}
+                    </div> 
+                  </div> 
+
+                  <div style={{display: 'flex'}}>
+
+                    <div className="return-address-title-container">
+                      <h1 className="main-stack-element-title-text">Return Address</h1>
+                    </div> 
+                    <div> 
+                      {stackFrame.returnAddressArr.map((ra) =>
+                        <div className="return-address-container">
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{ra}</h1>
+                            </div>
+                            <div className="center">
+                            <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                        </div>                
+                      )}
+                    </div> 
+                  </div> 
+
+                  <div style={{display: 'flex'}}>
+                    <div className="saved-frame-pointer-title-container">
+                      <h1 className="main-stack-element-title-text">Saved Frame Pointer</h1>
+                    </div> 
+                    <div>
+                      {stackFrame.sfpArr.map((sfp) =>
+                        <div className="saved-frame-pointer-container">
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{sfp}</h1>
+                            </div>
+                            <div className="center">
+                            <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                        </div>                
+                      )}
+                    </div>
+                  </div>                
+
+                  <div style={{display: 'flex'}}>
+                    <div className="stack-frame-variable-title-container">
+                      <h1 className="main-stack-element-title-text">Local Variables</h1>
+                    </div> 
+                    <div>
+                      {stackFrame.localVariablesLetterArray.map((variable) => 
+                        <div className="stack-frame-variable-container">
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{variable}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                        </div> 
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -3323,7 +3349,7 @@ class Stack extends Component {
                   <div style={{marginLeft: "35%", width: '30%'}}>
                     <h1 className="stack-frame-button-text">{stackFrame.functionName}()</h1>
                   </div>
-                  <div style={{marginLeft: "24%"}}>
+                  <div style={{marginLeft: "16%"}}>
                     <RiArrowDropRightLine size={45} color={"white"}/>
                   </div>
                 </div>
@@ -3400,7 +3426,7 @@ class Stack extends Component {
             <h1 className="program-code-text-style">({stackFrame.localFuncParams}){"{"}</h1>
           </div>
         </div>
-        <div className="margin-left-7">
+        <div style={{marginLeft: '1%'}}>
           {this.returnProgramFunctionsLocalVariables(stackFrame)}
           {this.returnUnsafeFunctionsMain(stackFrame)}
           {this.returnProgramFunctionsAdditionalFuncCalls(stackFrame)}
@@ -3419,9 +3445,9 @@ class Stack extends Component {
           {this.state.displaySegFault && (
             <h1 className="seg-fault">Segmentation Fault</h1>
           )}
-          {this.state.maliciousExecution && (
-            <h1 className="seg-fault">{this.state.malExeMessage}</h1>
-          )}
+
+          <h1 className="seg-fault">{this.state.malExeMessage}</h1>
+
           <div className="program-name-container">
             <h1 className="program-name-text-style">intro.c</h1>
           </div>
@@ -3429,14 +3455,14 @@ class Stack extends Component {
             <h1 className="program-code-text-style">{"#include <stdio.h>"}</h1>
             <h1 className="program-code-text-style">{"#include <string.h>"}</h1>
             <h1 className="program-code-text-style">int main( int argc, char* argv[])</h1>
-            <div className="margin-left-7">
+            <div style={{marginLeft: '1%'}}>
               {this.returnMainFunctionCalls()}
             </div>
             <h1 className="program-code-text-style">{"}"}</h1>
           </div>
           {this.returnFunctions()}
         </div>
-        <div className="height-5">&nbsp;</div>
+        <div style={{height: "1%"}}>&nbsp;</div>
       </div>
     )
   }
@@ -3445,18 +3471,26 @@ class Stack extends Component {
 
     var startAddress = 2882404352
     return(
-      this.state.mainStackParams.map((param) => 
-        <div className="main-stack-param-container">
-          <div className="main-stack-second-container">
-            <div className="main-stack-value-container">
-              <h1 className="main-stack-param-text">{param}</h1>
-            </div>
-            <div className="center">
-              <h1 className="main-stack-param-text">0x{((startAddress -= 1).toString(16)).toUpperCase()}</h1>
-            </div>
-          </div>
+      <div style={{display: 'flex'}}>
+        <div className="stack-frame-param-title-container">
+          <div><h1 className="main-stack-element-title-text">Parameters</h1></div>
+        </div> 
+        <div>
+          {this.state.mainStackParams.map((param) => 
+            <div className="stack-frame-param-container">
+              <div className="main-stack-second-container">
+                <div className="main-stack-value-container">
+                  <h1 className="main-stack-param-text">{param}</h1>
+                </div>
+                <div className="center">
+                  <h1 className="main-stack-param-text">0x{((startAddress -= 1).toString(16)).toUpperCase()}</h1>
+                </div>
+              </div>
+            </div> 
+          )}
         </div>
-      )
+      </div>
+
     )
   }
 
@@ -3477,192 +3511,332 @@ class Stack extends Component {
     )
   }
 
+  goBack(){
+    this.props.goBack()
+    this.programFinish()
+  }
+
+  nopSledDef = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      An assembly language instruction, considered a no operation, used as padding to compensate for variations in the location the code will be found in. It is represented by \x90. 
+    </Tooltip>
+  );
+
+  shellcodeDef = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      A small piece of code that allows a user launch a remote shell on a machine. Code is ran with the priviledges of the current process.
+    </Tooltip>
+  );
+
+  returnAddressDef = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      The address the function will return to once execution has ended
+    </Tooltip>
+  );
+  
+
   render() {
-
-
     return(
       <div className="main-stack-frame-container">
         <div className="flex">
-        <div className="main-code-spacer">
-          <button className="back-button" onClick={this.props.goBack}>
-            <AiOutlineArrowLeft className="functions-arrow-stack" color={"#1a75ff"} size={30}/>
-          </button>
-        </div>
-        <div className="stack-container">
-          <h1 className="stack-start-address-text">High Memory Address (Bottom of Stack)</h1>
-          <div className="stack-container-border">
-            <div className="center-div"> 
-              <h1 className="stack-title-text-start">Stack</h1>
-            </div>
-            {this.state.running && (
-              // Returning main stackframe
-              <div>
-                {!this.state.mainStackOpen && (
-                  <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
-                    <div style={{display: 'flex'}}>
-                      <div style={{marginLeft: '35%'}}>
-                        <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
-                      </div>
-                      <div style={{marginLeft: "20%"}}>
-                        <RiArrowDropRightLine size={45} color={"white"}/>
-                      </div>
-                    </div>
-                  </button>
-                )}
-                {this.state.mainStackOpen && (
-                  <div>
+          <div className="main-code-spacer">
+            <button className="back-button" onClick={this.goBack}>
+              <AiOutlineArrowLeft className="functions-arrow-stack" color={"#1a75ff"} size={"100%"}/>
+            </button>
+          </div>
+          <div className="stack-container">
+            <h1 className="stack-start-address-text">High Memory Address (Bottom of Stack)</h1>
+            <div className="stack-container-border">
+              <div className="center-div"> 
+                <h1 className="stack-title-text-start">Stack</h1>
+              </div>
+              {this.state.running && (
+                // Returning main stackframe
+                <div>
+                  {!this.state.mainStackOpen && (
                     <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
                       <div style={{display: 'flex'}}>
                         <div style={{marginLeft: '35%'}}>
                           <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
                         </div>
-                        <div style={{marginLeft: "20%"}}>
-                          <RiArrowDropDownLine size={45} color={"white"}/>
+                        <div style={{marginLeft: "18%"}}>
+                          <RiArrowDropRightLine size={45} color={"white"}/>
                         </div>
                       </div>
                     </button>
-                    <div className="main-stack-params-main-container">
+                  )}
+                  {this.state.mainStackOpen && (
+                    <div>
+                      <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
+                        <div style={{display: 'flex'}}>
+                          <div style={{marginLeft: '35%'}}>
+                            <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
+                          </div>
+                          <div style={{marginLeft: "18%"}}>
+                            <RiArrowDropDownLine size={45} color={"white"}/>
+                          </div>
+                        </div>
+                      </button>
                       {this.returnMainStackParams()}
+                      <div style={{display: 'flex'}}>
+                        <div className="return-address-title-container">
+                          <h1 className="main-stack-element-title-text">Return Address</h1>
+                        </div> 
+                        <div className="return-address-container">
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{(this.state.endParametersAddress.toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xCE"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\x00"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xAC"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                        </div>
+                      </div> 
+                      <div style={{display: 'flex'}}>
+                        <div className="saved-frame-pointer-title-container">
+                          <h1 className="main-stack-element-title-text">Saved Frame Pointer</h1>
+                        </div> 
+                        <div className="saved-frame-pointer-container">
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xCD"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xFF"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                          <div className="main-stack-second-container">
+                            <div className="main-stack-value-container">
+                              <h1 className="main-stack-param-text">{"\\xF2"}</h1>
+                            </div>
+                            <div className="center">
+                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>
+                            </div>
+                          </div>
+                        </div>
+                      </div> 
                     </div>
-                    <div className="return-address-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xAB"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{(this.state.endParametersAddress.toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xCE"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\x00"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xAC"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="saved-frame-pointer-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xAB"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xCD"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xFF"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{"\\xF2"}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  )}
+                </div>
+
+              )}
+              <div style={{marginBottom: "1%"}}>
+                {this.returnStackFrames()}
+              </div>
+              <h1 className="stack-end-address-text">Stack Limit</h1>
+            </div>
+            <div style={{marginLeft: 2}}>
+              <div className="heap-container"> 
+                <h1 className="heap-title-text">Heap</h1>
               </div>
 
-            )}
-            <div style={{marginBottom: 10}}>
-              {this.returnStackFrames()}
+              <div className="data-container"> 
+                <h1 className="stack-title-text">Data</h1>
+              </div>
+
+              <div className="code-container"> 
+                <h1 className="stack-title-text">Code</h1>
+              </div>
             </div>
-            <h1 className="stack-end-address-text">Stack Limit</h1>
+            <h1 className="stack-end-address-text">Low Memory Address</h1>
           </div>
-          <div style={{marginLeft: 2}}>
-            <div className="heap-container"> 
-              <h1 className="heap-title-text">Heap</h1>
+          <div className="construct-payload-container">
+            <div className="center-div">
+              <div style={{display: 'flex'}}>
+                <div className="instruction-step">4</div>
+                <div className="center-div">
+                  <h1 className="construct-payload-text">Construct Payload</h1>
+                </div>
+              </div>
             </div>
 
-            <div className="data-container"> 
-              <h1 className="stack-title-text">Data</h1>
-            </div>
-
-            <div className="code-container"> 
-              <h1 className="stack-title-text">Code</h1>
-            </div>
-          </div>
-          <h1 className="stack-end-address-text">Low Memory Address</h1>
-        </div>
-        <div className="second-main-container">
-          {!this.state.running && (
-            <div className="run-program-container">
-              <div className="flex">
-                <div className="exe-code-container">
-                  <h1 className="exe-code-text">./intro</h1>
+            <div className="construct-payload-part-container">
+              <div className="instruction-sub-step">4.1</div>
+              <div style={{width: '80%', marginLeft: "3%"}}>
+                <div style={{display: 'flex', marginTop: "1.1%"}}>
+                  <div style={{marginRight: "2%", marginTop: "0.75%"}}>
+                    <h1 className="construct-payload-sub-text">Construct NOP Sled</h1>
+                  </div>
+                  <OverlayTrigger
+                    placement="right"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={this.nopSledDef}
+                  >
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
+                </div>
+                <div>
+                  <h1 className="hints-title">Hints</h1>
+                  <h1 className="hints">- Should only contain \x90</h1>
+                  <h1 className="hints">- More occurances leads to higher chance on overwrritten return address landing where intended </h1>
                 </div>
                 <input
-                  value={this.state.userInput}
+                  value={this.state.nopSled}
                   type="text"
-                  onChange={event => this.updateUserInput(event.target.value)}
+                  placeholder={"Start typing...."}
+                  onChange={event => this.updateNopSled(event.target.value)}
                   className="user-input"
                 />
-                <button className="run-program-button" onClick={this.startProgram}>Run</button>
               </div>
             </div>
-          )}
-          {this.state.running && !this.state.displayFinishButton && (
-            <div className="run-program-container">
-              <div className="flex">
-                <div className="exe-code-container">
-                  <h1 className="exe-code-text">./intro</h1>
+            <div className="construct-payload-part-container">
+              <div className="instruction-sub-step">4.2</div>
+              <div style={{width: '80%', marginLeft: "3%"}}>
+                <div style={{display: 'flex'}}>
+                  <h1 className="construct-payload-sub-text">Construct Shellcode</h1>
+                  <OverlayTrigger
+                      placement="right"
+                      delay={{ show: 250, hide: 400 }}
+                      overlay={this.shellcodeDef}
+                    >
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
                 </div>
-                <div style = {{width: "65%"}}>
-                  <h1 className="user-input-static-text">{this.state.userInput}</h1>
+                <div>
+                  <h1 className="hints-title">Hints</h1>
+                  <h1 className="hints">- Written in assembly</h1>
+                  <h1 className="hints">- Many examples of shellcode</h1>
                 </div>
-                <button className="next-button" onClick={this.programNext}>Next</button>
+                <input
+                  value={this.state.shellcode}
+                  type="text"
+                  placeholder={"Start typing...."}
+                  onChange={event => this.updateShellCode(event.target.value)}
+                  className="user-input"
+                />
               </div>
             </div>
-          )}
-          {this.state.displayFinishButton && (
-            <div className="run-program-container">
-            <div className="flex">
-              <div className="exe-code-container">
-                <h1 className="exe-code-text">./intro</h1>
+            <div className="construct-payload-part-container">
+              <div className="instruction-sub-step">4.3</div>
+              <div style={{width: '80%', marginLeft: "3%"}}>
+                <div style={{display: 'flex'}}>
+                  <h1 className="construct-payload-sub-text">Construct Return Address</h1>
+                  <OverlayTrigger
+                      placement="right"
+                      delay={{ show: 250, hide: 400 }}
+                      overlay={this.returnAddressDef}
+                    >
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
+                </div>
+                <div>
+                  <h1 className="hints-title">Hints</h1>
+                  <h1 className="hints">- Any address that contains a NOP from our payload</h1>
+                  <h1 className="hints">- Little endian based CPU</h1>
+                </div>
+                <input
+                  value={this.state.returnAddress}
+                  type="text"
+                  placeholder={"Start typing...."}
+                  onChange={event => this.updateReturnAddress(event.target.value)}
+                  className="user-input"
+                />
               </div>
-              <div style = {{width: "65%"}}>
-                <h1 className="user-input-static-text">{this.state.userInput}</h1>
-              </div>
-              <button className="pop-main-button" onClick={this.programFinish}>Pop main()</button>
             </div>
           </div>
-          )}
-          {this.returnProgram()}
-        </div> 
-      </div>
+          <div className="second-main-container">
+            {!this.state.running && (
+              <div>
+                <div className="flex">
+                  <button className="run-program-button" onClick={this.startProgram}>Run</button>
+                  <div className="exe-code-container">
+                    <div style={{display: 'flex'}}>
+                      <h1 className="exe-code-text">./intro </h1>
+                      <h1 className="exe-code-text">{this.state.nopSled}</h1>
+                      <h1 className="exe-code-text">{this.state.shellcode}</h1>
+                      <h1 className="exe-code-text">{this.state.returnAddress}</h1>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {this.state.running && !this.state.displayFinishButton && (
+              <div>
+                <div className="flex">
+                  <div>
+                    <div className="exe-code-container">
+                      <h1 className="exe-code-text">./intro</h1>
+                    </div>
+                    <button className="next-button" onClick={this.programNext}>Next</button>
+                  </div>
+                  <div style = {{width: "65%"}}>
+                    <h1 className="user-input-static-text">{this.state.nopSled} {this.state.shellcode} {this.state.returnAddress}</h1>
+                  </div>
+                </div>
+              </div>
+            )}
+            {this.state.displayFinishButton && (
+              <div>
+                <div className="flex">
+                  <div>
+                    <div className="exe-code-container">
+                      <h1 className="exe-code-text">./intro</h1>
+                    </div>
+                    <button className="pop-main-button" onClick={this.programFinish}>Pop main()</button>
+                  </div>
+                  <div style = {{width: "65%"}}>
+                    <h1 className="user-input-static-text">{this.state.nopSled} {this.state.shellcode} {this.state.returnAddress}</h1>
+                  </div>
+                </div>
+              </div>
+            )}
+            {this.state.displayMaliciousExecution && (
+              <div>
+                <h1 className="malicious-execution-title-text">Stack Smashing Attack Successful</h1>
+                {this.state.malFuncNameArr.map((name) => 
+                  <h1 className="malicious-execution-text">{name}</h1>
+                )}
+              </div>
+            )}
+            {this.state.displayFailedMaliciousExecution && (
+              <div>
+                <h1 className="malicious-execution-failed-title-text">Stack Smashing Attack Unsuccessful</h1>
+              </div>
+            )}
+            {this.returnProgram()}
+          </div> 
+        </div>
       </div>
     );
   }

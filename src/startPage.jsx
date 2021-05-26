@@ -11,12 +11,7 @@ class StartPage extends Component {
         <header>
           <h1 className="start-page-header-text">Stack Smashing</h1>
           <h3 className="start-page-sub-header-text">UNC Charlotte Edition</h3>
-          <button
-            onClick={this.props.onStartClick}
-            className="start-btn"
-          >
-            <h1 className="start-button-text">Start</h1>
-          </button>
+          <button onClick={this.props.onStartClick} className="start-btn"> Start </button>
         </header>
       </div>
     );

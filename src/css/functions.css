@@ -10,7 +10,7 @@ html, body, #root, .App {
 
 .main-container{
     display: flex;
-    margin-top: 30px;
+    margin-top: 2%;
 }
 
 .functions-flex{
@@ -18,21 +18,22 @@ html, body, #root, .App {
 }
 
 .create-function-container{
-    width: 850px;
-    margin-left: 75px;
+    width: 55%;
+    margin-left: 5%;
 }
 
 .create-function-title-container{
-    border-bottom: 2.5px solid #1a75ff;
+    border-bottom: .4vh solid #1a75ff;
     display: flex;
     justify-content: center;
 }
 
 .create-function-title-style{
     color: #1a75ff;
-    font-size: 20px;
     font-weight: bold;
-    padding-top: 8px;
+    padding-top: 1vh;
+    font-size: 3vh;
+    padding-left: 1vh;
 }
 
 .return-function-form-container{
@@ -41,42 +42,40 @@ html, body, #root, .App {
 }
 
 .code-input{
-    height: 225px;
-    width: 550px;
+    height: 30vh;
+    width: 90vh;
     background-color: white;
-    border: 2px solid #1a75ff;
-    border-radius: 5px;
-    margin-top: 20px;
-    margin-left: 30px;
+    border: 0.25vh solid #1a75ff;
+    border-radius: .6vh;
+    margin-top: 2vh;
+    margin-left: 3vh;
 }
 
 .code-input-shift{
-    margin-top: 5px;
-    margin-left: 5px;
+    margin-top: 0.5vh;
+    margin-left: 0.5vh
 }
 
 .code-input-style{
     color: black;
-    font-size: 15px;
+    font-size: 2vh;
     font-weight: 400;
 }
 
 .functions-input-container{
     display: flex;
-    width: 225px;
-    margin-top: 20px;
+    margin-top: 5%;
 }
 
 .code-unsafe-addon-button-style{
-
-    width: 180px;
-    margin-left: 25px;
-    height: 45px;
+    width: 24vh;
+    margin-left: 10%;
+    height: 6vh;
     background-color: white;
     vertical-align: middle;
-    border-width: 2px;
+    border-width: 0.25vh;
     border-color: #1a75ff;
-    border-radius: 5px;
+    border-radius: 0.5vh;
     position: relative;
     text-align: center;
     -webkit-transition-duration: 0.4s;
@@ -84,7 +83,7 @@ html, body, #root, .App {
     text-decoration: none;
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 3px 3px rgb(202, 202, 202);
+    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
 }
 
 .code-unsafe-addon-button-style:focus{
@@ -114,7 +113,7 @@ html, body, #root, .App {
 
 .param-lv-input-container{
     display: flex;
-    margin-top: 45px;
+    margin-top: 5%;
 }
 
 .add-unsafe-func-button-container{
@@ -160,33 +159,30 @@ html, body, #root, .App {
 
 .add-additional-func-call-button-text{
     color:#1a75ff;
-    font-size: 13px;
+    font-size: 1.6vh;
     font-weight: bold;
     text-align: center;
     margin-top: 5px;
 }
 
 .code-addon-button-style{
-
-    width: 180px;
-    margin-left: 25px;
-    height: 45px;
-    margin-top: 15px;
+    width: 24vh;
+    margin-left: 10%;
+    height: 6vh;
+    margin-top: 1vh;
     background-color: white;
     vertical-align: middle;
-    border-width: 2px;
+    border-width: 0.25vh;
     border-color: #1a75ff;
-    border-radius: 5px;
+    border-radius: 0.5vh;
     position: relative;
-    font-size: 28px;
-    color: #FFFFFF;
     text-align: center;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     text-decoration: none;
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 3px 3px rgb(202, 202, 202);
+    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
 }
 
 .code-addon-button-style:focus{
@@ -216,10 +212,10 @@ html, body, #root, .App {
 
 .code-addon-button-text-style{
     color: #1a75ff;
-    font-size: 13px;
+    font-size: 1.7vh;
     font-weight: bold;
     text-align: center;
-    margin-top: 7px;
+    margin-top: 0.8vh;
 }
 
 .code-addon-additional-function-name-style{
@@ -243,7 +239,7 @@ html, body, #root, .App {
 
 .code-input-parameter-title-style{
     color: #1a75ff;
-    font-size: 15px;
+    font-size: 2.35vh;
     font-weight: 500;
     margin-top: 10px;
     text-align: center;
@@ -252,10 +248,10 @@ html, body, #root, .App {
 
 .code-input-variable-title-style{
     color: #1a75ff;
-    font-size: 15px;
+    font-size: 2.2vh;
     font-weight: 500;
-    margin-right: 10px;
-    margin-top: 10px;
+    margin-right: 2vh;
+    margin-top: 3vh;
     text-align: center;
     margin-bottom: 30px;
 }
@@ -273,32 +269,29 @@ html, body, #root, .App {
 
 .function-name-container{
     width: 50%;
-    margin-top: 10px;
     margin-left: 40%;
 }
 
 .function-name-input-style{
     outline: none !important;
     outline-offset: none !important;
-    width: 150px;
-    height: 35px;
+    width: 16vh;
     background-color: white;
-    border-bottom: 2px solid #1a75ff;
+    border-bottom: 0.3vh solid #1a75ff;
     border-top: none;
     border-left: none;
     border-right: none;
     color: #1a75ff;
-    margin-left: 20px;
+    font-size: 2vh;
 }
 
 .function-value-input-style{
     outline: none !important;
     outline-offset: none !important;
-    width: 120px;
-    height: 35px;
-    margin-left: 50px;
+    width: 20vh;
+    margin-left: 8%;
     background-color: white;
-    border-bottom: 2px solid #1a75ff;
+    border-bottom: 0.3vh solid #1a75ff;
     border-top: none;
     border-left: none;
     border-right: none;
@@ -313,22 +306,24 @@ html, body, #root, .App {
 .input:focus {outline:none;}
 
 .add-value-button-style{
+    color: #1a75ff;
+    font-size: 1.7vh;
+    font-weight: bold;
     position: relative;
     background-color: white;
-    border-radius: 5px;
-    border-width: 2px;
+    border-radius: 0.5vh;
+    border-width: 0.25vh;
     border-color: #1a75ff;
-    color: #FFFFFF;
-    width: 140px;
-    height: 36px;
+    width: 20vh;
+    height: 5.3vh;
     text-align: center;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     text-decoration: none;
     overflow: hidden;
     cursor: pointer;
-    margin-left: 75px;
-    box-shadow: 3px 3px rgb(202, 202, 202);
+    margin-left: 10vh;
+    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
 
 }
 
@@ -357,18 +352,11 @@ html, body, #root, .App {
     transition: 0s
 }
 
-.add-value-button-text-style{
-    color: #1a75ff;
-    font-size: 13px;
-    margin-top: 6px;
-    font-weight: bold;
-}
-
 .add-to-program-button-style{
-    width: 180px;
-    margin-left: 25px;
-    height: 45px;
-    margin-top: 15px;
+    width: 24vh;
+    margin-left: 2%;
+    height: 6vh;
+    margin-top: 1vh;
     background-color: #1a75ff;
     vertical-align: middle;
     border-width: 1.5px;
@@ -413,43 +401,43 @@ html, body, #root, .App {
 
 .add-to-program-button-text-style{
     color:white;
-    font-size: 13px;
+    font-size: 2vh;
     font-weight: bold;
     text-align: center;
     margin-top: 7px;
 }
 
-.program-code-text-style{
-    font-size: 14px;
+.program-code-text-style-functions{
+    font-size: 1.7vh;
     font-weight: 400;
 }
 
 .program-code-container{
-    width: 450px;
-    height: 550px;
-    background-color: white;
-    border-radius: 5px;
+    width: 60vh;
+    height: 70vh;
 }
 
 .program-name-text-intro-style{
     color: #1a75ff;
-    font-size: 19px;
+    font-size: 3vh;
     text-align: center;
     font-weight: bold;
-    padding-top: 8px;
-    padding-right: 20px;
+    padding-right: 18vh;
+    padding-top: 0.9vh;
 }
 
 .program-name-intro-container{
-    border-bottom: 2px solid #1a75ff;
+    border-bottom: 0.35vh solid #1a75ff;
 }
 
 .view-stack-button{
-    margin-bottom: 10px;
-    border-radius: 5px;
+    margin-left: 1%;
+    margin-bottom: 2%;
+    border-radius: 0.35vh;
+    height: 4.3vh;
     background-color: white;
     vertical-align: middle;
-    border-width: 2px;
+    border-width: 0.35vh;
     border-color: #1a75ff;
     position: relative;
     font-weight: bold;
@@ -488,7 +476,7 @@ html, body, #root, .App {
 }
 
 .code-input-title-container{
-    width: 120px;
+    width: 25vh;
 }
 
 .unsafe-functions-container{
@@ -508,10 +496,8 @@ html, body, #root, .App {
 
 .param-lv-title-style{
     color: #1a75ff;
-    font-size: 13px;
+    font-size: 1.6vh;
     font-weight: bold;
-    height: 10px;
-    margin-top: 5px;
 }
 
 .strcpy-param-dropdown-container{
@@ -529,7 +515,7 @@ html, body, #root, .App {
 
 .error-input-text-style{
     color: red;
-    font-size: 13px;
+    font-size: 1.9vh;
     font-weight: bold;
     margin-bottom: 5px;
 }
@@ -555,8 +541,9 @@ html, body, #root, .App {
 }
 
 .dropdown-params-lv{
-    margin-left: 50px;
-    width: 100px;
+    margin-left: 2%;
+    width: 10%;
+    height: 5%;
 }
 
 .marginT-15-marginLeft-20{
@@ -565,16 +552,12 @@ html, body, #root, .App {
 }
 
 .main-spacer{
-    margin-left: 50px;
+    margin-left: 3%;
 }
 
 .program-functions{
-    margin-top: 5px;
-    margin-left: 5px;
-}
-
-.addon-container{
-    margin-left: 3%;
+    margin-top: 0.5%;
+    margin-left: 0.5%;
 }
 
 .margin-left-7{
@@ -591,38 +574,35 @@ html, body, #root, .App {
     margin: auto;
 }
 
-.activity-button-container{
-    display: flex;
-    padding-top: 3px;
-}
-
 .activity-button-text{
     color: #1a75ff;
-    font-size: 18px;
+    font-size: 1.7vh;
     font-weight: bold;
-    padding-top: 2px;
+    padding-top: 0.6vh;
 }
 
 .clear-button{
-    height: 30px;
-    width: 70px;
-    border-radius: 5px;
+    height: 5vh;
+    width: 13vh;
+    border-radius: 0.5vh;
     background-color: white;
-    border: 2px solid #1a75ff;
-    font-size: 15px;
+    border: 0.35vh solid #1a75ff;
+    font-size: 2.2vh;
     color: #1a75ff;
     margin-left: 45%;
+    font-weight: bold;
 }
 
-.instruction-step{
-    width: 40px;
-    height: 40px;
-    border-radius: 20px;
+.instruction-step-functions{
+    width: 5vh;
+    height: 5vh;
+    border-radius: 2.5vh;
     background-color: #ff4d4d;
-    align-items: center;
+    color: white;
     display: flex;
     justify-content: center;
-    color: white;
+    align-items: center;
+    font-size: 3vh;
 }
 
 

@@ -104,7 +104,8 @@ class Functions extends Component {
       additionalFunctionCalls: [],
       strcpyParamError: "",
       functionNameError: "",
-      addFunctionError: ""
+      addFunctionError: "",
+      width: window.innerWidth
     }
   }
 
@@ -794,7 +795,7 @@ class Functions extends Component {
             onChange={this.updateFunctionName}
             className="function-name-input-style"
           />
-          <h1 style={{marginLeft:20}} className="param-lv-title-style">Function Name</h1>
+          <h1 className="param-lv-title-style">Function Name</h1>
           </div>
         </div>
 
@@ -830,12 +831,10 @@ class Functions extends Component {
               onChange={this.updateParameterValue}
               className="function-value-input-style"
             />
-            <h1 style={{marginLeft:50}} className="param-lv-title-style">Value</h1>
+            <h1 style={{marginLeft:"8%"}} className="param-lv-title-style">Value</h1>
           </div>
           <div>
-            <button className="add-value-button-style" onClick={this.addParameter}>
-              <h1 className="add-value-button-text-style">Add Parameter</h1>
-            </button>
+            <button className="add-value-button-style" onClick={this.addParameter}>Add Parameter</button>
           </div> 
         </div>
 
@@ -873,13 +872,11 @@ class Functions extends Component {
               onChange={this.updateLocalVariableValue}
               className="function-value-input-style"
             />
-            <h1 style={{marginLeft:50}} className="param-lv-title-style">Value</h1>
+            <h1 style={{marginLeft:"8%"}} className="param-lv-title-style">Value</h1>
           </div>
 
           <div>
-            <button className="add-value-button-style" onClick={this.addLocalVariable}>
-              <h1 className="add-value-button-text-style">Add Variable</h1>
-            </button>
+            <button className="add-value-button-style" onClick={this.addLocalVariable}>Add Variable</button>
           </div>
 
         </div>
@@ -968,7 +965,7 @@ class Functions extends Component {
                   {this.returnParameters()}
                 </div>
               </div>
-              <div className="margin-left-7">
+              <div style={{marginLeft: '1%'}}>
                 {this.returnLocalVariables()}
                 {this.returnUnsafeFunctions()}
                 {this.returAdditionalFunctionCalls()}
@@ -976,13 +973,13 @@ class Functions extends Component {
               <h1 className="code-input-style">{"}"}</h1>
             </div>
           </div>
-          <div className="addon-container">
-            <div style={{marginLeft: 40}}>
+          <div style={{marginLeft: "3%"}}>
+            <div style={{marginLeft: "10%"}}>
 
               <div className="functions-input-container">
                   <button className="code-unsafe-addon-button-style"  onClick={this.displayAddUnsafeFunction}>
                     <div style = {{display:'flex'}}>
-                      <GiHazardSign color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 10, marginLeft:5}}/>
+                      <GiHazardSign color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"0.5%"}}/>
                       <h1 className="code-addon-button-text-style">Unsafe Functions</h1>
                     </div>           
                   </button> 
@@ -990,7 +987,7 @@ class Functions extends Component {
               {!this.state.userInputBool && (
                 <button button className="code-addon-button-style" onClick={this.addUserInput}>
                   <div style = {{display:'flex'}}>
-                    <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:5}}/>
+                    <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
                     <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
                   </div>           
                 </button>
@@ -999,7 +996,7 @@ class Functions extends Component {
                 
                 <button className="code-addon-button-style" onClick={this.removeUserInput}>
                   <div style = {{display:'flex'}}>
-                    <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:4, marginRight: 8, marginLeft:8}}/>
+                    <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
                     <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
                   </div>           
                 </button>
@@ -1007,20 +1004,20 @@ class Functions extends Component {
               <div>
                 <button className="code-addon-button-style" onClick={() => this.displayAdditionalFunctionCallOptions()}>
                   <div style = {{display:'flex'}}>
-                    <AiOutlinePlus color={"#1a75ff"} size={20} style={{marginTop:8}}/>
+                    <AiOutlinePlus color={"#1a75ff"} size={20} style={{marginTop:"6%"}}/>
                     <h1 className="code-addon-button-text-style">Call Another Function</h1>
                   </div>
                 </button>
               </div>
             </div>
             <div style={{display: 'flex'}}>
-              <div style={{paddingTop: 18}}>
-                <div className="instruction-step">2</div>
+              <div style={{paddingTop: "2%"}}>
+                <div className="instruction-step-functions">2</div>
               </div>
               <button className="add-to-program-button-style" onClick={this.addFunctionToProgram}>
                 <div style = {{display:'flex'}}>
-                  <AiFillFileAdd color={"white"} size={20} style={{marginTop:5, marginRight:9, marginLeft: 3}}/>
-                  <h1 style={{marginLeft: 8}} className="add-to-program-button-text-style">Add to intro.c</h1>
+                  <AiFillFileAdd color={"white"} size={20} style={{marginTop:"4%", marginRight:"2%", marginLeft: "0.5%"}}/>
+                  <h1 style={{marginLeft: "5%", marginTop: "5%"}} className="add-to-program-button-text-style">Add to intro.c</h1>
                 </div>
               </button>
             </div>
@@ -1037,17 +1034,17 @@ class Functions extends Component {
     stackFrame.mainLocalVariables.map((variable) =>{
       if(variable.type === "char[]"){
         localVariables.push(
-          <h1 className="program-code-text-style">char {variable.name}[] = "{variable.value}"; </h1>
+          <h1 className="program-code-text-style-functions">char {variable.name}[] = "{variable.value}"; </h1>
         )
       }
       else if(variable.type === "int" || variable.type === "float"){
         localVariables.push(
-          <h1 className="program-code-text-style">{variable.type} {variable.name} = {variable.value}; </h1>
+          <h1 className="program-code-text-style-functions">{variable.type} {variable.name} = {variable.value}; </h1>
         )
       }
       else{
         localVariables.push(
-          <h1 className="program-code-text-style">{variable.type} {variable.name} = "{variable.value}"; </h1>
+          <h1 className="program-code-text-style-functions">{variable.type} {variable.name} = "{variable.value}"; </h1>
         )
       }
     })
@@ -1059,7 +1056,7 @@ class Functions extends Component {
     return(
       stackFrame.unsafeFunctions.map((func) =>
         <div>
-          <h1 className="program-code-text-style"> strcpy({func.param1Name}, {func.param2Name});</h1>
+          <h1 className="program-code-text-style-functions"> strcpy({func.param1Name}, {func.param2Name});</h1>
         </div>
       )
     )
@@ -1069,7 +1066,7 @@ class Functions extends Component {
     return(
       stackFrame.additionalFunctionCalls.map((func) =>
         <div>
-          <h1 className="program-code-text-style"> {func}</h1>
+          <h1 className="program-code-text-style-functions"> {func}</h1>
         </div>
       )
     )
@@ -1079,7 +1076,7 @@ class Functions extends Component {
     return(
       this.state.stackFrameDataArray.map((stackFrame) => 
         <div>
-          <h1 className="program-code-text-style">{stackFrame.functionName}({stackFrame.unmodifiedParams});</h1>
+          <h1 className="program-code-text-style-functions">{stackFrame.functionName}({stackFrame.unmodifiedParams});</h1>
         </div>
       )
     )
@@ -1090,17 +1087,17 @@ class Functions extends Component {
       this.state.stackFrameDataArray.map((stackFrame) =>
       <div className="program-functions">
         <div className="functions-flex">
-          <h1 className="program-code-text-style">void {stackFrame.functionName} </h1>
+          <h1 className="program-code-text-style-functions">void {stackFrame.functionName} </h1>
           <div className="functions-flex">
-            <h1 className="program-code-text-style">({stackFrame.localFuncParams}){"{"}</h1>
+            <h1 className="program-code-text-style-functions">({stackFrame.localFuncParams}){"{"}</h1>
           </div>
         </div>
-        <div className="margin-left-7">
+        <div style={{marginLeft: '1%'}}>
           {this.returnProgramFunctionsLocalVariables(stackFrame)}
           {this.returnUnsafeFunctionsMain(stackFrame)}
           {this.returnProgramFunctionsAdditionalFuncCalls(stackFrame)}
         </div>
-        <h1 className="program-code-text-style">{"}"}</h1>
+        <h1 className="program-code-text-style-functions">{"}"}</h1>
       </div>
       )
     )
@@ -1128,29 +1125,19 @@ class Functions extends Component {
               <div style={{display: 'flex'}}>
                 <h1 className="program-name-text-intro-style">intro.c</h1>
                 <div style={{display: 'flex'}}>
-                  <div style={{paddingRight: 10}}>
-                    <div className="instruction-step">3</div>
-                  </div>
-                  <button className="view-stack-button" onClick={() => this.onClick()}>
-                    <div className="activity-button-container">
-                      <h1 className="activity-button-text">Stack</h1>
-                      <div style={{paddingLeft: 5}}>
-                        <AiOutlineArrowRight color={"#1a75ff"} size={25}/>
-                      </div>
-                    </div>
-                  </button>
+                  <div className="instruction-step-functions">3</div>
                 </div>
               </div>
             </div>
           </div>
           <div className="code-lines-spacer">
-            <h1 className="program-code-text-style">{"#include <stdio.h>"}</h1>
-            <h1 className="program-code-text-style">{"#include <string.h>"}</h1>
-            <h1 className="program-code-text-style">int main( int argc, char* argv[])</h1>
+            <h1 className="program-code-text-style-functions">{"#include <stdio.h>"}</h1>
+            <h1 className="program-code-text-style-functions">{"#include <string.h>"}</h1>
+            <h1 className="program-code-text-style-functions">int main( int argc, char* argv[])</h1>
             <div className="margin-left-7">
               {this.returnMainFunctionCalls()}
             </div>
-            <h1 className="program-code-text-style">{"}"}</h1>
+            <h1 className="program-code-text-style-functions">{"}"}</h1>
           </div>
           {this.returnFunctions()}
         </div>
@@ -1163,13 +1150,13 @@ class Functions extends Component {
 
   render() {
     return (
-      <div className = "functions-container">
+      <div className ="functions-container">
         <div className="main-container">
-          <div className="create-function-container">
+          <div  className="create-function-container">
             <div className="create-function-title-container">
-              <div style={{display: 'flex', marginBottom: 5}}>
-                <div style={{paddingRight: 20}}>
-                  <div className="instruction-step">1</div>
+              <div style={{display: 'flex'}}>
+                <div>
+                  <div className="instruction-step-functions">1</div>
                 </div>
                 <h1 className="create-function-title-style">Create a function</h1>
               </div>
@@ -1182,6 +1169,14 @@ class Functions extends Component {
           <div className="main-spacer">
             {this.returnProgram()}
           </div>
+          <button className="view-stack-button" onClick={() => this.onClick()}>
+            <div style={{display: 'flex'}}>
+              <h1 className="activity-button-text">Stack</h1>
+              <div style={{marginLeft: '10%'}}>
+                <AiOutlineArrowRight color={"#1a75ff"} size={16}/>
+              </div>
+            </div>
+          </button>
         </div>
       </div>
     );

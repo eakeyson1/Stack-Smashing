@@ -5,27 +5,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
   font-family: "Roboto Mono";
 }
 
 .start-btn {
   width: 50vh;
-  border: 1px solid #1a75ff;
+  height: 6vh;
+  border: 0.25vh solid #1a75ff;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 1vh;
+  color: #1a75ff;
+  font-size: 3vmin;
 }
 
 .start-page-header-text{
   color: #1a75ff;
+  font-size: 5vmin;
 }
 
 .start-page-sub-header-text{
   color: #1a75ff;
-}
-
-.start-button-text{
-  font-size: 20px;
-  color: #1a75ff;
+  font-size: 3vmin;
 }
