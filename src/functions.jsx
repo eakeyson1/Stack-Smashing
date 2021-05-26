@@ -10,6 +10,11 @@ import { AiOutlineMinus } from "react-icons/ai";
 import { AiFillFileAdd } from "react-icons/ai";
 import { GiHazardSign } from "react-icons/gi";
 import { BiUserPlus } from "react-icons/bi";
+import { BsInfoCircle } from "react-icons/bs"
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
+
+import pointerPhoto from "./images/pointer.PNG"
 
 
 
@@ -56,6 +61,9 @@ class Functions extends Component {
     this.isInt = this.isInt.bind(this)
     this.onClick = this.onClick.bind(this)
     this.clearProgram = this.clearProgram.bind(this)
+    this.unsafeFunctions = this.unsafeFunctions.bind(this)
+    this.passArgvOne = this.passArgvOne.bind(this)
+    this.additionalFunctionCalls = this.additionalFunctionCalls.bind(this)
 
 
     this.state = {
@@ -886,6 +894,24 @@ class Functions extends Component {
     )
   }
 
+  unsafeFunctions = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Add an unsafe C function, such as strcpy, to function
+    </Tooltip>
+  );
+
+  passArgvOne = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      This will pass argv[1] as a parameter to the function with type: char[] (Array) and name of "userInput"
+    </Tooltip>
+  );
+
+  additionalFunctionCalls = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Call another function that has been previously added to intro.c
+    </Tooltip>
+  );
+
   returnFunctionForm(){
     const parameterOptions = ["char", "int", "float", "char[]"]
     const localVariableOptions = ["char", "int", "float", "char[]"]
@@ -983,31 +1009,47 @@ class Functions extends Component {
                       <h1 className="code-addon-button-text-style">Unsafe Functions</h1>
                     </div>           
                   </button> 
+                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.unsafeFunctions}>
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
               </div>
               {!this.state.userInputBool && (
-                <button button className="code-addon-button-style" onClick={this.addUserInput}>
-                  <div style = {{display:'flex'}}>
-                    <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
-                    <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
-                  </div>           
-                </button>
+                <div style={{display: 'flex'}}>
+                  <button button className="code-addon-button-style" onClick={this.addUserInput}>
+                    <div style = {{display:'flex'}}>
+                      <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
+                      <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
+                    </div>           
+                  </button>
+                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
+                </div>
               )}
               {this.state.userInputBool && (
-                
-                <button className="code-addon-button-style" onClick={this.removeUserInput}>
-                  <div style = {{display:'flex'}}>
-                    <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
-                    <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
-                  </div>           
-                </button>
+                <div style={{display: 'flex'}}>
+                  <button className="code-addon-button-style" onClick={this.removeUserInput}>
+                    <div style = {{display:'flex'}}>
+                      <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
+                      <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
+                    </div>           
+                  </button>
+                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
+                </div>
+
               )}
-              <div>
+              <div style={{display: 'flex'}}>
                 <button className="code-addon-button-style" onClick={() => this.displayAdditionalFunctionCallOptions()}>
                   <div style = {{display:'flex'}}>
                     <AiOutlinePlus color={"#1a75ff"} size={20} style={{marginTop:"6%"}}/>
                     <h1 className="code-addon-button-text-style">Call Another Function</h1>
                   </div>
                 </button>
+                <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.additionalFunctionCalls}>
+                  <BsInfoCircle color={"#1a75ff"} size={20}/>
+                </OverlayTrigger>
               </div>
             </div>
             <div style={{display: 'flex'}}>
@@ -1166,6 +1208,7 @@ class Functions extends Component {
               {this.returnFunctionForm()}
             </div>
           </div>
+          <img className="pointer-image" src={pointerPhoto} alt="Pointer" />
           <div className="main-spacer">
             {this.returnProgram()}
           </div>

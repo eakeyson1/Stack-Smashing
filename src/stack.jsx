@@ -9,8 +9,28 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { BsInfoCircle } from "react-icons/bs"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-import Button from 'react-bootstrap/Button'
+import { Loading } from 'react-loading-dot'
 
+
+const Dots = styled.span`
+  &::after {
+    display: inline-block;
+    animation: ellipsis 1.25s infinite;
+    content: ".";
+    width: 1em;
+    text-align: left;
+  }
+  @keyframes ellipsis {
+    0% {
+      content: ".";
+    }
+    33% {
+      content: "..";
+    }
+    66% {
+      content: "...";
+    }
+  }`
 
 /**
  * The stack smashing page of the application.
@@ -32,6 +52,7 @@ class Stack extends Component {
     this.returnProgram = this.returnProgram.bind(this)
     this.returnMainStackParams = this.returnMainStackParams.bind(this)
     this.returnArgvOne = this.returnArgvOne.bind(this)
+    this.returnMaliciousExecutionStatus = this.returnMaliciousExecutionStatus.bind(this)
     this.openStackFrame = this.openStackFrame.bind(this)
     this.closeStackFrame = this.closeStackFrame.bind(this)
     this.goBack = this.goBack.bind(this)
@@ -47,8 +68,8 @@ class Stack extends Component {
       displayAddFrame: false,
       displayFinishButton: false,
       displayNextButton: false,
-      displayMaliciousExecution: false,
-      displayFailedMaliciousExecution: false,
+      maliciousExecutionBool: false,
+      maliciousExecution: "Starting",
       running: false,
       stackFrameDataArray:[],
       stackFrameRunningFunctions: [],
@@ -461,8 +482,7 @@ class Stack extends Component {
       argvOne: argvOne,
       endParametersAddress: endParametersAddress,
       stackFrameDataArray: stackDataArr,
-      displayMaliciousExecution: false,
-      displayFailedMaliciousExecution: false,
+      maliciousExecution: "Running"
     })
   }
 
@@ -3099,11 +3119,13 @@ class Stack extends Component {
   programFinish(){
 
     if(this.state.malFuncNameArr.length !== 0){
-      this.setState({displayMaliciousExecution: true})
+      this.setState({maliciousExecution: "Successful", maliciousExecutionBool: true})
     }
     else{
-      this.setState({displayFailedMaliciousExecution: true})
+      this.setState({maliciousExecution: "Unsuccessful"})
     }
+    setTimeout(() => { this.setState({maliciousExecution: "Starting"}) }, 15000);
+
 
     this.setState({
       stackFrameRunningFunctions: [], 
@@ -3277,84 +3299,12 @@ class Stack extends Component {
           </div>
         )}
         {stackFrame.strcpy && (
-            <div>
-              {stackFrame.displayStackFrame && (
-                <div>
-                  <button className="stack-frame-open-button-strcpy" onClick={() => this.closeStackFrame(stackFrame.functionName)}>
-                    <div style={{display: 'flex'}}>
-                      <div style={{marginLeft: "35%", width: '30%'}}>
-                        <h1 className="stack-frame-button-text">{stackFrame.functionName}()</h1>
-                      </div>
-                      <div style={{marginLeft: "24%"}}>
-                        <RiArrowDropDownLine size={45} color={"white"}/>
-                      </div>
-                    </div>
-                  </button>
-
-                <div className="stack-frame-container">
-                  {stackFrame.parametersLetterArray.map((param) =>
-                    <div className="stack-frame-param-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{param}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>                
-                  )}
-                  {stackFrame.returnAddressArr.map((ra) =>
-                    <div className="return-address-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{ra}</h1>
-                        </div>
-                        <div className="center">
-                        <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>                
-                  )}
-                  {stackFrame.sfpArr.map((sfp) =>
-                    <div className="saved-frame-pointer-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{sfp}</h1>
-                        </div>
-                        <div className="center">
-                        <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {stackFrame.localVariablesLetterArray.map((variable) => 
-                    <div className="stack-frame-variable-container">
-                      <div className="main-stack-second-container">
-                        <div className="main-stack-value-container">
-                          <h1 className="main-stack-param-text">{variable}</h1>
-                        </div>
-                        <div className="center">
-                          <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-            {!stackFrame.displayStackFrame && (
-              <button className="stack-frame-open-button-strcpy" onClick={() => this.openStackFrame(stackFrame.functionName)}>
-                <div style={{display: 'flex'}}>
-                  <div style={{marginLeft: "35%", width: '30%'}}>
-                    <h1 className="stack-frame-button-text">{stackFrame.functionName}()</h1>
-                  </div>
-                  <div style={{marginLeft: "16%"}}>
-                    <RiArrowDropRightLine size={45} color={"white"}/>
-                  </div>
+          <div>
+            <button className="stack-frame-open-button-strcpy" onClick={() => this.closeStackFrame(stackFrame.functionName)}>
+                <div className="center-div">
+                  <h1 className="stack-frame-button-text-strcpy">{stackFrame.functionName}()</h1>
                 </div>
             </button>
-            )}
           </div>
         )}
       </div>
@@ -3513,7 +3463,16 @@ class Stack extends Component {
 
   goBack(){
     this.props.goBack()
-    this.programFinish()
+
+    this.setState({
+      stackFrameRunningFunctions: [], 
+      running:false, 
+      displayFinishButton: false,
+      stepProgramClickNumber: 0,
+      stackFrameDataArray: [],
+      malExeMessage: "",
+      mainStackOpen: false,
+    })
   }
 
   nopSledDef = (props) => (
@@ -3533,6 +3492,49 @@ class Stack extends Component {
       The address the function will return to once execution has ended
     </Tooltip>
   );
+
+  returnMaliciousExecutionStatus(){
+    if(this.state.maliciousExecution === "Starting"){
+      return(
+        <h1 className="malicious-execution-text">Starting</h1>
+      )
+    }
+
+    if(this.state.maliciousExecution === "Successful"){
+      return(
+        <div>
+          <h1 className="malicious-execution-text">Successful</h1>
+          {this.state.malFuncNameArr.map((name) => 
+            <h1 className="malicious-execution-text">{name}</h1>
+          )}
+        </div>
+      )
+    }
+
+    if(this.state.maliciousExecution === "Unsuccessful"){
+      return(
+        <h1 className="malicious-execution-unsuccessful-text">Unsuccessful</h1>
+      )
+    }
+
+    if(this.state.displayFinishButton){
+      return(
+      <div style={{display: 'flex'}}>
+        <h1 className="malicious-execution-text-running">{this.state.maliciousExecution}</h1>
+        <Dots/>         
+      </div> 
+      )
+    }
+
+    if(this.state.running && !this.state.displayFinishButton){
+      return(
+        <div style={{display: 'flex'}}>
+          <h1 className="malicious-execution-text-running">{this.state.maliciousExecution}</h1>
+          <Dots/>         
+        </div> 
+      )
+    }
+  }
   
 
   render() {
@@ -3685,7 +3687,7 @@ class Stack extends Component {
             <div className="center-div">
               <div style={{display: 'flex'}}>
                 <div className="instruction-step">4</div>
-                <div className="center-div">
+                <div className="construct-payload-title-container">
                   <h1 className="construct-payload-text">Construct Payload</h1>
                 </div>
               </div>
@@ -3709,7 +3711,8 @@ class Stack extends Component {
                 <div>
                   <h1 className="hints-title">Hints</h1>
                   <h1 className="hints">- Should only contain \x90</h1>
-                  <h1 className="hints">- More occurances leads to higher chance on overwrritten return address landing where intended </h1>
+                  <h1 className="hints">- Consider the space occupied by the local variables</h1>
+                  <h1 className="hints">- Return Address and Saved Frame Pointer occupy 4 bytes</h1>
                 </div>
                 <input
                   value={this.state.nopSled}
@@ -3723,9 +3726,10 @@ class Stack extends Component {
             <div className="construct-payload-part-container">
               <div className="instruction-sub-step">4.2</div>
               <div style={{width: '80%', marginLeft: "3%"}}>
-                <div style={{display: 'flex'}}>
-                  <h1 className="construct-payload-sub-text">Construct Shellcode</h1>
-                  <OverlayTrigger
+                <div style={{display: 'flex', marginTop: "2%"}}>
+                  <div style={{marginRight: "2%"}}>
+                    <h1 className="construct-payload-sub-text">Construct Shellcode</h1>
+                  </div>                  <OverlayTrigger
                       placement="right"
                       delay={{ show: 250, hide: 400 }}
                       overlay={this.shellcodeDef}
@@ -3750,8 +3754,10 @@ class Stack extends Component {
             <div className="construct-payload-part-container">
               <div className="instruction-sub-step">4.3</div>
               <div style={{width: '80%', marginLeft: "3%"}}>
-                <div style={{display: 'flex'}}>
-                  <h1 className="construct-payload-sub-text">Construct Return Address</h1>
+                <div style={{display: 'flex', marginTop: "0.75%"}}>
+                  <div style={{marginRight: "2%"}}>
+                    <h1 className="construct-payload-sub-text">Construct Return Address</h1>
+                  </div>
                   <OverlayTrigger
                       placement="right"
                       delay={{ show: 250, hide: 400 }}
@@ -3764,6 +3770,7 @@ class Stack extends Component {
                   <h1 className="hints-title">Hints</h1>
                   <h1 className="hints">- Any address that contains a NOP from our payload</h1>
                   <h1 className="hints">- Little endian based CPU</h1>
+                  <h1 className="hints">- Repeating occurances of address increases attack success probability </h1>
                 </div>
                 <input
                   value={this.state.returnAddress}
@@ -3778,60 +3785,87 @@ class Stack extends Component {
           <div className="second-main-container">
             {!this.state.running && (
               <div>
-                <div className="flex">
-                  <button className="run-program-button" onClick={this.startProgram}>Run</button>
-                  <div className="exe-code-container">
-                    <div style={{display: 'flex'}}>
-                      <h1 className="exe-code-text">./intro </h1>
-                      <h1 className="exe-code-text">{this.state.nopSled}</h1>
-                      <h1 className="exe-code-text">{this.state.shellcode}</h1>
-                      <h1 className="exe-code-text">{this.state.returnAddress}</h1>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                  <div className="instruction-step">5</div>
+                  <div className="run-program-button-container">
+                    <button className="run-program-button" onClick={this.startProgram}>Run</button>
+                  </div>
+                </div>
+                <div>
+                  <div className="stack-smashing-status-container">
+                    <div style={{display: 'flex', marginTop: '1%'}}>
+                      <div className="stack-smashing-status-title-container">
+                        <h1 className="malicious-execution-title-text">Attack Status:</h1>
+                      </div>
+                      {this.returnMaliciousExecutionStatus()}                   
                     </div>
+                  </div>
+                </div>
+                <div class="scrollmenu">
+                  <div style={{display: 'flex', marginBottom: '2%'}}>
+                    <div style={{marginRight: '1%'}} className="exe-code-text">./intro </div>
+                    <div className="exe-code-text">{this.state.nopSled}</div>
+                    <div className="exe-code-text">{this.state.shellcode}</div>
+                    <div className="exe-code-text">{this.state.returnAddress}</div>
                   </div>
                 </div>
               </div>
             )}
             {this.state.running && !this.state.displayFinishButton && (
               <div>
-                <div className="flex">
-                  <div>
-                    <div className="exe-code-container">
-                      <h1 className="exe-code-text">./intro</h1>
-                    </div>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                  <div className="instruction-step">5</div>
+                  <div className="run-program-button-container">
                     <button className="next-button" onClick={this.programNext}>Next</button>
                   </div>
-                  <div style = {{width: "65%"}}>
-                    <h1 className="user-input-static-text">{this.state.nopSled} {this.state.shellcode} {this.state.returnAddress}</h1>
+                </div>
+                <div>
+                  <div className="stack-smashing-status-container">
+                    <div style={{display: 'flex', marginTop: '1%'}}>
+                      <div className="stack-smashing-status-title-container">
+                        <h1 className="malicious-execution-title-text">Attack Status:</h1>
+                      </div>
+                      {this.returnMaliciousExecutionStatus()}                   
+                                
+                    </div>
+                  </div>
+                </div>
+                <div class="scrollmenu">
+                  <div style={{display: 'flex', marginBottom: '2%'}}>
+                    <div style={{marginRight: '1%'}} className="exe-code-text">./intro </div>
+                    <div className="exe-code-text">{this.state.nopSled}</div>
+                    <div className="exe-code-text">{this.state.shellcode}</div>
+                    <div className="exe-code-text">{this.state.returnAddress}</div>
                   </div>
                 </div>
               </div>
             )}
             {this.state.displayFinishButton && (
               <div>
-                <div className="flex">
-                  <div>
-                    <div className="exe-code-container">
-                      <h1 className="exe-code-text">./intro</h1>
-                    </div>
+                <div style={{display: 'flex', justifyContent: 'center'}}>
+                  <div className="instruction-step">5</div>
+                  <div className="run-program-button-container">
                     <button className="pop-main-button" onClick={this.programFinish}>Pop main()</button>
                   </div>
-                  <div style = {{width: "65%"}}>
-                    <h1 className="user-input-static-text">{this.state.nopSled} {this.state.shellcode} {this.state.returnAddress}</h1>
+                </div>
+                <div>
+                  <div className="stack-smashing-status-container">
+                    <div style={{display: 'flex', marginTop: '1%'}}>
+                      <div className="stack-smashing-status-title-container">
+                        <h1 className="malicious-execution-title-text">Attack Status:</h1>
+                      </div>
+                      {this.returnMaliciousExecutionStatus()}                   
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-            {this.state.displayMaliciousExecution && (
-              <div>
-                <h1 className="malicious-execution-title-text">Stack Smashing Attack Successful</h1>
-                {this.state.malFuncNameArr.map((name) => 
-                  <h1 className="malicious-execution-text">{name}</h1>
-                )}
-              </div>
-            )}
-            {this.state.displayFailedMaliciousExecution && (
-              <div>
-                <h1 className="malicious-execution-failed-title-text">Stack Smashing Attack Unsuccessful</h1>
+                <div class="scrollmenu">
+                  <div style={{display: 'flex', marginBottom: '2%'}}>
+                    <div style={{marginRight: '1%'}} className="exe-code-text">./intro </div>
+                    <div className="exe-code-text">{this.state.nopSled}</div>
+                    <div className="exe-code-text">{this.state.shellcode}</div>
+                    <div className="exe-code-text">{this.state.returnAddress}</div>
+                  </div>
+                </div>
               </div>
             )}
             {this.returnProgram()}
