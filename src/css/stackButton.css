@@ -28,10 +28,6 @@
 
 .front {
     position: relative;
-    padding-left: 4.2vh;
-    padding-right: 4.2vh;
-    padding-top: 1vh;
-    padding-bottom: 1vh;
     border-radius: 1vh;
     color: white;
     font-weight: bold;
@@ -77,4 +73,12 @@
 
 .edge-color-orange{
   background-color: #ad5700;
+}
+
+.front-padding-execution-button{
+  padding: 1vh 4.2vh;
+}
+
+.front-padding-back-button{
+  padding: 0.4vh 2vh;
 }

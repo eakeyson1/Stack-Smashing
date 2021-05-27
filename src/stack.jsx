@@ -3548,11 +3548,11 @@ class Stack extends Component {
       <div className="main-stack-frame-container">
         <div className="flex">
           <div className="stack-container">
-            <button class="pushable" onClick={this.goBack}>
+            <button style={{marginTop: '3%'}} class="pushable" onClick={this.goBack}>
               <div class="shadow"></div>
               <div class="edge edge-color-blue"></div>
-              <div class="front front-color-blue">
-                <AiOutlineArrowLeft className="functions-arrow-stack" color={"white"} size={"100%"}/>
+              <div class="front front-color-blue front-padding-back-button">
+                <AiOutlineArrowLeft className="functions-arrow-stack" color={"white"} size={25}/>
               </div>
             </button>
             <div style={{marginLeft: '5%', marginTop: '5%'}}>
@@ -3813,7 +3813,7 @@ class Stack extends Component {
                   <button class="pushable" onClick={this.startProgram}>
                     <div class="shadow"></div>
                     <div class="edge edge-color-green"></div>
-                    <div class="front front-color-green">
+                    <div class="front front-color-green front-padding-execution-button">
                       Start
                     </div>
                   </button>
@@ -3849,7 +3849,7 @@ class Stack extends Component {
                   <button class="pushable" onClick={this.programNext}>
                     <div class="shadow"></div>
                     <div class="edge edge-color-blue"></div>
-                    <div class="front front-color-blue">
+                    <div class="front front-color-blue front-padding-execution-button">
                       Next
                     </div>
                   </button>
@@ -3884,7 +3884,7 @@ class Stack extends Component {
                   <button class="pushable" onClick={this.programFinish}>
                     <div class="shadow"></div>
                     <div class="edge edge-color-orange"></div>
-                    <div class="front front-color-orange">
+                    <div class="front front-color-orange front-padding-execution-button">
                       Finish
                     </div>
                   </button>
