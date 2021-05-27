@@ -1,0 +1,80 @@
+.pushable {
+    position: relative;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.shadow {
+    position: absolute;
+    top: 0.8vh;
+    left: 0;
+    width: 100%;
+    height: 4.92vh;
+    border-radius: 1vh;
+    background: hsl(0deg 0% 0% / 0.25);
+    transform: translateY(0.15vh);
+}
+
+.edge {
+    position: absolute;
+    top: 0.8vh;
+    left: 0;
+    width: 100%;
+    height: 4.85vh;
+    border-radius: 1vh;
+}
+
+.front {
+    position: relative;
+    padding-left: 4.2vh;
+    padding-right: 4.2vh;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    border-radius: 1vh;
+    color: white;
+    font-weight: bold;
+    transform: translateY(-1vh);
+    font-size: 2.8vh;
+}
+
+.pushable:hover .front {
+    transform: translateY(-1.3vh);
+  }
+  .pushable:hover .shadow {
+    transform: translateY(0.3vh);
+  }
+  .pushable:active .front {
+    transform: translateY(-0.25vh);
+  }
+  .pushable:active .shadow {
+    transform: translateY(0.25vh);
+  }
+.pushable:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.front-color-green{
+  background-color: #00e600;
+}
+
+.edge-color-green{
+  background-color: #008a00;
+}
+
+.front-color-blue{
+  background-color: #1a75ff;
+}
+
+.edge-color-blue{
+  background-color: #002e72;
+}
+
+.front-color-orange{
+  background-color: #ff8000;
+}
+
+.edge-color-orange{
+  background-color: #ad5700;
+}

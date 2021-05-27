@@ -557,18 +557,6 @@ html, body, #root, .App {
     font-weight: bold;
 }
 
-.instruction-step-functions{
-    width: 5vh;
-    height: 5vh;
-    border-radius: 2.5vh;
-    background-color: #ff4d4d;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3vh;
-}
-
 .instruction-text{
     color: white;
     font-size: 2.5vh;
@@ -584,8 +572,8 @@ html, body, #root, .App {
     border-radius: 50%;
     position: relative;
     background: radial-gradient(circle at 50% 120%, #ff5d5d 10%, #ff1616 80%, #ff0000 100%);
-  }
-  .instruction-circle:before {
+}
+.instruction-circle:before {
     content: "";
     position: absolute;
     top: 1%;
@@ -596,7 +584,11 @@ html, body, #root, .App {
     background: radial-gradient(circle at 50% 0px, #ffffff, rgba(255, 255, 255, 0) 58%);
     filter: blur(5px);
     z-index: 2;
-  }
+}
+
+.margin-right-5-percent{
+    margin-right: 5%;
+}
 
 .pointer-image{
     height: 66vh;
@@ -666,5 +658,54 @@ html, body, #root, .App {
     height: 0;
     border-bottom: 2vh solid #1a75ff;
     border-right: 2vh solid transparent;
+}
+
+.pointer-to-program-base-green{
+    width: 3vh;
+    height: 1vh;
+    margin-top: 68.75vh;
+    background-color: #00cc3d;
+}
+
+.pointer-to-program-top-green{
+    margin-top: 2.5vh;
+    width: 4vh;
+    height: 1vh;
+    background-color: #00cc3d;
+}
+
+.end-of-pointer-green{
+    background-color: #00cc3d;
+    height: 1vh;
+    width: 20vh;
+    margin-top: 2.5vh;
+}
+
+.pointer-arrow-bottom-green{
+    width: 0;
+    height: 0;
+    border-top: 2vh solid #00cc3d;
+    border-right: 2vh solid transparent;
+}
+
+.pointer-arrow-top-green{
+    width: 0;
+    height: 0;
+    border-bottom: 2vh solid #00cc3d;
+    border-right: 2vh solid transparent;
+}
+
+.pointer-to-program-green{
+    width: 1vh;
+    height: 67.25vh;
+    background-color: #00cc3d;
+    border-bottom-right-radius: 1vh;
+    border-top-left-radius: 1vh;
+    margin-top: 2.5vh;
+}
+
+.hover-button-parent{
+    border: none;
+    background-color: white;
 }
 

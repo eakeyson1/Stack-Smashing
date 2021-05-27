@@ -116,7 +116,8 @@ class Functions extends Component {
       strcpyParamError: "",
       functionNameError: "",
       addFunctionError: "",
-      width: window.innerWidth
+      width: window.innerWidth,
+      hoverAddToProgram: false
     }
   }
 
@@ -953,6 +954,8 @@ class Functions extends Component {
     )
     var funcNameDefault = "Select..."
 
+    console.log(this.state.hoverAddToProgram)
+
     return(
       <div>
         <div className="functions-flex">
@@ -977,77 +980,82 @@ class Functions extends Component {
               <div className="instruction-text">2</div>
             </div>
           </div>
-          <div style={{marginLeft: "1%"}}>
-            <AwesomeButton type="primary" className="add-param-lv-button" onPress={this.displayAddUnsafeFunction} ripple={true}>
-              <div style={{display: 'flex'}}>
-                <div style={{marginTop: '5%'}}>
-                  <GiHazardSign color={"white"} size={21}/>
-                </div>
-                <h1 className="code-addon-button-text-style">Unsafe C Functions</h1>
-                <div style={{marginTop: '1%'}}>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.unsafeFunctions}>
-                    <GoInfo color={"#1a75ff"} size={17}/>
-                  </OverlayTrigger>
-                </div>
-              </div>
-            </AwesomeButton>
-            {!this.state.userInputBool && (
-            <div className="functions-input-container">
-              <AwesomeButton className="add-param-lv-button" onPress={this.addUserInput} ripple={true} type="primary">
-                <div style={{display: 'flex'}}>
-                  <div style={{marginTop: '1%'}}>
-                    <FaUserPlus color={"white"} size={22}/>
-                  </div>
-                  <h1 className="code-addon-button-text-style">Pass argv[1]</h1>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
-                    <GoInfo color={"#1a75ff"} size={17}/>
-                </OverlayTrigger>
-                </div>
-              </AwesomeButton>
-            </div>
-            )}
-            {this.state.userInputBool && (
-              <div className="functions-input-container">
-               <AwesomeButton className="add-param-lv-button" onPress={this.removeUserInput} ripple={true} type="primary">
-                 <div style={{display: 'flex'}}>
-                  <div style={{marginTop: '1%'}}>
-                   <FaUserMinus color={"white"} size={22}/>
-                  </div>
-                  <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
-                    <GoInfo color={"#1a75ff"} size={17}/>
-                  </OverlayTrigger>
-                 </div>
-               </AwesomeButton>
-             </div>
-            )}
-            <div className="functions-input-container">
-              <AwesomeButton className="add-param-lv-button" onPress={this.displayAdditionalFunctionCallOptions} ripple={true} type="primary">
+          <div>
+            <div style={{marginLeft: '3%'}}>
+              <AwesomeButton type="primary" className="add-param-lv-button" onPress={this.displayAddUnsafeFunction} ripple={true}>
                 <div style={{display: 'flex'}}>
                   <div style={{marginTop: '5%'}}>
-                    <TiArrowForward color={"white"} size={22}/>
+                    <GiHazardSign color={"white"} size={21}/>
                   </div>
-                  <h1 className="code-addon-button-text-style">Call Another Function</h1>
+                  <h1 className="code-addon-button-text-style">Unsafe C Functions</h1>
                   <div style={{marginTop: '1%'}}>
-                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.additionalFunctionCalls}>
+                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.unsafeFunctions}>
                       <GoInfo color={"#1a75ff"} size={17}/>
                     </OverlayTrigger>
                   </div>
                 </div>
               </AwesomeButton>
-            </div>
-            <div className="functions-input-container">
-              <AwesomeButton className="add-param-lv-button" onPress={this.addFunctionToProgram} ripple={true} type="primary">
-                <div style={{display: 'flex'}}>
-                  <div style={{marginTop: '1%'}}>
-                    <AiFillFileAdd color={"white"} size={22}/>
-                  </div>
-                  <h1 className="code-addon-button-text-style">Add to intro.c</h1>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.addToIntro}>
-                    <GoInfo color={"#1a75ff"} size={17}/>
+              {!this.state.userInputBool && (
+              <div className="functions-input-container">
+                <AwesomeButton className="add-param-lv-button" onPress={this.addUserInput} ripple={true} type="primary">
+                  <div style={{display: 'flex'}}>
+                    <div style={{marginTop: '1%'}}>
+                      <FaUserPlus color={"white"} size={22}/>
+                    </div>
+                    <h1 className="code-addon-button-text-style">Pass argv[1]</h1>
+                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
+                      <GoInfo color={"#1a75ff"} size={17}/>
                   </OverlayTrigger>
-                </div>
-              </AwesomeButton>
+                  </div>
+                </AwesomeButton>
+              </div>
+              )}
+              {this.state.userInputBool && (
+                <div className="functions-input-container">
+                <AwesomeButton className="add-param-lv-button" onPress={this.removeUserInput} ripple={true} type="primary">
+                  <div style={{display: 'flex'}}>
+                    <div style={{marginTop: '1%'}}>
+                    <FaUserMinus color={"white"} size={22}/>
+                    </div>
+                    <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
+                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
+                      <GoInfo color={"#1a75ff"} size={17}/>
+                    </OverlayTrigger>
+                  </div>
+                </AwesomeButton>
+              </div>
+              )}
+              <div className="functions-input-container">
+                <AwesomeButton className="add-param-lv-button" onPress={this.displayAdditionalFunctionCallOptions} ripple={true} type="primary">
+                  <div style={{display: 'flex'}}>
+                    <div style={{marginTop: '5%'}}>
+                      <TiArrowForward color={"white"} size={22}/>
+                    </div>
+                    <h1 className="code-addon-button-text-style">Call Another Function</h1>
+                    <div style={{marginTop: '1%'}}>
+                      <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.additionalFunctionCalls}>
+                        <GoInfo color={"#1a75ff"} size={17}/>
+                      </OverlayTrigger>
+                    </div>
+                  </div>
+                </AwesomeButton>
+              </div>
+            </div>
+
+            <div className="functions-input-container">
+              <button className="hover-button-parent" onMouseLeave={() => this.setState({hoverAddToProgram: false})} onMouseEnter={() => this.setState({hoverAddToProgram: true})}>
+                <AwesomeButton className="add-param-lv-button" onPress={this.addFunctionToProgram} ripple={true} type="primary">
+                  <div style={{display: 'flex'}}>
+                    <div style={{marginTop: '1%'}}>
+                      <AiFillFileAdd color={"white"} size={22}/>
+                    </div>
+                    <h1 className="code-addon-button-text-style">Add to intro.c</h1>
+                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.addToIntro}>
+                      <GoInfo color={"#1a75ff"} size={17}/>
+                    </OverlayTrigger>
+                  </div>
+                </AwesomeButton>
+              </button>
             </div>
             <h1 className="error-input-text-style">{this.state.addFunctionError}</h1>
           </div>
@@ -1182,7 +1190,6 @@ class Functions extends Component {
   returnProgram(){
 
     var arr = this.state.stackFrameDataArray
-    //console.log(this.state.stackFrameDataArray)
 
     return(
       <div>
@@ -1190,11 +1197,24 @@ class Functions extends Component {
         <div className="program-code-container">
           <div className="program-name-intro-container">
             <div style={{display: 'flex'}}>
-              <div className="end-of-pointer"></div>
-              <div style={{marginTop: '1.5%', marginRight: '6%'}}>
-                <div className="pointer-arrow-top"></div>
-                <div className="pointer-arrow-bottom"></div>
-              </div>
+              {this.state.hoverAddToProgram && (
+                <div style={{display: 'flex'}}>
+                  <div className="end-of-pointer-green"></div>
+                  <div style={{marginTop: '4%', marginRight: '6%'}}>
+                    <div className="pointer-arrow-top-green"></div>
+                    <div className="pointer-arrow-bottom-green"></div>
+                  </div>
+                </div>
+              )}
+              {!this.state.hoverAddToProgram && (
+                <div style={{display: 'flex'}}>
+                  <div className="end-of-pointer"></div>
+                  <div style={{marginTop: '4%', marginRight: '6%'}}>
+                    <div className="pointer-arrow-top"></div>
+                    <div className="pointer-arrow-bottom"></div>
+                  </div>
+                </div>
+              )}
               <h1 className="program-name-text-intro-style">intro.c</h1>
               <div style={{display: 'flex'}}>
                 <div className="instruction-circle">
@@ -1240,9 +1260,20 @@ class Functions extends Component {
               {this.returnFunctionForm()}
             </div>
           </div>
-          <div className="pointer-to-program-base"></div>
-          <div className="pointer-to-program"></div>
-          <div className="pointer-to-program-top"></div>
+          {this.state.hoverAddToProgram && (
+            <div style={{display: 'flex'}}>
+              <div className="pointer-to-program-base-green"></div>
+              <div className="pointer-to-program-green"></div>
+              <div className="pointer-to-program-top-green"></div>
+            </div>
+          )}
+          {!this.state.hoverAddToProgram && (
+            <div style={{display: 'flex'}}>
+              <div className="pointer-to-program-base"></div>
+              <div className="pointer-to-program"></div>
+              <div className="pointer-to-program-top"></div>
+            </div>
+          )}
           <div className="main-spacer">
             {this.returnProgram()}
           </div>

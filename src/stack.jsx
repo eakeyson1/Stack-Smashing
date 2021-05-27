@@ -1,6 +1,8 @@
 import React, { Component, useState } from "react";
 import "./css/startPage.css";
+import "./css/functions.css";
 import "./css/stack.css";
+import "./css/stackButton.css"
 import styled, { keyframes } from "styled-components";
 import MainFunctionStack from "./mainFunctionStack"
 import { AiOutlineArrowLeft } from "react-icons/ai";
@@ -3688,7 +3690,9 @@ class Stack extends Component {
           <div className="construct-payload-container">
             <div className="center-div">
               <div style={{display: 'flex'}}>
-                <div className="instruction-step">4</div>
+                <div className="instruction-circle">
+                  <div className="instruction-text">4</div>
+                </div>
                 <div className="construct-payload-title-container">
                   <h1 className="construct-payload-text">Construct Payload</h1>
                 </div>
@@ -3696,11 +3700,50 @@ class Stack extends Component {
             </div>
 
             <div className="construct-payload-part-container">
-              <div className="instruction-sub-step">4.1</div>
+              <div className="instruction-sub-circle margin-right-5-percent">
+                <div className="instruction-sub-text">4.1</div>
+              </div>
               <div style={{width: '80%', marginLeft: "3%"}}>
                 <div style={{display: 'flex', marginTop: "1.1%"}}>
                   <div style={{marginRight: "2%", marginTop: "0.75%"}}>
-                    <h1 className="construct-payload-sub-text">Construct NOP Sled</h1>
+                    <h1 className="construct-payload-sub-text">Begin with NOP Sled</h1>
+                  </div>
+                  <OverlayTrigger
+                    placement="right"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={this.nopSledDef}
+                  >
+                    <BsInfoCircle color={"#1a75ff"} size={20}/>
+                  </OverlayTrigger>
+                </div>
+                <div style={{display: 'flex'}}>
+                  <div style={{marginRight: '5%'}} className="center-div">
+                    <h1 className="hints-title">Hints</h1>
+                  </div>
+
+                  <div>
+                    <h1 className="hints">* Should only contain \x90</h1>
+                    <h1 className="hints-two-lines">* Consider the space occupied by the local variables</h1>
+                    <h1 className="hints-two-lines">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                  </div>
+                </div>
+                <input
+                  value={this.state.nopSled}
+                  type="text"
+                  placeholder={"Start typing...."}
+                  onChange={event => this.updateNopSled(event.target.value)}
+                  className="user-input"
+                />
+              </div>
+            </div>
+            <div className="construct-payload-part-container">
+              <div className="instruction-sub-circle margin-right-5-percent">
+                <div className="instruction-sub-text">4.1</div>
+              </div>
+              <div style={{width: '80%', marginLeft: "3%"}}>
+                <div style={{display: 'flex', marginTop: "1.1%"}}>
+                  <div style={{marginRight: "2%", marginTop: "0.75%"}}>
+                    <h1 className="construct-payload-sub-text">Begin with NOP Sled</h1>
                   </div>
                   <OverlayTrigger
                     placement="right"
@@ -3712,9 +3755,9 @@ class Stack extends Component {
                 </div>
                 <div>
                   <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints">- Should only contain \x90</h1>
-                  <h1 className="hints">- Consider the space occupied by the local variables</h1>
-                  <h1 className="hints">- Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                  <h1 className="hints">* Should only contain \x90</h1>
+                  <h1 className="hints-two-lines">* Consider the space occupied by the local variables</h1>
+                  <h1 className="hints-two-lines">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
                 </div>
                 <input
                   value={this.state.nopSled}
@@ -3730,7 +3773,7 @@ class Stack extends Component {
               <div style={{width: '80%', marginLeft: "3%"}}>
                 <div style={{display: 'flex', marginTop: "2%"}}>
                   <div style={{marginRight: "2%"}}>
-                    <h1 className="construct-payload-sub-text">Construct Shellcode</h1>
+                    <h1 className="construct-payload-sub-text">Add Shellcode</h1>
                   </div>                  <OverlayTrigger
                       placement="right"
                       delay={{ show: 250, hide: 400 }}
@@ -3741,8 +3784,8 @@ class Stack extends Component {
                 </div>
                 <div>
                   <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints">- Written in assembly</h1>
-                  <h1 className="hints">- Many examples of shellcode</h1>
+                  <h1 className="hints">* Written in assembly</h1>
+                  <h1 className="hints">* Many examples of shellcode</h1>
                 </div>
                 <input
                   value={this.state.shellcode}
@@ -3758,7 +3801,7 @@ class Stack extends Component {
               <div style={{width: '80%', marginLeft: "3%"}}>
                 <div style={{display: 'flex', marginTop: "0.75%"}}>
                   <div style={{marginRight: "2%"}}>
-                    <h1 className="construct-payload-sub-text">Construct Return Address</h1>
+                    <h1 className="construct-payload-sub-text">Repeat Return Address</h1>
                   </div>
                   <OverlayTrigger
                       placement="right"
@@ -3770,9 +3813,9 @@ class Stack extends Component {
                 </div>
                 <div>
                   <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints">- Any address that contains a NOP from our payload</h1>
-                  <h1 className="hints">- Little endian based CPU</h1>
-                  <h1 className="hints">- Repeating occurances of address increases attack success probability </h1>
+                  <h1 className="hints-two-lines">* Any address that contains a NOP from our payload</h1>
+                  <h1 className="hints">* Little endian based CPU</h1>
+                  <h1 className="hints-two-lines">* Repeating occurances of address increases attack success probability </h1>
                 </div>
                 <input
                   value={this.state.returnAddress}
@@ -3787,11 +3830,17 @@ class Stack extends Component {
           <div className="second-main-container">
             {!this.state.running && (
               <div>
-                <div style={{display: 'flex', justifyContent: 'center'}}>
-                  <div className="instruction-step">5</div>
-                  <div className="run-program-button-container">
-                    <button className="run-program-button" onClick={this.startProgram}>Run</button>
-                  </div>
+                <div style={{marginLeft: '30%', display: 'flex'}}>
+                  <div className="instruction-circle margin-right-5-percent">
+                    <div className="instruction-text">5</div>
+                  </div> 
+                  <button class="pushable" onClick={this.startProgram}>
+                    <div class="shadow"></div>
+                    <div class="edge edge-color-green"></div>
+                    <div class="front front-color-green">
+                      Start
+                    </div>
+                  </button>
                 </div>
                 <div>
                   <div className="stack-smashing-status-container">
@@ -3815,11 +3864,19 @@ class Stack extends Component {
             )}
             {this.state.running && !this.state.displayFinishButton && (
               <div>
-                <div style={{display: 'flex', justifyContent: 'center'}}>
-                  <div className="instruction-step">5</div>
-                  <div className="run-program-button-container">
-                    <button className="next-button" onClick={this.programNext}>Next</button>
+                <div style={{marginLeft: '30%', display: 'flex'}}>
+
+                  <div className="instruction-circle margin-right-5-percent">
+                    <div className="instruction-text">6</div>
                   </div>
+
+                  <button class="pushable" onClick={this.programNext}>
+                    <div class="shadow"></div>
+                    <div class="edge edge-color-blue"></div>
+                    <div class="front front-color-blue">
+                      Next
+                    </div>
+                  </button>
                 </div>
                 <div>
                   <div className="stack-smashing-status-container">
@@ -3844,11 +3901,17 @@ class Stack extends Component {
             )}
             {this.state.displayFinishButton && (
               <div>
-                <div style={{display: 'flex', justifyContent: 'center'}}>
-                  <div className="instruction-step">5</div>
-                  <div className="run-program-button-container">
-                    <button className="pop-main-button" onClick={this.programFinish}>Pop main()</button>
+                <div style={{display: 'flex', marginLeft: '30%'}}>
+                  <div className="instruction-circle margin-right-5-percent">
+                    <div className="instruction-text">7</div>
                   </div>
+                  <button class="pushable" onClick={this.programFinish}>
+                    <div class="shadow"></div>
+                    <div class="edge edge-color-orange"></div>
+                    <div class="front front-color-orange">
+                      Finish
+                    </div>
+                  </button>
                 </div>
                 <div>
                   <div className="stack-smashing-status-container">
