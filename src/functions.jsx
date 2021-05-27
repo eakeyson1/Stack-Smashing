@@ -6,16 +6,19 @@ import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { AiOutlinePlus } from "react-icons/ai";
-import { AiOutlineMinus } from "react-icons/ai";
-import { AiFillFileAdd } from "react-icons/ai";
+import { FaUserMinus } from "react-icons/fa";
 import { GiHazardSign } from "react-icons/gi";
-import { BiUserPlus } from "react-icons/bi";
+import { FaUserPlus } from "react-icons/fa";
 import { BsInfoCircle } from "react-icons/bs"
+import { AiFillFileAdd } from "react-icons/ai"
+import { TiArrowForward } from "react-icons/ti"
+import { GoInfo } from "react-icons/go"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 
-import pointerPhoto from "./images/pointer.PNG"
+import style from './css/button.css'
 
+import { AwesomeButton } from "react-awesome-button";
 
 
 /**
@@ -794,32 +797,36 @@ class Functions extends Component {
 
     return(
       <div className="add-to-program-spacer">
-        <div className="function-name-container">
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <div>
-          <input
-            value={this.state.functionName}
-            type="text"
-            id="inputID"
-            onChange={this.updateFunctionName}
-            className="function-name-input-style"
-          />
-          <h1 className="param-lv-title-style">Function Name</h1>
+            <div className="code-input-title-container">
+              <h1 style={{marginLeft: '15%'}} className="code-input-title-text">Function Name</h1>
+            </div>
+            <div>
+              <input
+                value={this.state.functionName}
+                type="text"
+                id="inputID"
+                placeholder={"e.g. foo"}
+                onChange={this.updateFunctionName}
+                className="function-name-input-style"
+              />
+            </div>
           </div>
         </div>
-
-        <div className="param-lv-input-container">
+        <div style={{marginTop: '3%'}} className="param-lv-input-container">
           <div className="code-input-title-container">
-            <h1 className="code-input-parameter-title-style">Parameter</h1>
+            <h1 style={{marginTop: '6%'}} className="code-input-title-text">Parameter</h1>
           </div>
           <div>
             <input
               value={this.state.parameterName}
               type="text"
               id="inputID"
+              placeholder={"Name"}
               onChange={this.updateParameterName}
-              className="function-name-input-style"
+              className="param-lv-input-style"
             />
-            <h1 style={{marginLeft:20}} className="param-lv-title-style">Name</h1>
             <div className="height-10">
               {this.state.parameterNameError && (
                 <h1 className="error-input-text-style">Enter a parameter name</h1>
@@ -836,31 +843,30 @@ class Functions extends Component {
               value={this.state.parameterValue}
               type="text"
               id="inputID"
+              placeholder={"Value"}
               onChange={this.updateParameterValue}
-              className="function-value-input-style"
+              className="param-lv-input-style"
             />
-            <h1 style={{marginLeft:"8%"}} className="param-lv-title-style">Value</h1>
           </div>
-          <div>
-            <button className="add-value-button-style" onClick={this.addParameter}>Add Parameter</button>
+          <div style={{marginLeft: '10%'}}>
+            <AwesomeButton onPress={this.addParameter} ripple={true} type="primary">Add</AwesomeButton>
+            <h1 className="error-input-text-style">{this.state.parameterError}</h1>
           </div> 
         </div>
 
-        <h1 className="error-input-text-style">{this.state.parameterError}</h1>
-      
-        <div className="functions-flex">
+        <div style={{marginTop: '2.5%'}} className="param-lv-input-container">
           <div className="code-input-title-container">
-            <h1 className="code-input-variable-title-style">Local Variable</h1>
+            <h1 style={{marginTop: '6%'}} className="code-input-title-text">Local Variable</h1>
           </div>
           <div>
             <input
               value={this.state.localVariableName}
               type="text"
               id="inputID"
+              placeholder={"Name"}
               onChange={this.updateLocalVariableName}
-              className="function-name-input-style"
+              className="param-lv-input-style"
             />
-            <h1 style={{marginLeft:20}} className="param-lv-title-style">Name</h1>
             <div className="height-10">
               {this.state.localVariableNameError && (
                 <h1 className="error-input-text-style">Enter a variable name</h1>
@@ -877,19 +883,20 @@ class Functions extends Component {
               value={this.state.localVariableValue}
               type="text"
               id="inputID"
+              placeholder={"Value"}
               onChange={this.updateLocalVariableValue}
-              className="function-value-input-style"
+              className="param-lv-input-style"
             />
-            <h1 style={{marginLeft:"8%"}} className="param-lv-title-style">Value</h1>
           </div>
 
-          <div>
-            <button className="add-value-button-style" onClick={this.addLocalVariable}>Add Variable</button>
+          <div style={{marginLeft: '10%'}}>
+            <AwesomeButton onPress={this.addLocalVariable} ripple={true} type="primary">Add</AwesomeButton>
           </div>
 
         </div>
         <h1 className="error-input-text-style">{this.state.functionNameError}</h1>
         <h1 className="error-input-text-style">{this.state.localVariableError}</h1>
+        <div className="border-bottom-param-lv"></div>
       </div>
     )
   }
@@ -909,6 +916,12 @@ class Functions extends Component {
   additionalFunctionCalls = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       Call another function that has been previously added to intro.c
+    </Tooltip>
+  );
+
+  addToIntro = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Adds the code displayed to the left to intro.c on the right
     </Tooltip>
   );
 
@@ -942,6 +955,103 @@ class Functions extends Component {
 
     return(
       <div>
+        <div className="functions-flex">
+          <div className="code-input">
+            <div className="code-input-shift">
+              <div className="functions-flex">
+                <h1 className="code-input-style">void {this.state.functionName}</h1>
+                <div className="functions-flex">
+                  {this.returnParameters()}
+                </div>
+              </div>
+              <div style={{marginLeft: '1%'}}>
+                {this.returnLocalVariables()}
+                {this.returnUnsafeFunctions()}
+                {this.returAdditionalFunctionCalls()}
+              </div>
+              <h1 className="code-input-style">{"}"}</h1>
+            </div>
+          </div>
+          <div style={{marginTop: "21.5%", marginLeft: '1%'}}>
+            <div className="instruction-circle">
+              <div className="instruction-text">2</div>
+            </div>
+          </div>
+          <div style={{marginLeft: "1%"}}>
+            <AwesomeButton type="primary" className="add-param-lv-button" onPress={this.displayAddUnsafeFunction} ripple={true}>
+              <div style={{display: 'flex'}}>
+                <div style={{marginTop: '5%'}}>
+                  <GiHazardSign color={"white"} size={21}/>
+                </div>
+                <h1 className="code-addon-button-text-style">Unsafe C Functions</h1>
+                <div style={{marginTop: '1%'}}>
+                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.unsafeFunctions}>
+                    <GoInfo color={"#1a75ff"} size={17}/>
+                  </OverlayTrigger>
+                </div>
+              </div>
+            </AwesomeButton>
+            {!this.state.userInputBool && (
+            <div className="functions-input-container">
+              <AwesomeButton className="add-param-lv-button" onPress={this.addUserInput} ripple={true} type="primary">
+                <div style={{display: 'flex'}}>
+                  <div style={{marginTop: '1%'}}>
+                    <FaUserPlus color={"white"} size={22}/>
+                  </div>
+                  <h1 className="code-addon-button-text-style">Pass argv[1]</h1>
+                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
+                    <GoInfo color={"#1a75ff"} size={17}/>
+                </OverlayTrigger>
+                </div>
+              </AwesomeButton>
+            </div>
+            )}
+            {this.state.userInputBool && (
+              <div className="functions-input-container">
+               <AwesomeButton className="add-param-lv-button" onPress={this.removeUserInput} ripple={true} type="primary">
+                 <div style={{display: 'flex'}}>
+                  <div style={{marginTop: '1%'}}>
+                   <FaUserMinus color={"white"} size={22}/>
+                  </div>
+                  <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
+                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
+                    <GoInfo color={"#1a75ff"} size={17}/>
+                  </OverlayTrigger>
+                 </div>
+               </AwesomeButton>
+             </div>
+            )}
+            <div className="functions-input-container">
+              <AwesomeButton className="add-param-lv-button" onPress={this.displayAdditionalFunctionCallOptions} ripple={true} type="primary">
+                <div style={{display: 'flex'}}>
+                  <div style={{marginTop: '5%'}}>
+                    <TiArrowForward color={"white"} size={22}/>
+                  </div>
+                  <h1 className="code-addon-button-text-style">Call Another Function</h1>
+                  <div style={{marginTop: '1%'}}>
+                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.additionalFunctionCalls}>
+                      <GoInfo color={"#1a75ff"} size={17}/>
+                    </OverlayTrigger>
+                  </div>
+                </div>
+              </AwesomeButton>
+            </div>
+            <div className="functions-input-container">
+              <AwesomeButton className="add-param-lv-button" onPress={this.addFunctionToProgram} ripple={true} type="primary">
+                <div style={{display: 'flex'}}>
+                  <div style={{marginTop: '1%'}}>
+                    <AiFillFileAdd color={"white"} size={22}/>
+                  </div>
+                  <h1 className="code-addon-button-text-style">Add to intro.c</h1>
+                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.addToIntro}>
+                    <GoInfo color={"#1a75ff"} size={17}/>
+                  </OverlayTrigger>
+                </div>
+              </AwesomeButton>
+            </div>
+            <h1 className="error-input-text-style">{this.state.addFunctionError}</h1>
+          </div>
+        </div>
         {this.state.addUnsafeFunctionBool && (
           <div className="unsafe-functions-container">
             <div className="strcpy-param-dropdown-name-container">
@@ -982,90 +1092,6 @@ class Functions extends Component {
             </button>
           </div>
         )}
-        <div className="functions-flex">
-          <div className="code-input">
-            <div className="code-input-shift">
-              <div className="functions-flex">
-                <h1 className="code-input-style">void {this.state.functionName}</h1>
-                <div className="functions-flex">
-                  {this.returnParameters()}
-                </div>
-              </div>
-              <div style={{marginLeft: '1%'}}>
-                {this.returnLocalVariables()}
-                {this.returnUnsafeFunctions()}
-                {this.returAdditionalFunctionCalls()}
-              </div>
-              <h1 className="code-input-style">{"}"}</h1>
-            </div>
-          </div>
-          <div style={{marginLeft: "3%"}}>
-            <div style={{marginLeft: "10%"}}>
-
-              <div className="functions-input-container">
-                  <button className="code-unsafe-addon-button-style"  onClick={this.displayAddUnsafeFunction}>
-                    <div style = {{display:'flex'}}>
-                      <GiHazardSign color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"0.5%"}}/>
-                      <h1 className="code-addon-button-text-style">Unsafe Functions</h1>
-                    </div>           
-                  </button> 
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.unsafeFunctions}>
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
-              </div>
-              {!this.state.userInputBool && (
-                <div style={{display: 'flex'}}>
-                  <button button className="code-addon-button-style" onClick={this.addUserInput}>
-                    <div style = {{display:'flex'}}>
-                      <BiUserPlus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
-                      <h1 style={{marginLeft:5}} className="code-addon-button-text-style">Pass argv[1]</h1>
-                    </div>           
-                  </button>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
-                </div>
-              )}
-              {this.state.userInputBool && (
-                <div style={{display: 'flex'}}>
-                  <button className="code-addon-button-style" onClick={this.removeUserInput}>
-                    <div style = {{display:'flex'}}>
-                      <AiOutlineMinus color={"#1a75ff"} size={20} style={{marginTop:"2%", marginRight: "5%", marginLeft:"2%"}}/>
-                      <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
-                    </div>           
-                  </button>
-                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
-                </div>
-
-              )}
-              <div style={{display: 'flex'}}>
-                <button className="code-addon-button-style" onClick={() => this.displayAdditionalFunctionCallOptions()}>
-                  <div style = {{display:'flex'}}>
-                    <AiOutlinePlus color={"#1a75ff"} size={20} style={{marginTop:"6%"}}/>
-                    <h1 className="code-addon-button-text-style">Call Another Function</h1>
-                  </div>
-                </button>
-                <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.additionalFunctionCalls}>
-                  <BsInfoCircle color={"#1a75ff"} size={20}/>
-                </OverlayTrigger>
-              </div>
-            </div>
-            <div style={{display: 'flex'}}>
-              <div style={{paddingTop: "2%"}}>
-                <div className="instruction-step-functions">2</div>
-              </div>
-              <button className="add-to-program-button-style" onClick={this.addFunctionToProgram}>
-                <div style = {{display:'flex'}}>
-                  <AiFillFileAdd color={"white"} size={20} style={{marginTop:"4%", marginRight:"2%", marginLeft: "0.5%"}}/>
-                  <h1 style={{marginLeft: "5%", marginTop: "5%"}} className="add-to-program-button-text-style">Add to intro.c</h1>
-                </div>
-              </button>
-            </div>
-            <h1 className="error-input-text-style">{this.state.addFunctionError}</h1>
-          </div>
-        </div>
       </div>
     )
   }
@@ -1163,11 +1189,16 @@ class Functions extends Component {
           
         <div className="program-code-container">
           <div className="program-name-intro-container">
-            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+            <div style={{display: 'flex'}}>
+              <div className="end-of-pointer"></div>
+              <div style={{marginTop: '1.5%', marginRight: '6%'}}>
+                <div className="pointer-arrow-top"></div>
+                <div className="pointer-arrow-bottom"></div>
+              </div>
+              <h1 className="program-name-text-intro-style">intro.c</h1>
               <div style={{display: 'flex'}}>
-                <h1 className="program-name-text-intro-style">intro.c</h1>
-                <div style={{display: 'flex'}}>
-                  <div className="instruction-step-functions">3</div>
+                <div className="instruction-circle">
+                  <div className="instruction-text">3</div>
                 </div>
               </div>
             </div>
@@ -1183,8 +1214,9 @@ class Functions extends Component {
           </div>
           {this.returnFunctions()}
         </div>
-        <button className="clear-button" type="button" onClick={this.clearProgram}>Clear</button>
-        <div className="height-5">&nbsp;</div>
+        <div className="center-div">
+          <AwesomeButton onPress={this.clearProgram} ripple={true} type="primary">Clear</AwesomeButton>
+        </div>
       </div>
     )
   }
@@ -1197,8 +1229,8 @@ class Functions extends Component {
           <div  className="create-function-container">
             <div className="create-function-title-container">
               <div style={{display: 'flex'}}>
-                <div>
-                  <div className="instruction-step-functions">1</div>
+                <div className="instruction-circle">
+                  <div className="instruction-text">1</div>
                 </div>
                 <h1 className="create-function-title-style">Create a function</h1>
               </div>
@@ -1208,18 +1240,20 @@ class Functions extends Component {
               {this.returnFunctionForm()}
             </div>
           </div>
-          <img className="pointer-image" src={pointerPhoto} alt="Pointer" />
+          <div className="pointer-to-program-base"></div>
+          <div className="pointer-to-program"></div>
+          <div className="pointer-to-program-top"></div>
           <div className="main-spacer">
             {this.returnProgram()}
           </div>
-          <button className="view-stack-button" onClick={() => this.onClick()}>
+          <AwesomeButton onPress={this.onClick} ripple={true} type="primary">
             <div style={{display: 'flex'}}>
               <h1 className="activity-button-text">Stack</h1>
               <div style={{marginLeft: '10%'}}>
-                <AiOutlineArrowRight color={"#1a75ff"} size={16}/>
+                <AiOutlineArrowRight color={"#1a75ff"} size={18}/>
               </div>
             </div>
-          </button>
+          </AwesomeButton>
         </div>
       </div>
     );

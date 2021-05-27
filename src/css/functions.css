@@ -19,7 +19,7 @@ html, body, #root, .App {
 
 .create-function-container{
     width: 55%;
-    margin-left: 5%;
+    margin-left: 2%;
 }
 
 .create-function-title-container{
@@ -47,7 +47,6 @@ html, body, #root, .App {
     background-color: white;
     border: 0.25vh solid #1a75ff;
     border-radius: .6vh;
-    margin-top: 2vh;
     margin-left: 3vh;
 }
 
@@ -63,12 +62,11 @@ html, body, #root, .App {
 }
 
 .functions-input-container{
-    display: flex;
-    margin-top: 5%;
+    margin-top: 7%;
 }
 
 .code-unsafe-addon-button-style{
-    width: 24vh;
+    width: 22vh;
     margin-left: 10%;
     height: 6vh;
     background-color: white;
@@ -113,7 +111,6 @@ html, body, #root, .App {
 
 .param-lv-input-container{
     display: flex;
-    margin-top: 5%;
 }
 
 .add-unsafe-func-button-container{
@@ -211,11 +208,21 @@ html, body, #root, .App {
 }
 
 .code-addon-button-text-style{
-    color: #1a75ff;
-    font-size: 1.7vh;
+    color: white;
+    font-size: 1.8vh;
     font-weight: bold;
     text-align: center;
     margin-top: 0.8vh;
+    width: 17.5vh;
+    
+}
+
+.add-param-lv-button-text{
+    color: white;
+    font-size: 2vh;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 1vh;
 }
 
 .code-addon-additional-function-name-style{
@@ -237,23 +244,13 @@ html, body, #root, .App {
     text-align: center;
 }
 
-.code-input-parameter-title-style{
+.code-input-title-text{
     color: #1a75ff;
-    font-size: 2.35vh;
-    font-weight: 500;
-    margin-top: 10px;
+    font-size: 2.1vh;
+    font-weight: bold;
+    height: 1vh;
+    width: 18vh;
     text-align: center;
-    margin-right: 10px;
-}
-
-.code-input-variable-title-style{
-    color: #1a75ff;
-    font-size: 2.2vh;
-    font-weight: 500;
-    margin-right: 2vh;
-    margin-top: 3vh;
-    text-align: center;
-    margin-bottom: 30px;
 }
 
 .code-input-text-style{
@@ -262,20 +259,15 @@ html, body, #root, .App {
 }
 
 .add-to-program-spacer{
-    margin-top: 10px;
-    padding: 1px;
-    margin-left: 10px;
+    margin-top: 3%;
+    margin-left: 1%;
 }
 
-.function-name-container{
-    width: 50%;
-    margin-left: 40%;
-}
-
-.function-name-input-style{
+.param-lv-input-style{
     outline: none !important;
     outline-offset: none !important;
-    width: 16vh;
+    width: 20vh;
+    height: 4.5vh;
     background-color: white;
     border-bottom: 0.3vh solid #1a75ff;
     border-top: none;
@@ -285,11 +277,27 @@ html, body, #root, .App {
     font-size: 2vh;
 }
 
+.function-name-input-style{
+    outline: none !important;
+    outline-offset: none !important;
+    width: 20vh;
+    height: 4.5vh;
+    background-color: white;
+    border-bottom: 0.3vh solid #1a75ff;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: #1a75ff;
+    font-size: 2vh;
+    margin-top: 1vh;
+}
+
 .function-value-input-style{
     outline: none !important;
     outline-offset: none !important;
     width: 20vh;
     margin-left: 8%;
+    height: 4.5vh;
     background-color: white;
     border-bottom: 0.3vh solid #1a75ff;
     border-top: none;
@@ -299,57 +307,16 @@ html, body, #root, .App {
 }
 
 #inputID::placeholder {
-    color: #1a75ff;
+    color: rgb(214, 214, 214);
     opacity: .7;
 }
 
 .input:focus {outline:none;}
 
-.add-value-button-style{
-    color: #1a75ff;
-    font-size: 1.7vh;
-    font-weight: bold;
-    position: relative;
-    background-color: white;
-    border-radius: 0.5vh;
-    border-width: 0.25vh;
-    border-color: #1a75ff;
-    width: 20vh;
-    height: 5.3vh;
-    text-align: center;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    text-decoration: none;
-    overflow: hidden;
-    cursor: pointer;
-    margin-left: 10vh;
-    box-shadow: 0.35vh 0.35vh rgb(202, 202, 202);
 
-}
-
-.add-value-button-style:focus{
-    outline: none !important;
-    outline-offset: none !important;
-}
-
-.add-value-button-style:after {
-    content: "";
-    background: white;
-    display: block;
-    position: absolute;
-    padding-top: 300%;
-    padding-left: 350%;
-    margin-left: -20px!important;
-    margin-top: -120%;
-    opacity: 0;
-    transition: all 0.8s
-}
-
-.add-value-button-style:active:after {
-    padding: 0;
-    margin: 0;
-    opacity: 1;
-    transition: 0s
+.add-param-lv-button{
+    height: 1vh;
+    width: 25vh;
 }
 
 .add-to-program-button-style{
@@ -476,7 +443,7 @@ html, body, #root, .App {
 }
 
 .code-input-title-container{
-    width: 25vh;
+    margin-right: 6%;
 }
 
 .unsafe-functions-container{
@@ -541,18 +508,15 @@ html, body, #root, .App {
 }
 
 .dropdown-params-lv{
-    margin-left: 2%;
-    width: 10%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 11vh;
     height: 5%;
 }
 
 .marginT-15-marginLeft-20{
     margin-top: 15px;
     margin-left: 20px;
-}
-
-.main-spacer{
-    margin-left: 3%;
 }
 
 .program-functions{
@@ -575,10 +539,10 @@ html, body, #root, .App {
 }
 
 .activity-button-text{
-    color: #1a75ff;
-    font-size: 1.7vh;
+    color: white;
+    font-size: 1.8vh;
     font-weight: bold;
-    padding-top: 0.6vh;
+    margin-top: 1vh;
 }
 
 .clear-button{
@@ -605,10 +569,102 @@ html, body, #root, .App {
     font-size: 3vh;
 }
 
+.instruction-text{
+    color: white;
+    font-size: 2.5vh;
+    margin-top: 0.6vh;
+    margin-left: 1.7vh;
+}
+
+.instruction-circle {
+    display: inline-block;
+    width: 5vh;
+    height: 5vh;
+    margin: 0;
+    border-radius: 50%;
+    position: relative;
+    background: radial-gradient(circle at 50% 120%, #ff5d5d 10%, #ff1616 80%, #ff0000 100%);
+  }
+  .instruction-circle:before {
+    content: "";
+    position: absolute;
+    top: 1%;
+    left: 5%;
+    width: 90%;
+    height: 90%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 0px, #ffffff, rgba(255, 255, 255, 0) 58%);
+    filter: blur(5px);
+    z-index: 2;
+  }
+
 .pointer-image{
     height: 66vh;
     width: 4vh;
     margin-top: 0.5%;
 }
 
+.border-bottom-param-lv{
+    border-bottom: 0.4vh solid #1a75ff;
+    margin-top: 4%;
+}
+
+.aws-btn {
+    --button-default-height: 6vh;
+    --button-default-font-size: 2vh;
+    --button-default-border-radius: 6px;
+    --button-horizontal-padding: 20px;
+    --button-raise-level: 0.5vh;
+    --button-hover-pressure: 1;
+    --transform-speed: 0.185s;
+    --button-primary-color: #1a75ff;
+    --button-primary-color-dark: #6da7ff;
+    --button-primary-color-light: white;
+    --button-primary-color-hover: #425480;
+    --button-primary-border: white;
+}
+
+.pointer-to-program{
+    width: 1vh;
+    height: 67.25vh;
+    background-color: #1a75ff;
+    border-bottom-right-radius: 1vh;
+    border-top-left-radius: 1vh;
+    margin-top: 2.5vh;
+}
+
+.pointer-to-program-base{
+    width: 3vh;
+    height: 1vh;
+    margin-top: 68.75vh;
+    background-color: #1a75ff;
+}
+
+.pointer-to-program-top{
+    margin-top: 2.5vh;
+    width: 4vh;
+    height: 1vh;
+    background-color: #1a75ff;
+}
+
+.end-of-pointer{
+    background-color: #1a75ff;
+    height: 1vh;
+    width: 20vh;
+    margin-top: 2.5vh;
+}
+
+.pointer-arrow-bottom{
+    width: 0;
+    height: 0;
+    border-top: 2vh solid #1a75ff;
+    border-right: 2vh solid transparent;
+}
+
+.pointer-arrow-top{
+    width: 0;
+    height: 0;
+    border-bottom: 2vh solid #1a75ff;
+    border-right: 2vh solid transparent;
+}
 

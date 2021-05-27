@@ -9,8 +9,10 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { BsInfoCircle } from "react-icons/bs"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-import { Loading } from 'react-loading-dot'
 
+
+import { AwesomeButton } from "react-awesome-button";
+import "react-awesome-button/dist/styles.css";
 
 const Dots = styled.span`
   &::after {
