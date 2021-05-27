@@ -12,6 +12,8 @@ import { BsInfoCircle } from "react-icons/bs"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 
+import payloadDiagram from "./images/payloadDiagram.png"
+
 
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
@@ -3545,202 +3547,171 @@ class Stack extends Component {
     return(
       <div className="main-stack-frame-container">
         <div className="flex">
-          <div className="main-code-spacer">
-            <button className="back-button" onClick={this.goBack}>
-              <AiOutlineArrowLeft className="functions-arrow-stack" color={"#1a75ff"} size={"100%"}/>
-            </button>
-          </div>
           <div className="stack-container">
-            <h1 className="stack-start-address-text">High Memory Address (Bottom of Stack)</h1>
-            <div className="stack-container-border">
-              <div className="center-div"> 
-                <h1 className="stack-title-text-start">Stack</h1>
+            <button class="pushable" onClick={this.goBack}>
+              <div class="shadow"></div>
+              <div class="edge edge-color-blue"></div>
+              <div class="front front-color-blue">
+                <AiOutlineArrowLeft className="functions-arrow-stack" color={"white"} size={"100%"}/>
               </div>
-              {this.state.running && (
-                // Returning main stackframe
-                <div>
-                  {!this.state.mainStackOpen && (
-                    <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
-                      <div style={{display: 'flex'}}>
-                        <div style={{marginLeft: '35%'}}>
-                          <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
-                        </div>
-                        <div style={{marginLeft: "18%"}}>
-                          <RiArrowDropRightLine size={45} color={"white"}/>
-                        </div>
-                      </div>
-                    </button>
-                  )}
-                  {this.state.mainStackOpen && (
-                    <div>
+            </button>
+            <div style={{marginLeft: '5%', marginTop: '5%'}}>
+              <h1 className="stack-start-address-text">High Memory Address (Bottom of Stack)</h1>
+              <div className="stack-container-border">
+                <div className="center-div"> 
+                  <h1 className="stack-title-text-start">Stack</h1>
+                </div>
+                {this.state.running && (
+                  // Returning main stackframe
+                  <div>
+                    {!this.state.mainStackOpen && (
                       <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
                         <div style={{display: 'flex'}}>
                           <div style={{marginLeft: '35%'}}>
                             <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
                           </div>
                           <div style={{marginLeft: "18%"}}>
-                            <RiArrowDropDownLine size={45} color={"white"}/>
+                            <RiArrowDropRightLine size={45} color={"white"}/>
                           </div>
                         </div>
                       </button>
-                      {this.returnMainStackParams()}
-                      <div style={{display: 'flex'}}>
-                        <div className="return-address-title-container">
-                          <h1 className="main-stack-element-title-text">Return Address</h1>
+                    )}
+                    {this.state.mainStackOpen && (
+                      <div>
+                        <button className="stack-frame-open-button" onClick={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}>
+                          <div style={{display: 'flex'}}>
+                            <div style={{marginLeft: '35%'}}>
+                              <h1 className="stack-frame-button-text">main() 0xABCE0000()</h1>
+                            </div>
+                            <div style={{marginLeft: "18%"}}>
+                              <RiArrowDropDownLine size={45} color={"white"}/>
+                            </div>
+                          </div>
+                        </button>
+                        {this.returnMainStackParams()}
+                        <div style={{display: 'flex'}}>
+                          <div className="return-address-title-container">
+                            <h1 className="main-stack-element-title-text">Return Address</h1>
+                          </div> 
+                          <div className="return-address-container">
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{(this.state.endParametersAddress.toString(16)).toUpperCase()}</h1>
+                              </div>
+                            </div>
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xCE"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
+                              </div>
+                            </div>
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\x00"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
+                              </div>
+                            </div>
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xAC"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
+                              </div>
+                            </div>
+                          </div>
                         </div> 
-                        <div className="return-address-container">
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                        <div style={{display: 'flex'}}>
+                          <div className="saved-frame-pointer-title-container">
+                            <h1 className="main-stack-element-title-text">Saved Frame Pointer</h1>
+                          </div> 
+                          <div className="saved-frame-pointer-container">
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
+                              </div>
                             </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{(this.state.endParametersAddress.toString(16)).toUpperCase()}</h1>
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xCD"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
+                              </div>
+                            </div>
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xFF"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
+                              </div>
+                            </div>
+                            <div className="main-stack-second-container">
+                              <div className="main-stack-value-container">
+                                <h1 className="main-stack-param-text">{"\\xF2"}</h1>
+                              </div>
+                              <div className="center">
+                                <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>
+                              </div>
                             </div>
                           </div>
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xCE"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\x00"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xAC"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                        </div>
-                      </div> 
-                      <div style={{display: 'flex'}}>
-                        <div className="saved-frame-pointer-title-container">
-                          <h1 className="main-stack-element-title-text">Saved Frame Pointer</h1>
                         </div> 
-                        <div className="saved-frame-pointer-container">
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xAB"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xCD"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xFF"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                          <div className="main-stack-second-container">
-                            <div className="main-stack-value-container">
-                              <h1 className="main-stack-param-text">{"\\xF2"}</h1>
-                            </div>
-                            <div className="center">
-                              <h1 className="main-stack-param-text">0x{((this.state.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>
-                            </div>
-                          </div>
-                        </div>
-                      </div> 
-                    </div>
-                  )}
+                      </div>
+                    )}
+                  </div>
+
+                )}
+                <div style={{marginBottom: "1%"}}>
+                  {this.returnStackFrames()}
+                </div>
+                <h1 className="stack-end-address-text">Stack Limit</h1>
+              </div>
+              <div style={{marginLeft: 2}}>
+                <div className="heap-container"> 
+                  <h1 className="heap-title-text">Heap</h1>
                 </div>
 
-              )}
-              <div style={{marginBottom: "1%"}}>
-                {this.returnStackFrames()}
-              </div>
-              <h1 className="stack-end-address-text">Stack Limit</h1>
-            </div>
-            <div style={{marginLeft: 2}}>
-              <div className="heap-container"> 
-                <h1 className="heap-title-text">Heap</h1>
-              </div>
+                <div className="data-container"> 
+                  <h1 className="stack-title-text">Data</h1>
+                </div>
 
-              <div className="data-container"> 
-                <h1 className="stack-title-text">Data</h1>
+                <div className="code-container"> 
+                  <h1 className="stack-title-text">Code</h1>
+                </div>
               </div>
-
-              <div className="code-container"> 
-                <h1 className="stack-title-text">Code</h1>
-              </div>
+              <h1 className="stack-end-address-text">Low Memory Address</h1>
             </div>
-            <h1 className="stack-end-address-text">Low Memory Address</h1>
           </div>
           <div className="construct-payload-container">
             <div className="center-div">
-              <div style={{display: 'flex'}}>
-                <div className="instruction-circle">
-                  <div className="instruction-text">4</div>
-                </div>
-                <div className="construct-payload-title-container">
-                  <h1 className="construct-payload-text">Construct Payload</h1>
-                </div>
-              </div>
-            </div>
-
-            <div className="construct-payload-part-container">
-              <div className="instruction-sub-circle margin-right-5-percent">
-                <div className="instruction-sub-text">4.1</div>
-              </div>
-              <div style={{width: '80%', marginLeft: "3%"}}>
-                <div style={{display: 'flex', marginTop: "1.1%"}}>
-                  <div style={{marginRight: "2%", marginTop: "0.75%"}}>
-                    <h1 className="construct-payload-sub-text">Begin with NOP Sled</h1>
-                  </div>
-                  <OverlayTrigger
-                    placement="right"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={this.nopSledDef}
-                  >
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
-                </div>
+              <div>
                 <div style={{display: 'flex'}}>
-                  <div style={{marginRight: '5%'}} className="center-div">
-                    <h1 className="hints-title">Hints</h1>
+                  <div className="instruction-circle">
+                    <div className="instruction-text">4</div>
                   </div>
-
-                  <div>
-                    <h1 className="hints">* Should only contain \x90</h1>
-                    <h1 className="hints-two-lines">* Consider the space occupied by the local variables</h1>
-                    <h1 className="hints-two-lines">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                  <div className="construct-payload-title-container">
+                    <h1 className="construct-payload-text">Construct Payload</h1>
                   </div>
                 </div>
-                <input
-                  value={this.state.nopSled}
-                  type="text"
-                  placeholder={"Start typing...."}
-                  onChange={event => this.updateNopSled(event.target.value)}
-                  className="user-input"
-                />
+                <img className="payload-diagram" src={payloadDiagram} />
               </div>
             </div>
             <div className="construct-payload-part-container">
               <div className="instruction-sub-circle margin-right-5-percent">
                 <div className="instruction-sub-text">4.1</div>
               </div>
-              <div style={{width: '80%', marginLeft: "3%"}}>
+              <div style={{marginLeft: "3%"}}>
                 <div style={{display: 'flex', marginTop: "1.1%"}}>
                   <div style={{marginRight: "2%", marginTop: "0.75%"}}>
                     <h1 className="construct-payload-sub-text">Begin with NOP Sled</h1>
@@ -3756,8 +3727,8 @@ class Stack extends Component {
                 <div>
                   <h1 className="hints-title">Hints</h1>
                   <h1 className="hints">* Should only contain \x90</h1>
-                  <h1 className="hints-two-lines">* Consider the space occupied by the local variables</h1>
-                  <h1 className="hints-two-lines">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                  <h1 className="hints">* Consider the space occupied by the local variables</h1>
+                  <h1 className="hints">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
                 </div>
                 <input
                   value={this.state.nopSled}
@@ -3769,12 +3740,15 @@ class Stack extends Component {
               </div>
             </div>
             <div className="construct-payload-part-container">
-              <div className="instruction-sub-step">4.2</div>
-              <div style={{width: '80%', marginLeft: "3%"}}>
+              <div className="instruction-sub-circle margin-right-5-percent">
+                <div className="instruction-sub-text">4.2</div>
+              </div>              
+              <div style={{marginLeft: "3%"}}>
                 <div style={{display: 'flex', marginTop: "2%"}}>
                   <div style={{marginRight: "2%"}}>
                     <h1 className="construct-payload-sub-text">Add Shellcode</h1>
-                  </div>                  <OverlayTrigger
+                  </div>                  
+                  <OverlayTrigger
                       placement="right"
                       delay={{ show: 250, hide: 400 }}
                       overlay={this.shellcodeDef}
@@ -3797,8 +3771,10 @@ class Stack extends Component {
               </div>
             </div>
             <div className="construct-payload-part-container">
-              <div className="instruction-sub-step">4.3</div>
-              <div style={{width: '80%', marginLeft: "3%"}}>
+              <div className="instruction-sub-circle margin-right-5-percent">
+                <div className="instruction-sub-text">4.3</div>
+              </div>
+              <div style={{marginLeft: "3%"}}>
                 <div style={{display: 'flex', marginTop: "0.75%"}}>
                   <div style={{marginRight: "2%"}}>
                     <h1 className="construct-payload-sub-text">Repeat Return Address</h1>
@@ -3813,9 +3789,9 @@ class Stack extends Component {
                 </div>
                 <div>
                   <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints-two-lines">* Any address that contains a NOP from our payload</h1>
+                  <h1 className="hints">* Any address that contains a NOP from our payload</h1>
                   <h1 className="hints">* Little endian based CPU</h1>
-                  <h1 className="hints-two-lines">* Repeating occurances of address increases attack success probability </h1>
+                  <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
                 </div>
                 <input
                   value={this.state.returnAddress}

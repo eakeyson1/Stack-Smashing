@@ -10,9 +10,9 @@
 }
 
 .stack-container{
-    margin-left: 2%;
-    margin-top: 3%;
-    width: 60vh;
+    margin-left: 2vh;
+    margin-top: 1vh;
+    width: 55vh;
     height: 100%;
 }
 
@@ -149,7 +149,7 @@
 }
 
 .program-code-container-stack{
-    width: 60vh;
+    width: 50vh;
     height: 75vh;
 }
 
@@ -176,7 +176,7 @@
 }
 
 .program-code-text-style{
-    font-size: 1.7vh;
+    font-size: 1.9vh;
     font-weight: 400;
 }
 
@@ -202,7 +202,7 @@
 
 .exe-code-text{
     color: #1a75ff;
-    font-size: 1.9vh;
+    font-size: 2vh;
 }
 
 .user-input-static-text{
@@ -215,7 +215,7 @@
 
 .stack-frame-open-button{
     background-color: #0B1D51;
-    width: 60vh;
+    width: 55vh;
     border: 0.25vh solid white;
     margin-top: 1%;
     height:7vh;
@@ -224,7 +224,7 @@
 
 .stack-frame-open-button-strcpy{
     background-color: #ff4d4d;
-    width: 60vh;
+    width: 55vh;
     border: 0.25vh solid white;
     margin-top: 1%;
     height: 7vh;
@@ -354,6 +354,7 @@
 
 .second-main-container{
     margin-top: 2%;
+    width: 50vh
 }
 
 .instruction-step{
@@ -370,9 +371,9 @@
 
 .instruction-sub-text{
     color: white;
-    font-size: 16px;
+    font-size: 1.9vh;
     margin-top: 0.6vh;
-    margin-left: 1vh;
+    margin-left: 0.7vh;
 }
 
 .instruction-sub-circle {
@@ -413,8 +414,8 @@
 
 .construct-payload-container{
     margin-top: 2%;
-    width: 30%;
-    margin-left: 3%;
+    width: 75vh;
+    margin-left: 2%;
 }
 
 .info-symbol{
@@ -436,16 +437,9 @@
     height: 1.2vh;
 }
 
-.hints-two-lines{
-    font-size: 1.9vh;
-    color: #ff3399;
-    height: 3.7vh;
-}
-
 .construct-payload-part-container{
     display: flex;
-    margin-top: 12%;
-    margin-left: 2%;
+    margin-top: 7%;
 }
 
 .construct-payload-title-container{
@@ -520,7 +514,7 @@ div.scrollmenu {
     background-color: white;
     overflow: auto;
     white-space: nowrap;
-    width: 60vh;
+    width: 50vh;
     margin-top: 10%;
 }
   
@@ -534,4 +528,10 @@ div.scrollmenu a {
   
 div.scrollmenu a:hover {
     background-color: #777;
+}
+
+.payload-diagram{
+    height: 7vh;
+    width: 40vh;
+    margin-top: 5%;
 }
