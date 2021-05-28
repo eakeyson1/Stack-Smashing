@@ -1,27 +1,17 @@
-import React, { Component, useState } from "react";
+import React, { Component } from "react";
 import "./css/startPage.css";
 import "./css/functions.css";
 import styled, { keyframes } from "styled-components";
-import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-
-import { GoInfo } from "react-icons/go"
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
-import Tooltip from 'react-bootstrap/Tooltip'
-
 import style from './css/button.css'
 
-import InstructCircle from "./components/InstructCircle"
 import GoToStackButton from "./components/GoToStackButton"
-import UnsafeCFunctionsButton from "./components/UnsafeCFunctionsButton"
-import PassArgvOneButton from "./components/PassArgvOneButton"
-import RemoveArgvOneButton from "./components/RemoveArgvOneButton"
-import AdditionalFuncCallButton from "./components/AdditionalFuncCallButton"
-
+import ClearProgramButton from "./components/ClearProgramButton"
+import PointerMiddle from "./components/PointerMiddle";
 import CreateAFunctionTitle from "./components/CreateAFunctionTitle"
-
-
-import { AwesomeButton } from "react-awesome-button";
+import ReturnProgram from "./components/ReturnProgram"
+import CurrentFunction from "./components/CurrentFunction"
+import ParametersVariablesInput from "./components/ParametersVariablesInput"
 
 
 /**
@@ -47,69 +37,32 @@ class Functions extends Component {
     this.updateLocalVariableName = this.updateLocalVariableName.bind(this)
     this.updateLocalVariableType = this.updateLocalVariableType.bind(this)
     this.updateLocalVariableValue = this.updateLocalVariableValue.bind(this)
-    this.updateUserInput = this.updateUserInput.bind(this)
     this.updateParameterType = this.updateParameterType.bind(this)
-    this.returnFunctionForm = this.returnFunctionForm.bind(this)
-    this.returnMainFunctionCalls = this.returnMainFunctionCalls.bind(this)
-    this.returnFunctions = this.returnFunctions.bind(this)
-    this.returnParameters = this.returnParameters.bind(this)
-    this.returnLocalVariables = this.returnLocalVariables.bind(this)
-    this.returnUnsafeFunctions = this.returnUnsafeFunctions.bind(this)
-    this.returAdditionalFunctionCalls = this.returAdditionalFunctionCalls.bind(this)
-    this.returnUnsafeFunctionsMain = this.returnUnsafeFunctionsMain.bind(this)
-    this.returnProgram = this.returnProgram.bind(this)
-    this.returnProgramFunctionsLocalVariables = this.returnProgramFunctionsLocalVariables.bind(this)
-    this.returnProgramFunctionsAdditionalFuncCalls = this.returnProgramFunctionsAdditionalFuncCalls.bind(this)
     this.changeStrcpyParam1 = this.changeStrcpyParam1.bind(this)
     this.changeStrcpyParam2 = this.changeStrcpyParam2.bind(this)
     this.changeLocalVariableType = this.changeLocalVariableType.bind(this)
     this.addFunctionCall = this.addFunctionCall.bind(this)
     this.isInt = this.isInt.bind(this)
-    this.onClick = this.onClick.bind(this)
-    this.clearProgram = this.clearProgram.bind(this)
-    this.unsafeFunctions = this.unsafeFunctions.bind(this)
-    this.passArgvOne = this.passArgvOne.bind(this)
-    this.additionalFunctionCalls = this.additionalFunctionCalls.bind(this)
 
 
     this.state = {
-      displaySegFault: false,
-      displayAddFrame: false,
       displayAdditionalFunctionCalls: false,
-      running: false,
-      runningDots:false,
-      programPaused: false,
       parameters: [],
       localVariables: [],
-      localVariablesStack: [],
-      SFPstack: [],
-      returnAddressStack: [],
-      parametersStack: [],
       stackFrameDataArray: [],
-      stackFrameRunningFunctions: [],
       parameterName: "",
       parameterType: "char",
       parameterValue: "",
       localVariableName: "",
       localVariableType: "char",
       localVariableValue: "",
-      currentStackFrame: "",
-      currentStackFrameId: "",
       functionName: "",
-      userInput: "",
-      userInputBool: false,
-      stepOneBool: false,
-      stepTwoBool: false,
-      maliciousPayload: false,
-      maliciousExecution: false,
-      segFault: false,
       parameterError: "",
       parameterNameError: false,
       localVariableNameError: false,
       localVariableError: "",
       numOfFunctions: 0,
       userInputBool: false,
-      functionType: "strcpy",
       addUnsafeFunctionBool: false,
       strcpyParam1: "",
       strcpyParam2: "",
@@ -119,7 +72,6 @@ class Functions extends Component {
       strcpyParamError: "",
       functionNameError: "",
       addFunctionError: "",
-      width: window.innerWidth,
       hoverAddToProgram: false,
       strcpyParams1: [],
       strcpyParams2: [], 
@@ -355,6 +307,22 @@ class Functions extends Component {
 
   }
 
+  addUnsafeFunctionToProgram(){
+
+    if(this.state.strcpyParam1 === this.state.strcpyParam2){
+      this.setState({strcpyParamError: "parameters must be different"})
+      return
+    }
+
+    var funcParams = {
+      param1Name: this.state.strcpyParam1,
+      param2Name: this.state.strcpyParam2,
+    }
+
+    var unsafeFunctions = this.state.unsafeFunctions.concat(funcParams)
+    this.setState({unsafeFunctions:unsafeFunctions, addUnsafeFunctionBool: false})
+  }
+
   addUserInput(){
     var userInputParam = {
       name: "userInput",
@@ -569,73 +537,24 @@ class Functions extends Component {
     
   }
 
-  clearProgram(){
-    this.setState({stackFrameDataArray: []})
-  }
+  /***** Updating user inputs *****/
 
+  updateParameterName(event){this.setState({parameterName: event.target.value})}
+  updateParameterValue(event){this.setState({parameterValue: event.target.value})}
+  updateLocalVariableName(event){this.setState({localVariableName: event.target.value})}
+  updateLocalVariableValue(event){this.setState({localVariableValue: event.target.value})}
+  updateFunctionName(event){this.setState({functionName: event.target.value})}
+  updateParameterType(event){this.setState({parameterType: event.target.value})}
+  updateLocalVariableType(event){this.setState({localVariableType: event.target.value})}
 
-  updateParameterName(event){
-    this.setState({parameterName: event.target.value})
-  }
+  /***** Updating dropdown menus *****/
 
-  updateParameterValue(event){
-    this.setState({parameterValue: event.target.value})
-  }
-
-  updateLocalVariableName(event){
-    this.setState({localVariableName: event.target.value})
-  }
-
-  updateLocalVariableValue(event){
-    this.setState({localVariableValue: event.target.value})
-  }
-
-  updateFunctionName(event){
-    this.setState({functionName: event.target.value})
-  }
-
-  updateParameterType(event){
-    this.setState({parameterType: event.target.value})
-  }
-
-  updateLocalVariableType(event){
-    this.setState({localVariableType: event.target.value})
-  }
-
-  updateUserInput(event, address){
-    var tempArr = this.state.stackFrameRunningFunctions 
-    for(var i=0; i<tempArr.length; i++){
-      if(tempArr[i].address === address){
-        tempArr[i].userInput = event
-        break
-      }
-    }
-    this.setState({stackFrameRunningFunctions: tempArr})
-  }
-
-  changeParameterType(type){
-    this.setState({parameterType: type.value})
-  }
-
-  changeFunctionType(type){
-    this.setState({functionType: type.value})
-  }
-
-  changeLocalVariableType(type){
-    this.setState({localVariableType: type.value})
-  }
-
-  changeStrcpyParam1(type){
-    this.setState({strcpyParam1: type.value})
-  }
-
-  changeStrcpyParam2(type){
-    this.setState({strcpyParam2: type.value})
-  }
-
-  changeAdditionalFunctionCallName(type){
-    this.setState({additionalFunctionCallName: type.value})
-  }
+  changeParameterType(type){this.setState({parameterType: type.value}) }
+  changeFunctionType(type){this.setState({functionType: type.value})}
+  changeLocalVariableType(type){this.setState({localVariableType: type.value})}
+  changeStrcpyParam1(type){this.setState({strcpyParam1: type.value})}
+  changeStrcpyParam2(type){this.setState({strcpyParam2: type.value})}
+  changeAdditionalFunctionCallName(type){this.setState({additionalFunctionCallName: type.value})}
   
   displayAdditionalFunctionCallOptions(){
 
@@ -663,588 +582,76 @@ class Functions extends Component {
     })
   }
 
-  addUnsafeFunctionToProgram(){
-
-    if(this.state.strcpyParam1 === this.state.strcpyParam2){
-      this.setState({strcpyParamError: "parameters must be different"})
-      return
-    }
-
-    var funcParams = {
-      param1Name: this.state.strcpyParam1,
-      param2Name: this.state.strcpyParam2,
-    }
-
-    var unsafeFunctions = this.state.unsafeFunctions.concat(funcParams)
-    this.setState({unsafeFunctions:unsafeFunctions, addUnsafeFunctionBool: false})
-  }
-
-  returnParameters(){
-
-    var parameters = ""
-    this.state.parameters.map((parameter) =>{
-      if(parameter.type === "char[]"){
-        parameters += " char" + " " +  parameter.name + "[],"
-      }
-      else{
-        parameters += " " + parameter.type + " " +  parameter.name + ","
-      }
-    }
-    )
-    var removeComma = parameters.slice(0, -1)
-    var tempParameters = "(" + removeComma + "){"
-
-    return(
-      <h1 className="code-input-text-style">{tempParameters} </h1>
-    )
-  }
-
-  returnLocalVariables(){
-
-    var displayLV = []
-
-    this.state.localVariables.map((variable) =>{
-      if(variable.type === "char[]" && variable.value === "userInput"){
-        displayLV.push(
-          <h1 className="code-input-text-style">{variable.type} {variable.name} = {variable.value}; </h1>
-        )
-      }
-      else if(variable.type === "char[]"){
-        displayLV.push(
-          <h1 className="code-input-text-style">char {variable.name}[] = "{variable.value}"; </h1>
-        )
-      }
-      else if(variable.type === "int" || variable.type === "float"){
-        displayLV.push(
-          <h1 className="code-input-text-style">{variable.type} {variable.name} = {variable.value}; </h1>
-        )
-      }
-      else{
-        displayLV.push(
-          <h1 className="code-input-text-style">{variable.type} {variable.name} = "{variable.value}"; </h1>
-        )
-      }
-    }
-    )
-
-    return displayLV
-  }
-
-  returnUnsafeFunctions(){
-    return(
-      this.state.unsafeFunctions.map((func) =>
-        <h1 className="code-input-text-style"> strcpy({func.param1Name}, {func.param2Name});</h1>
-      )
-    )
-  }
-
-  returAdditionalFunctionCalls(){
-    return(
-      this.state.additionalFunctionCalls.map((func) =>
-        <h1 className="code-input-text-style"> {func}</h1>
-      )
-    )
-  }
-
-  returnAdditionalFunctionCallParams(){
-
-    var params = []
-    this.state.stackFrameDataArray.map((frame) => {
-      if(frame.functionName === this.state.additionalFunctionCallName){
-          frame.parameterDetails.map((parameter) =>{
-            var param = (
-              <div style = {{display: 'flex', backgroundColor: 'blueviolet', marginTop: 7.5, borderRadius:5}}>
-                <h1 style={{fontSize:14, color: 'white', fontWeight: 600, marginLeft: 5, marginTop: 6}}>{parameter.type} {parameter.name}:</h1>
-                <input
-                  value={parameter.value}
-                  type="text"
-                  placeholder="Value"
-                  onChange={this.updateFunctionName}
-                  style={{height:32, width:80, borderRadius:5, marginLeft: 15}}
-                />
-              </div>
-            )
-            params.push(param)
-          })
-      }
-    })
-
-    return params
-  }
-
-  returnParamVariableInput(){
-
-    const parameterOptions = ["char", "int", "float", "char[]"]
-    const localVariableOptions = ["char", "int", "float", "char[]"]
-    const defaultOption = parameterOptions[0]
-    const functionOptions = ["strcpy"]
-    const functionDefault = functionOptions[0]
-
-    var strcpyParams1 = []
-    var strcpyParams2 = []
-    this.state.parameters.map((parameter) => {
-      if(parameter.type === "char[]"){
-        strcpyParams2.push(parameter.name)
-      } 
-    })
-    this.state.localVariables.map((variable) => {
-      if(variable.type === "char[]"){
-        strcpyParams2.push(variable.name)
-        strcpyParams1.push(variable.name)
-      }
-    })
-    var strcpyDefault = "Select..."
-
-    var functionNames = []
-    this.state.stackFrameDataArray.map((frame) =>
-      functionNames.push(frame.functionName)
-    )
-    var funcNameDefault = "Select..."
-
-    return(
-      <div className="add-to-program-spacer">
-        <div style={{display: 'flex', marginLeft: "40%"}}>
-          <div>
-            <div className="code-input-title-container">
-              <h1 style={{marginLeft: '7%'}} className="code-input-title-text">Function Name</h1>
-            </div>
-            <div>
-              <input
-                value={this.state.functionName}
-                type="text"
-                id="inputID"
-                placeholder={"e.g. foo"}
-                onChange={this.updateFunctionName}
-                className="function-name-input-style"
-              />
-            </div>
-          </div>
-          <div className="add-to-intro-button-container">
-              <button class="pushable add-to-intro-width" onClick={this.addFunctionToProgram} onMouseLeave={() => this.setState({hoverAddToProgram: false})} onMouseEnter={() => this.setState({hoverAddToProgram: true})}>
-                <div class="shadow shadow-height-add-to-intro-button"></div>
-                <div class="edge edge-color-green edge-height-add-to-intro-button"></div>
-                <div class="front front-color-darker-green front-padding-add-to-intro-button front-padding-add-to-intro-button-text-size">
-                <div style={{display: 'flex'}}>
-                  <div>
-                    <InstructCircle number={"2"}/>
-                  </div>
-                  <h1 className="add-to-intro-button-text">Add to intro.c</h1>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.addToIntro}>
-                    <GoInfo color={"white"} size={17}/>
-                  </OverlayTrigger>
-                </div>
-                </div>
-              </button> 
-          </div>
-        </div>
-
-        <div style={{marginTop: '3%'}} className="param-lv-input-container">
-          <div className="code-input-title-container">
-            <h1 style={{marginTop: '6%'}} className="code-input-title-text">Parameter</h1>
-          </div>
-          <div>
-            <input
-              value={this.state.parameterName}
-              type="text"
-              id="inputID"
-              placeholder={"Name"}
-              onChange={this.updateParameterName}
-              className="param-lv-input-style"
-            />
-            <div className="height-10">
-              {this.state.parameterNameError && (
-                <h1 className="error-input-text-style">Enter a parameter name</h1>
-              )}
-            </div>
-          </div>
-
-          <div className="dropdown-params-lv">
-            <Dropdown className='dropdown' options={parameterOptions} onChange={(type) => this.changeParameterType(type)} value={this.state.parameterType} />
-          </div>
-
-          <div>
-            <input
-              value={this.state.parameterValue}
-              type="text"
-              id="inputID"
-              placeholder={"Value"}
-              onChange={this.updateParameterValue}
-              className="param-lv-input-style"
-            />
-          </div>
-          <div style={{marginLeft: '5%'}}> 
-            <button class="pushable" onClick={this.addParameter}>
-              <div class="shadow shadow-height-add-param-lv-button"></div>
-              <div class="edge edge-color-lighter-blue edge-add-param-lv-button"></div>
-              <div class="front front-color-white  front-padding-add-param-lv-button front-padding-execution-button-text-size">
-                <h1 className="add-param-lv-button-text"> Add</h1>    
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <div style={{marginTop: '2.5%'}} className="param-lv-input-container">
-          <div className="code-input-title-container">
-            <h1 style={{marginTop: '6%'}} className="code-input-title-text">Local Variable</h1>
-          </div>
-          <div>
-            <input
-              value={this.state.localVariableName}
-              type="text"
-              id="inputID"
-              placeholder={"Name"}
-              onChange={this.updateLocalVariableName}
-              className="param-lv-input-style"
-            />
-            <div className="height-10">
-              {this.state.localVariableNameError && (
-                <h1 className="error-input-text-style">Enter a variable name</h1>
-              )}
-            </div>
-          </div>
-
-          <div className="dropdown-params-lv">
-            <Dropdown options={localVariableOptions} onChange={(type) => this.changeLocalVariableType(type)} value={this.state.localVariableType} />
-          </div>
-
-          <div>
-            <input
-              value={this.state.localVariableValue}
-              type="text"
-              id="inputID"
-              placeholder={"Value"}
-              onChange={this.updateLocalVariableValue}
-              className="param-lv-input-style"
-            />
-          </div>
-          <div style={{marginLeft: '5%'}}> 
-            <button class="pushable" onClick={this.addLocalVariable}>
-              <div class="shadow shadow-height-add-param-lv-button"></div>
-              <div class="edge edge-color-lighter-blue edge-add-param-lv-button"></div>
-              <div class="front front-color-white  front-padding-add-param-lv-button front-padding-execution-button-text-size">
-                <h1 className="add-param-lv-button-text"> Add</h1>    
-              </div>
-            </button>
-          </div>
-
-        </div>
-        <h1 className="error-input-text-style">{this.state.functionNameError}</h1>
-        <h1 className="error-input-text-style">{this.state.localVariableError}</h1>
-        <div className="border-bottom-param-lv"></div>
-      </div>
-    )
-  }
-
-  unsafeFunctions = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      Add an unsafe C function, such as strcpy, to function
-    </Tooltip>
-  );
-
-  passArgvOne = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      This will pass argv[1] as a parameter to the function with type: char[] (Array) and name of "userInput"
-    </Tooltip>
-  );
-
-  additionalFunctionCalls = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      Call another function that has been previously added to intro.c
-    </Tooltip>
-  );
-
-  addToIntro = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      Adds the code displayed to the left to intro.c on the right
-    </Tooltip>
-  );
-
-  returnFunctionForm(){
-    const parameterOptions = ["char", "int", "float", "char[]"]
-    const localVariableOptions = ["char", "int", "float", "char[]"]
-    const defaultOption = parameterOptions[0]
-    const functionOptions = ["strcpy"]
-    const functionDefault = functionOptions[0]
-
-    var strcpyParams1 = []
-    var strcpyParams2 = []
-    this.state.parameters.map((parameter) => {
-      if(parameter.type === "char[]"){
-        strcpyParams2.push(parameter.name)
-      } 
-    })
-    this.state.localVariables.map((variable) => {
-      if(variable.type === "char[]"){
-        strcpyParams2.push(variable.name)
-        strcpyParams1.push(variable.name)
-      }
-    })
-    var strcpyDefault = "Select..."
-
-    var functionNames = []
-    this.state.stackFrameDataArray.map((frame) =>
-      functionNames.push(frame.functionName)
-    )
-    var funcNameDefault = "Select..."
-
-    console.log(this.state.hoverAddToProgram)
-
-    return(
-      <div>
-        <div className="functions-flex">
-          <div className="code-input">
-            <div className="code-input-shift">
-              <div className="functions-flex">
-                <h1 className="code-input-style">void {this.state.functionName}</h1>
-                <div className="functions-flex">
-                  {this.returnParameters()}
-                </div>
-              </div>
-              <div style={{marginLeft: '1%'}}>
-                {this.returnLocalVariables()}
-                {this.returnUnsafeFunctions()}
-                {this.returAdditionalFunctionCalls()}
-              </div>
-              <h1 className="code-input-style">{"}"}</h1>
-            </div>
-          </div>
-          <div>
-            <div style={{marginLeft: '3%'}}>
-              <UnsafeCFunctionsButton displayAddUnsafeFunction={this.displayAddUnsafeFunction}/>
-              {!this.state.userInputBool && (
-                <div className="functions-input-container">
-                  <PassArgvOneButton addUserInput={this.addUserInput}/>
-                </div>
-              )}
-              {this.state.userInputBool && (
-                <div className="functions-input-container">
-                  <RemoveArgvOneButton removeUserInput={this.removeUserInput}/>
-                </div>
-              )}
-              <div className="functions-input-container">
-                <AdditionalFuncCallButton displayAdditionalFunctionCallOptions={this.displayAdditionalFunctionCallOptions}/>
-              </div>
-            </div>
-            <h1 className="error-input-text-style">{this.state.addFunctionError}</h1>
-          </div>
-        </div>
-        {this.state.addUnsafeFunctionBool && (
-          <div className="unsafe-functions-container">
-            <div className="strcpy-param-dropdown-name-container">
-              <Dropdown options={functionOptions} onChange={(type) => this.changeFunctionType(type)} value={functionDefault} />
-              <h1 className="strcpy-param-title-style">Name</h1>
-            </div>
-            <div>
-              <div className="strcpy-param-dropdown-container">
-                <Dropdown options={strcpyParams1} onChange={(type) => this.changeStrcpyParam1(type)} value={strcpyDefault} />
-              </div> 
-              <h1 className="strcpy-param-title-style">Destination</h1>
-            </div>
-            <div style={{marginLeft: 30}}> 
-              <div className="strcpy-param-dropdown-container">
-                <Dropdown options={strcpyParams2} onChange={(type) => this.changeStrcpyParam2(type)} value={strcpyDefault} />
-              </div> 
-              <h1 className="strcpy-param-title-style">Source</h1>
-            </div>
-            <div style={{marginLeft: '5%'}}> 
-              <button class="pushable" onClick={this.addUnsafeFunctionToProgram}>
-                <div class="shadow shadow-height-stack-button"></div>
-                <div class="edge edge-color-lighter-blue edge-height-stack-button"></div>
-                <div class="front front-color-white  front-padding-add-additional-func-button front-padding-execution-button-text-size">
-                  <h1 className="add-unsafe-func-button-text">Add</h1>     
-                </div>
-              </button>
-            </div>
-            <h1 className="error-input-text-style">{this.state.strcpyParamError}</h1>
-          </div>  
-        )}
-        {this.state.displayAdditionalFunctionCalls && (
-          <div className="additional-func-call-container">
-            <div className="additional-functions-dropdown">
-              <Dropdown options={functionNames} onChange={(type) => this.changeAdditionalFunctionCallName(type)} value={strcpyDefault} />
-              <h1 className="strcpy-param-title-style">Function Name</h1>
-            </div> 
-            <div className="additional-func-param-container">
-              {/*this.returnAdditionalFunctionCallParams()*/}
-            </div>
-            <button className="add-additional-func-call-button" onClick={() => this.addFunctionCall()}>
-              <h1 className="add-additional-func-call-button-text">Add Function Call</h1>
-            </button>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  returnProgramFunctionsLocalVariables(stackFrame){
-
-    var localVariables = []
-    stackFrame.mainLocalVariables.map((variable) =>{
-      if(variable.type === "char[]"){
-        localVariables.push(
-          <h1 className="program-code-text-style-functions">char {variable.name}[] = "{variable.value}"; </h1>
-        )
-      }
-      else if(variable.type === "int" || variable.type === "float"){
-        localVariables.push(
-          <h1 className="program-code-text-style-functions">{variable.type} {variable.name} = {variable.value}; </h1>
-        )
-      }
-      else{
-        localVariables.push(
-          <h1 className="program-code-text-style-functions">{variable.type} {variable.name} = "{variable.value}"; </h1>
-        )
-      }
-    })
-
-    return localVariables
-  }
-
-  returnUnsafeFunctionsMain(stackFrame){
-    return(
-      stackFrame.unsafeFunctions.map((func) =>
-        <div>
-          <h1 className="program-code-text-style-functions"> strcpy({func.param1Name}, {func.param2Name});</h1>
-        </div>
-      )
-    )
-  }
-
-  returnProgramFunctionsAdditionalFuncCalls(stackFrame){
-    return(
-      stackFrame.additionalFunctionCalls.map((func) =>
-        <div>
-          <h1 className="program-code-text-style-functions"> {func}</h1>
-        </div>
-      )
-    )
-  }
-
-  returnMainFunctionCalls(){
-    return(
-      this.state.stackFrameDataArray.map((stackFrame) => 
-        <div>
-          <h1 className="program-code-text-style-functions">{stackFrame.functionName}({stackFrame.unmodifiedParams});</h1>
-        </div>
-      )
-    )
-  }
-
-  returnFunctions(){
-    return(
-      this.state.stackFrameDataArray.map((stackFrame) =>
-      <div className="program-functions">
-        <div className="functions-flex">
-          <h1 className="program-code-text-style-functions">void {stackFrame.functionName} </h1>
-          <div className="functions-flex">
-            <h1 className="program-code-text-style-functions">({stackFrame.localFuncParams}){"{"}</h1>
-          </div>
-        </div>
-        <div style={{marginLeft: '1%'}}>
-          {this.returnProgramFunctionsLocalVariables(stackFrame)}
-          {this.returnUnsafeFunctionsMain(stackFrame)}
-          {this.returnProgramFunctionsAdditionalFuncCalls(stackFrame)}
-        </div>
-        <h1 className="program-code-text-style-functions">{"}"}</h1>
-      </div>
-      )
-    )
-  }
-
-  /*onClick = (e) => {
-    this.props.onStartClick(e.target.value)
-  }*/
-
-  onClick = () => {
-    this.props.onStartClick(this.state.stackFrameDataArray)
-  }
-
-  returnProgram(){
-
-    var arr = this.state.stackFrameDataArray
-
-    return(
-      <div>
-          
-        <div className="program-code-container">
-          <div className="program-name-intro-container">
-            <div style={{display: 'flex'}}>
-              {this.state.hoverAddToProgram && (
-                <div style={{display: 'flex'}}>
-                  <div className="end-of-pointer-green"></div>
-                  <div style={{marginTop: '4%', marginRight: '6%'}}>
-                    <div className="pointer-arrow-top-green"></div>
-                    <div className="pointer-arrow-bottom-green"></div>
-                  </div>
-                </div>
-              )}
-              {!this.state.hoverAddToProgram && (
-                <div style={{display: 'flex'}}>
-                  <div className="end-of-pointer"></div>
-                  <div style={{marginTop: '4%', marginRight: '6%'}}>
-                    <div className="pointer-arrow-top"></div>
-                    <div className="pointer-arrow-bottom"></div>
-                  </div>
-                </div>
-              )}
-              <h1 className="program-name-text-intro-style">intro.c</h1>
-            </div>
-          </div>
-          <div className="code-lines-spacer">
-            <h1 className="program-code-text-style-functions">{"#include <stdio.h>"}</h1>
-            <h1 className="program-code-text-style-functions">{"#include <string.h>"}</h1>
-            <h1 className="program-code-text-style-functions">int main( int argc, char* argv[])</h1>
-            <div className="margin-left-7">
-              {this.returnMainFunctionCalls()}
-            </div>
-            <h1 className="program-code-text-style-functions">{"}"}</h1>
-          </div>
-          {this.returnFunctions()}
-        </div>
-        <div className="add-to-intro-button-container">
-          <button class="pushable clear-button-width" onClick={this.clearProgram}  >
-            <div class="shadow shadow-height-clear-button"></div>
-            <div class="edge edge-height-clear-button"></div>
-            <div class="front front-color-white front-padding-clear-button front-padding-add-to-intro-button-text-size">
-              <h1 className="clear-button-text">Clear</h1>      
-            </div>
-          </button> 
-        </div>
-      </div>
-    )
-  }
-
-
   render() {
     return (
       <div className ="functions-container">
         <div className="main-container">
           <div  className="create-function-container">
             <CreateAFunctionTitle/>
-            {this.returnParamVariableInput()}
+            <ParametersVariablesInput
+              parameters={this.state.parameters}
+              localVariables={this.state.localVariables}
+              functionName={this.state.functionName} 
+              updateFunctionName={(name) => this.updateFunctionName(name)}
+              addFunctionToProgram={this.addFunctionToProgram}
+              hoverFalse= {() => this.setState({hoverAddToProgram: false})}
+              hoverTrue={() => this.setState({hoverAddToProgram: true})}
+              addToIntro={this.addToIntro}
+              parameterName={this.state.parameterName}
+              updateParameterName={(name) => this.updateParameterName(name)}
+              parameterNameError={this.state.parameterNameError}
+              changeParameterType={(type) => this.changeParameterType(type)}
+              parameterType={this.state.parameterType}
+              parameterValue={this.state.parameterValue}
+              updateParameterValue={(value) => this.updateParameterValue(value)}
+              addParameter={this.addParameter}
+              localVariableName={this.state.localVariableName}
+              updateLocalVariableName={(name) => this.updateLocalVariableName(name)}
+              localVariableNameError={this.state.localVariableNameError}
+              changeLocalVariableType={(type) => this.changeLocalVariableType(type)}
+              localVariableType={this.state.localVariableType}
+              localVariableValue={this.state.localVariableValue}
+              updateLocalVariableValue={(value) => this.updateLocalVariableValue(value)}
+              addLocalVariable={this.addLocalVariable}
+              functionNameError={this.state.functionNameError}
+              localVariableError={this.state.localVariableError}
+            />
+
             <div className="return-function-form-container">
-              {this.returnFunctionForm()}
+              <CurrentFunction 
+                functionName={this.state.functionName} 
+                parameters={this.state.parameters}
+                localVariables={this.state.localVariables}
+                unsafeFunctions={this.state.unsafeFunctions}
+                additionalFunctionCalls={this.state.additionalFunctionCalls}
+                displayAddUnsafeFunction={this.displayAddUnsafeFunction}
+                addUserInput={this.addUserInput}
+                removeUserInpu={this.removeUserInput}
+                displayAdditionalFunctionCallOptions={this.displayAdditionalFunctionCallOptions}
+                addFunctionError={this.state.addFunctionError}
+                userInputBool={this.state.userInputBool}
+                changeAdditionalFunctionCallName={(name) => this.changeAdditionalFunctionCallName(name)}
+                addFunctionCall={this.addFunctionCall}
+                stackFrameDataArray={this.state.stackFrameDataArray}
+                displayAdditionalFunctionCalls={this.state.displayAdditionalFunctionCalls}
+                addUnsafeFunctionBool={this.state.addUnsafeFunctionBool} 
+                changeFunctionType={(type) => this.changeFunctionType(type)}
+                changeStrcpyParam1={(param1) => this.changeStrcpyParam1(param1)}
+                changeStrcpyParam2={(param2) => this.changeStrcpyParam2(param2)}
+                parameters={this.state.parameters}
+                localVariables={this.state.localVariables}
+                addUnsafeFunctionToProgram={this.addUnsafeFunctionToProgram}
+                strcpyParamError={this.state.strcpyParamError}
+              />
             </div>
           </div>
-          {this.state.hoverAddToProgram && (
-            <div style={{display: 'flex'}}>
-              <div className="pointer-to-program-base-green"></div>
-              <div className="pointer-to-program-green"></div>
-              <div className="pointer-to-program-top-green"></div>
-            </div>
-          )}
-          {!this.state.hoverAddToProgram && (
-            <div style={{display: 'flex'}}>
-              <div className="pointer-to-program-base"></div>
-              <div className="pointer-to-program"></div>
-              <div className="pointer-to-program-top"></div>
-            </div>
-          )}
+          <PointerMiddle hoverAddToProgram={this.state.hoverAddToProgram}/>
           <div className="main-spacer">
-            {this.returnProgram()}
+            <ReturnProgram stackFrameDataArray={this.state.stackFrameDataArray} hoverAddToProgram={this.state.hoverAddToProgram}/>
+            <ClearProgramButton clearProgram={() => this.setState({stackFrameDataArray: []})}/>
           </div>
           <div style={{marginLeft: '1.5%'}}> 
-            <GoToStackButton goToStack={this.onClick}/>
+            <GoToStackButton goToStack={() => this.props.onStartClick(this.state.stackFrameDataArray)}/>
           </div>
         </div>
       </div>
