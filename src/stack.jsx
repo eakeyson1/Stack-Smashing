@@ -5,15 +5,13 @@ import "./css/stack.css";
 import "./css/stackButton.css"
 import styled, { keyframes } from "styled-components";
 import MainFunctionStack from "./mainFunctionStack"
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { RiArrowDropRightLine } from "react-icons/ri";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { BsInfoCircle } from "react-icons/bs"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-
-import payloadDiagram from "./images/payloadDiagram.png"
-
+import Carousel from "react-bootstrap/Carousel";
 
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
@@ -68,6 +66,10 @@ class Stack extends Component {
     this.updateNopSled = this.updateNopSled.bind(this)
     this.updateShellCode = this.updateShellCode.bind(this)
     this.updateReturnAddress = this.updateReturnAddress.bind(this)
+    this.handleSelect = this.handleSelect.bind(this)
+    this.handleShellCodeClick = this.handleShellCodeClick.bind(this)
+    this.handleReturnAddressClick = this.handleReturnAddressClick.bind(this)
+    this.handleNopClick = this.handleNopClick.bind(this)
 
     this.state = {
       displaySegFault: false,
@@ -93,6 +95,16 @@ class Stack extends Component {
       nopSled: "",
       shellcode: "",
       returnAddress: "",
+      index: 0,
+      showControls: false,
+      views : {
+        NOP_VIEW: 0,
+        SHELL_CODE_VIEW: 1,
+        RETURN_ADDRESS_VIEW: 2,
+      },
+      payloadStateNop: true,
+      payloadStateShellcode: false,
+      payloadStateReturnAddress: false,
     }
   }
 
@@ -3182,6 +3194,45 @@ class Stack extends Component {
     this.setState({returnAddress: event})
   }
 
+  handleSelect(selectedIndex, showControls, e) {
+    this.setState({index: selectedIndex})
+    if (selectedIndex === this.state.views.CHOSEN_VIEW && showControls) {
+      this.setState({showControls: true})
+    } else if (selectedIndex === this.state.views.CHOSEN_VIEW && !showControls) {
+      this.setState({showControls: false})
+    }
+    else {
+      this.setState({showControls: false})
+    }
+  }
+
+  handleShellCodeClick(){
+    this.handleSelect(this.state.views.SHELL_CODE_VIEW);
+    this.setState({
+      payloadStateShellcode: true,
+      payloadStateNop: false,
+      payloadStateReturnAddress: false
+    })
+  }
+
+  handleReturnAddressClick(){
+    this.handleSelect(this.state.views.RETURN_ADDRESS_VIEW);
+    this.setState({
+      payloadStateShellcode: false,
+      payloadStateNop: false,
+      payloadStateReturnAddress: true
+    })
+  }
+
+  handleNopClick(){
+    this.handleSelect(this.state.views.NOP_VIEW);
+    this.setState({
+      payloadStateShellcode: false,
+      payloadStateNop: true,
+      payloadStateReturnAddress: false
+    })
+  }
+
   returnStackFrames(){
 
     var stackFramesStartAddress = this.state.endParametersAddress - 7
@@ -3549,13 +3600,13 @@ class Stack extends Component {
         <div className="flex">
           <div className="stack-container">
             <button style={{marginTop: '3%'}} class="pushable" onClick={this.goBack}>
-              <div class="shadow"></div>
-              <div class="edge edge-color-blue"></div>
+              <div class="shadow shadow-height-back-button"></div>
+              <div class="edge edge-color-blue edge-height-back-button"></div>
               <div class="front front-color-blue front-padding-back-button">
-                <AiOutlineArrowLeft className="functions-arrow-stack" color={"white"} size={25}/>
+                <AiOutlineArrowLeft color={"white"} size={25}/>
               </div>
             </button>
-            <div style={{marginLeft: '5%', marginTop: '5%'}}>
+            <div style={{marginLeft: '8%', marginTop: '5%'}}>
               <h1 className="stack-start-address-text">High Memory Address (Bottom of Stack)</h1>
               <div className="stack-container-border">
                 <div className="center-div"> 
@@ -3704,103 +3755,202 @@ class Stack extends Component {
                     <h1 className="construct-payload-text">Construct Payload</h1>
                   </div>
                 </div>
-                <img className="payload-diagram" src={payloadDiagram} />
+                <div className="payload-diagram-container">
+                  {this.state.payloadStateNop && (
+                    <div style={{marginTop: '4%'}}>
+                      <div className="payload-diagram-title-text">NOP Sled</div>
+                      <div className="payload-diagram-nop-container center-div payload-diagram-nop-border">
+                        <div className="payload-diagram-text">\x90\x90\x90\...\x90</div>
+                      </div>
+                    </div>
+                  )}
+                  {!this.state.payloadStateNop && (
+                    <div style={{marginTop: '4%'}}>
+                      <div className="payload-diagram-title-text">NOP Sled</div>
+                      <div className="payload-diagram-nop-container center-div">
+                        <div className="payload-diagram-text">\x90\x90\x90\...\x90</div>
+                      </div>
+                    </div>
+                  )}
+                  {this.state.payloadStateShellcode && (
+                    <div style={{marginTop: '8.2%'}}>
+                      <div className="payload-diagram-shellcode-container center-div payload-diagram-shellcode-border">
+                        <div className="payload-diagram-text">Shellcode</div>
+                      </div>
+                    </div>
+                  )}
+                  {!this.state.payloadStateShellcode && (
+                    <div style={{marginTop: '8.2%'}}>
+                      <div className="payload-diagram-shellcode-container center-div">
+                        <div className="payload-diagram-text">Shellcode</div>
+                      </div>
+                    </div>
+                  )}
+                  {this.state.payloadStateReturnAddress && (
+                    <div>
+                      <div className="payload-diagram-title-text">0xABCDFFFE4</div>
+                      <div className="payload-diagram-title-text">Return Address</div>
+                      <div className="payload-diagram-return-address-container center-div payload-diagram-return-address-border">
+                        <div className="payload-diagram-text">0xE4FFCDAB</div>
+                      </div>
+                    </div>
+                  )}
+                  {!this.state.payloadStateReturnAddress && (
+                    <div>
+                      <div className="payload-diagram-title-text">0xABCDFFFE4</div>
+                      <div className="payload-diagram-title-text">Return Address</div>
+                      <div className="payload-diagram-return-address-container center-div">
+                        <div className="payload-diagram-text">0xE4FFCDAB</div>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
               </div>
             </div>
-            <div className="construct-payload-part-container">
-              <div className="instruction-sub-circle margin-right-5-percent">
-                <div className="instruction-sub-text">4.1</div>
-              </div>
-              <div style={{marginLeft: "3%"}}>
-                <div style={{display: 'flex', marginTop: "1.1%"}}>
-                  <div style={{marginRight: "2%", marginTop: "0.75%"}}>
-                    <h1 className="construct-payload-sub-text">Begin with NOP Sled</h1>
+            <div style={{marginLeft: '12%', marginTop: '10%'}}>
+              <Carousel
+                activeIndex={this.state.index}
+                onSelect={this.handleSelect}
+                controls={this.state.showControls}
+                wrap={false}
+                interval={null}
+                indicators={false}
+              >
+                <Carousel.Item>
+                  <div className="construct-payload-part-container">
+                    <div style={{display: 'flex'}}>
+                      <div className="payload-nop-header-container">
+                        <div style={{marginLeft: '25%'}} className="instruction-sub-circle margin-right-5-percent">
+                          <div className="instruction-sub-text">4.1</div>
+                        </div>
+                        <div className="payload-nop-header-title-container">
+                          <h1 className="construct-payload-sub-text">Begin with NOP Sled</h1>
+                        </div>
+                        <OverlayTrigger
+                          placement="right"
+                          delay={{ show: 250, hide: 400 }}
+                          overlay={this.nopSledDef}
+                        >
+                          <BsInfoCircle color={"#1a75ff"} size={20}/>
+                        </OverlayTrigger>
+                      </div>
+                      <div className="payload-next-button-container">
+                        <button class="pushable" onClick={this.handleShellCodeClick}>
+                          <div class="edge edge-color-blue edge-height-back-button"></div>
+                          <div class="front front-color-blue front-padding-back-button">
+                            <AiOutlineArrowRight color={"white"} size={25}/>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{marginTop: '5%'}}>
+                      <h1 className="hints-title">Hints</h1>
+                      <h1 className="hints">* Should only contain \x90</h1>
+                      <h1 className="hints">* Consider the space occupied by the local variables</h1>
+                      <h1 className="hints">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                    </div>
+                      <input
+                        value={this.state.nopSled}
+                        type="text"
+                        placeholder={"Start typing...."}
+                        onChange={event => this.updateNopSled(event.target.value)}
+                        className="user-input"
+                      />
                   </div>
-                  <OverlayTrigger
-                    placement="right"
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={this.nopSledDef}
-                  >
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <div className="construct-payload-part-container">             
+                    <div style={{display: 'flex'}}>
+                      <div className="payload-back-button-container">
+                        <button class="pushable" onClick={this.handleNopClick}>
+                          <div class="edge edge-color-blue edge-height-back-button"></div>
+                          <div class="front front-color-blue front-padding-back-button">
+                            <AiOutlineArrowLeft color={"white"} size={25}/>
+                          </div>
+                        </button>
+                      </div>
+                      <div className="payload-shellcode-header-container">
+                        <div style={{marginLeft: '22.5%'}} className="instruction-sub-circle margin-right-5-percent">
+                          <div className="instruction-sub-text">4.2</div>
+                        </div> 
+                        <div style={{marginLeft: "2%", marginTop: "1%", marginRight: '2%'}}>
+                          <h1 className="construct-payload-sub-text">Add Shellcode</h1>
+                        </div>                  
+                        <OverlayTrigger
+                            placement="right"
+                            delay={{ show: 250, hide: 400 }}
+                            overlay={this.shellcodeDef}
+                          >
+                          <BsInfoCircle color={"#1a75ff"} size={20}/>
+                        </OverlayTrigger>
+                      </div>
+                      <div className="payload-shellcode-next-button-shellcode-container">
+                        <button class="pushable" onClick={this.handleReturnAddressClick}>
+                          <div class="edge edge-color-blue edge-height-back-button"></div>
+                          <div class="front front-color-blue front-padding-back-button">
+                            <AiOutlineArrowRight color={"white"} size={25}/>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{marginTop: '5%'}}>
+                      <h1 className="hints-title">Hints</h1>
+                      <h1 className="hints">* Written in assembly</h1>
+                      <h1 className="hints">* Many examples of shellcode</h1>
+                    </div>
+                      <input
+                        value={this.state.shellcode}
+                        type="text"
+                        placeholder={"Start typing...."}
+                        onChange={event => this.updateShellCode(event.target.value)}
+                        className="user-input"
+                      />
                 </div>
-                <div>
-                  <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints">* Should only contain \x90</h1>
-                  <h1 className="hints">* Consider the space occupied by the local variables</h1>
-                  <h1 className="hints">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
-                </div>
-                <input
-                  value={this.state.nopSled}
-                  type="text"
-                  placeholder={"Start typing...."}
-                  onChange={event => this.updateNopSled(event.target.value)}
-                  className="user-input"
-                />
-              </div>
-            </div>
-            <div className="construct-payload-part-container">
-              <div className="instruction-sub-circle margin-right-5-percent">
-                <div className="instruction-sub-text">4.2</div>
-              </div>              
-              <div style={{marginLeft: "3%"}}>
-                <div style={{display: 'flex', marginTop: "2%"}}>
-                  <div style={{marginRight: "2%"}}>
-                    <h1 className="construct-payload-sub-text">Add Shellcode</h1>
-                  </div>                  
-                  <OverlayTrigger
-                      placement="right"
-                      delay={{ show: 250, hide: 400 }}
-                      overlay={this.shellcodeDef}
-                    >
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
-                </div>
-                <div>
-                  <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints">* Written in assembly</h1>
-                  <h1 className="hints">* Many examples of shellcode</h1>
-                </div>
-                <input
-                  value={this.state.shellcode}
-                  type="text"
-                  placeholder={"Start typing...."}
-                  onChange={event => this.updateShellCode(event.target.value)}
-                  className="user-input"
-                />
-              </div>
-            </div>
-            <div className="construct-payload-part-container">
-              <div className="instruction-sub-circle margin-right-5-percent">
-                <div className="instruction-sub-text">4.3</div>
-              </div>
-              <div style={{marginLeft: "3%"}}>
-                <div style={{display: 'flex', marginTop: "0.75%"}}>
-                  <div style={{marginRight: "2%"}}>
-                    <h1 className="construct-payload-sub-text">Repeat Return Address</h1>
+                </Carousel.Item>
+                <Carousel.Item>
+                  <div className="construct-payload-part-container">
+                    <div style={{display: 'flex'}}>
+                      <div>
+                        <button class="pushable" onClick={this.handleShellCodeClick}>
+                          <div class="edge edge-color-blue edge-height-back-button"></div>
+                          <div class="front front-color-blue front-padding-back-button">
+                            <AiOutlineArrowLeft color={"white"} size={25}/>
+                          </div>
+                        </button>
+                      </div>
+                      <div className="payload-return-address-header-container">
+                        <div style={{marginLeft: '2%'}} className="instruction-sub-circle margin-right-5-percent">
+                          <div className="instruction-sub-text">4.3</div>
+                        </div>
+                        <div style={{marginLeft: "2%", marginTop: "1%", marginRight: '2%'}}>
+                          <h1 className="construct-payload-sub-text">End with repeating Return Address</h1>
+                        </div>
+                        <OverlayTrigger
+                            placement="right"
+                            delay={{ show: 250, hide: 400 }}
+                            overlay={this.returnAddressDef}
+                          >
+                          <BsInfoCircle color={"#1a75ff"} size={20}/>
+                        </OverlayTrigger>
+                      </div>
+                    </div>
+                    <div style={{marginTop: '5%'}}>
+                      <h1 className="hints-title">Hints</h1>
+                      <h1 className="hints">* Any address that contains a NOP from our payload</h1>
+                      <h1 className="hints">* Little endian based CPU</h1>
+                      <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
+                    </div>
+                    <input
+                      value={this.state.returnAddress}
+                      type="text"
+                      placeholder={"Start typing...."}
+                      onChange={event => this.updateReturnAddress(event.target.value)}
+                      className="user-input"
+                    />
                   </div>
-                  <OverlayTrigger
-                      placement="right"
-                      delay={{ show: 250, hide: 400 }}
-                      overlay={this.returnAddressDef}
-                    >
-                    <BsInfoCircle color={"#1a75ff"} size={20}/>
-                  </OverlayTrigger>
-                </div>
-                <div>
-                  <h1 className="hints-title">Hints</h1>
-                  <h1 className="hints">* Any address that contains a NOP from our payload</h1>
-                  <h1 className="hints">* Little endian based CPU</h1>
-                  <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
-                </div>
-                <input
-                  value={this.state.returnAddress}
-                  type="text"
-                  placeholder={"Start typing...."}
-                  onChange={event => this.updateReturnAddress(event.target.value)}
-                  className="user-input"
-                />
-              </div>
+                </Carousel.Item>
+              </Carousel>
             </div>
           </div>
           <div className="second-main-container">
@@ -3811,9 +3961,9 @@ class Stack extends Component {
                     <div className="instruction-text">5</div>
                   </div> 
                   <button class="pushable" onClick={this.startProgram}>
-                    <div class="shadow"></div>
-                    <div class="edge edge-color-green"></div>
-                    <div class="front front-color-green front-padding-execution-button">
+                    <div class="shadow shadow-height-execution-button"></div>
+                    <div class="edge edge-color-green edge-height-execution-button"></div>
+                    <div class="front front-color-green front-padding-execution-button front-padding-execution-button-text-size">
                       Start
                     </div>
                   </button>
@@ -3847,9 +3997,9 @@ class Stack extends Component {
                   </div>
 
                   <button class="pushable" onClick={this.programNext}>
-                    <div class="shadow"></div>
-                    <div class="edge edge-color-blue"></div>
-                    <div class="front front-color-blue front-padding-execution-button">
+                    <div class="shadow shadow-height-execution-button"></div>
+                    <div class="edge edge-color-blue edge-height-execution-button"></div>
+                    <div class="front front-color-blue front-padding-execution-button front-padding-execution-button-text-size">
                       Next
                     </div>
                   </button>
@@ -3882,9 +4032,9 @@ class Stack extends Component {
                     <div className="instruction-text">7</div>
                   </div>
                   <button class="pushable" onClick={this.programFinish}>
-                    <div class="shadow"></div>
-                    <div class="edge edge-color-orange"></div>
-                    <div class="front front-color-orange front-padding-execution-button">
+                    <div class="shadow shadow-height-execution-button"></div>
+                    <div class="edge edge-color-orange edge-height-execution-button"></div>
+                    <div class="front front-color-orange front-padding-execution-button front-padding-execution-button-text-size">
                       Finish
                     </div>
                   </button>

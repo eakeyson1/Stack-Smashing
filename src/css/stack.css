@@ -23,12 +23,12 @@
 
 .stack-start-address-text{
     color: #1a75ff;
-    font-size: 1.6vh;
+    font-size: 1.8vh;
 }
 
 .stack-end-address-text{
     color: #1a75ff;
-    font-size: 1.6vh;
+    font-size: 1.8vh;
     margin-top: 5%;
 }
 
@@ -135,7 +135,7 @@
     outline-offset: none !important;
     color: #1a75ff;
     font-size: 2vh;
-    margin-top: 5%;
+    margin-top: 7vh;
 }
 
 .seg-fault{
@@ -215,7 +215,7 @@
 
 .stack-frame-open-button{
     background-color: #0B1D51;
-    width: 55vh;
+    width: 100%;
     border: 0.25vh solid white;
     margin-top: 1%;
     height:7vh;
@@ -224,7 +224,7 @@
 
 .stack-frame-open-button-strcpy{
     background-color: #ff4d4d;
-    width: 55vh;
+    width: 100%;
     border: 0.25vh solid white;
     margin-top: 1%;
     height: 7vh;
@@ -334,10 +334,6 @@
     align-items: center;
 }
 
-.functions-arrow-stack{
-    padding: 2%;
-}
-
 .stack-frame-function-name-text{
     font-size: 18px;
     color: white;
@@ -373,7 +369,7 @@
     color: white;
     font-size: 1.9vh;
     margin-top: 0.6vh;
-    margin-left: 0.7vh;
+    margin-left: 0.6vh;
 }
 
 .instruction-sub-circle {
@@ -414,8 +410,7 @@
 
 .construct-payload-container{
     margin-top: 2%;
-    width: 75vh;
-    margin-left: 2%;
+    width: 85vh;
 }
 
 .info-symbol{
@@ -438,8 +433,31 @@
 }
 
 .construct-payload-part-container{
+    margin-top: 2vh;
+}
+
+.payload-nop-header-container{
     display: flex;
-    margin-top: 7%;
+    width: 55vh;
+    margin-top: 2vh;
+}
+
+.payload-shellcode-header-container{
+    display: flex;
+    width: 45vh;
+    margin-top: 2vh;
+}
+
+.payload-return-address-header-container{
+    display: flex;
+    width: 60vh;
+    margin-top: 2vh;
+}
+
+.payload-nop-header-title-container{
+    margin-left: 2vh;
+    margin-right: 2vh;
+    margin-top: 0.6vh;
 }
 
 .construct-payload-title-container{
@@ -535,3 +553,64 @@ div.scrollmenu a:hover {
     width: 40vh;
     margin-top: 5%;
 }
+
+.payload-next-button-container{
+    margin-right: 3vh;
+    margin-left: 2vh;
+}
+
+.payload-shellcode-next-button-container{
+    margin-top: 2vh;
+    margin-right: 3vh;
+    margin-left: 42vh;
+    display: flex;
+}
+
+.payload-shellcode-next-button-shellcode-container{
+    margin-left: 5vh;
+}
+
+.payload-diagram-container{
+    display: flex;
+}
+
+.payload-diagram-nop-container{
+    width: 18vh;
+    height: 5vh;
+    background-color: #FFF2CC;
+}
+
+.payload-diagram-shellcode-container{
+    width: 18vh;
+    height: 5vh;
+    background-color: #D5E8D4; 
+}
+
+.payload-diagram-return-address-container{
+    width: 18vh;
+    height: 4.95vh;
+    background-color: #F8CECC; 
+}
+
+.payload-diagram-title-text{
+    font-size: 1.5vh;
+    font-weight: bold;
+    text-align: center;
+}
+
+.payload-diagram-text{
+    font-size: 1.55vh;
+}
+
+.payload-diagram-nop-border{
+    border: 0.35vh solid #f8d467;
+}
+
+.payload-diagram-shellcode-border{
+    border: 0.35vh solid #588f55;
+}
+
+.payload-diagram-return-address-border{
+    border: 0.35vh solid #cc7a76;
+}
+
