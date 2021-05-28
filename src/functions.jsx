@@ -117,7 +117,9 @@ class Functions extends Component {
       functionNameError: "",
       addFunctionError: "",
       width: window.innerWidth,
-      hoverAddToProgram: false
+      hoverAddToProgram: false,
+      strcpyParams1: [],
+      strcpyParams2: [], 
     }
   }
 

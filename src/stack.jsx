@@ -3263,7 +3263,8 @@ class Stack extends Component {
                       <div><h1 className="main-stack-element-title-text">Parameters</h1></div>
                     </div> 
                     <div>
-                      {stackFrame.parametersLetterArray.map((param) =>
+                    {stackFrame.parametersLetterArray.length !== 0 && (
+                      stackFrame.parametersLetterArray.map((param) =>
                         <div className="stack-frame-param-container">
                           <div className="main-stack-second-container">
                             <div className="main-stack-value-container">
@@ -3274,12 +3275,18 @@ class Stack extends Component {
                             </div>
                           </div>
                         </div>                
-                      )}
+                      )
+                    )}
                     </div> 
+
+                    {stackFrame.parametersLetterArray.length === 0 && (
+                      <div className="stack-frame-param-container center-div">
+                        <h1 className="main-stack-param-text">Empty</h1>
+                      </div>                
+                    )}
                   </div> 
 
                   <div style={{display: 'flex'}}>
-
                     <div className="return-address-title-container">
                       <h1 className="main-stack-element-title-text">Return Address</h1>
                     </div> 
@@ -3324,7 +3331,8 @@ class Stack extends Component {
                       <h1 className="main-stack-element-title-text">Local Variables</h1>
                     </div> 
                     <div>
-                      {stackFrame.localVariablesLetterArray.map((variable) => 
+                      {stackFrame.localVariablesLetterArray.length !== 0 && (
+                        stackFrame.localVariablesLetterArray.map((variable) =>
                         <div className="stack-frame-variable-container">
                           <div className="main-stack-second-container">
                             <div className="main-stack-value-container">
@@ -3334,9 +3342,15 @@ class Stack extends Component {
                               <h1 className="main-stack-param-text">0x{((stackFramesStartAddress -= 1).toString(16)).toUpperCase()}</h1>
                             </div>
                           </div>
-                        </div> 
+                        </div>                
+                        )
                       )}
-                    </div>
+                    </div> 
+                      {stackFrame.localVariablesLetterArray.length === 0 && (
+                        <div className="stack-frame-variable-container center-div">
+                          <h1 className="main-stack-param-text">Empty</h1>
+                        </div>                
+                      )}
                   </div>
                 </div>
               </div>
@@ -3747,7 +3761,7 @@ class Stack extends Component {
           <div className="construct-payload-container">
             <div className="center-div">
               <div>
-                <div style={{display: 'flex'}}>
+                <div style={{display: 'flex', marginLeft: '15%', marginBottom: '10%'}}>
                   <div className="instruction-circle">
                     <div className="instruction-text">4</div>
                   </div>
@@ -3808,7 +3822,7 @@ class Stack extends Component {
                 </div>
               </div>
             </div>
-            <div style={{marginLeft: '12%', marginTop: '10%'}}>
+            <div style={{marginLeft: '8%', marginTop: '10%'}}>
               <Carousel
                 activeIndex={this.state.index}
                 onSelect={this.handleSelect}
@@ -3850,13 +3864,18 @@ class Stack extends Component {
                       <h1 className="hints">* Consider the space occupied by the local variables</h1>
                       <h1 className="hints">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
                     </div>
+                    {this.state.running && (
+                      <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.nopSled}</h1>
+                    )}
+                    {!this.state.running && (
                       <input
                         value={this.state.nopSled}
                         type="text"
                         placeholder={"Start typing...."}
                         onChange={event => this.updateNopSled(event.target.value)}
                         className="user-input"
-                      />
+                      />                    
+                    )}
                   </div>
                 </Carousel.Item>
                 <Carousel.Item>
@@ -3899,13 +3918,18 @@ class Stack extends Component {
                       <h1 className="hints">* Written in assembly</h1>
                       <h1 className="hints">* Many examples of shellcode</h1>
                     </div>
+                    {this.state.running && (
+                      <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.shellcode}</h1>
+                    )}
+                    {!this.state.running && (
                       <input
                         value={this.state.shellcode}
                         type="text"
                         placeholder={"Start typing...."}
                         onChange={event => this.updateShellCode(event.target.value)}
                         className="user-input"
-                      />
+                      />                   
+                    )}
                 </div>
                 </Carousel.Item>
                 <Carousel.Item>
@@ -3941,13 +3965,18 @@ class Stack extends Component {
                       <h1 className="hints">* Little endian based CPU</h1>
                       <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
                     </div>
-                    <input
-                      value={this.state.returnAddress}
-                      type="text"
-                      placeholder={"Start typing...."}
-                      onChange={event => this.updateReturnAddress(event.target.value)}
-                      className="user-input"
-                    />
+                    {this.state.running && (
+                      <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.returnAddress}</h1>
+                    )}
+                    {!this.state.running && (
+                      <input
+                        value={this.state.returnAddress}
+                        type="text"
+                        placeholder={"Start typing...."}
+                        onChange={event => this.updateReturnAddress(event.target.value)}
+                        className="user-input"
+                      />                  
+                    )}
                   </div>
                 </Carousel.Item>
               </Carousel>

@@ -12,7 +12,7 @@
 .stack-container{
     margin-left: 2vh;
     margin-top: 1vh;
-    width: 55vh;
+    width: 65vh;
     height: 100%;
 }
 
@@ -136,6 +136,7 @@
     color: #1a75ff;
     font-size: 2vh;
     margin-top: 7vh;
+    width: 40vh;
 }
 
 .seg-fault{
@@ -350,7 +351,7 @@
 
 .second-main-container{
     margin-top: 2%;
-    width: 50vh
+    width: 50vh;
 }
 
 .instruction-step{
@@ -410,7 +411,7 @@
 
 .construct-payload-container{
     margin-top: 2%;
-    width: 85vh;
+    width: 80vh;
 }
 
 .info-symbol{
