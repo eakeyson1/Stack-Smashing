@@ -4,20 +4,21 @@ import "./css/functions.css";
 import styled, { keyframes } from "styled-components";
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
-import { AiOutlineArrowRight } from "react-icons/ai";
-import { AiOutlinePlus } from "react-icons/ai";
-import { FaUserMinus } from "react-icons/fa";
-import { GiHazardSign } from "react-icons/gi";
-import { FaUserPlus } from "react-icons/fa";
-import { BsInfoCircle } from "react-icons/bs"
-import { AiFillFileAdd } from "react-icons/ai"
-import { TiArrowForward } from "react-icons/ti"
-import { RiStackFill } from "react-icons/ri"
+
 import { GoInfo } from "react-icons/go"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 
 import style from './css/button.css'
+
+import InstructCircle from "./components/InstructCircle"
+import GoToStackButton from "./components/GoToStackButton"
+import UnsafeCFunctionsButton from "./components/UnsafeCFunctionsButton"
+import PassArgvOneButton from "./components/PassArgvOneButton"
+import RemoveArgvOneButton from "./components/RemoveArgvOneButton"
+import AdditionalFuncCallButton from "./components/AdditionalFuncCallButton"
+
+import CreateAFunctionTitle from "./components/CreateAFunctionTitle"
 
 
 import { AwesomeButton } from "react-awesome-button";
@@ -825,9 +826,7 @@ class Functions extends Component {
                 <div class="front front-color-darker-green front-padding-add-to-intro-button front-padding-add-to-intro-button-text-size">
                 <div style={{display: 'flex'}}>
                   <div>
-                    <div className="instruction-circle">
-                      <div className="instruction-text-add-to-intro">2</div>
-                    </div>
+                    <InstructCircle number={"2"}/>
                   </div>
                   <h1 className="add-to-intro-button-text">Add to intro.c</h1>
                   <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.addToIntro}>
@@ -1011,59 +1010,19 @@ class Functions extends Component {
           </div>
           <div>
             <div style={{marginLeft: '3%'}}>
-              <AwesomeButton type="primary" className="code-addon-button" onPress={this.displayAddUnsafeFunction} ripple={true}>
-                <div style={{display: 'flex'}}>
-                  <div style={{marginTop: '1%', color: 'blue'}}>
-                    <GiHazardSign size={21}/>
-                  </div>
-                  <h1 className="code-addon-button-text-style">Unsafe C Functions</h1>
-                  <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.unsafeFunctions}>
-                    <GoInfo color={"#1a75ff"} size={17}/>
-                  </OverlayTrigger>
-                </div>
-              </AwesomeButton>
+              <UnsafeCFunctionsButton displayAddUnsafeFunction={this.displayAddUnsafeFunction}/>
               {!this.state.userInputBool && (
-              <div className="functions-input-container">
-                <AwesomeButton className="code-addon-button" onPress={this.addUserInput} ripple={true} type="primary">
-                  <div style={{display: 'flex'}}>
-                    <div style={{marginTop: '0.5%'}}>
-                      <FaUserPlus color={"white"} size={22}/>
-                    </div>
-                    <h1 className="code-addon-button-text-style">Pass argv[1]</h1>
-                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
-                      <GoInfo color={"#1a75ff"} size={17}/>
-                  </OverlayTrigger>
-                  </div>
-                </AwesomeButton>
-              </div>
+                <div className="functions-input-container">
+                  <PassArgvOneButton addUserInput={this.addUserInput}/>
+                </div>
               )}
               {this.state.userInputBool && (
                 <div className="functions-input-container">
-                <AwesomeButton className="code-addon-button" onPress={this.removeUserInput} ripple={true} type="primary">
-                  <div style={{display: 'flex'}}>
-                    <div style={{marginTop: '0.5%'}}>
-                    <FaUserMinus color={"white"} size={22}/>
-                    </div>
-                    <h1 className="code-addon-button-text-style">Remove argv[1]</h1>
-                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.passArgvOne}>
-                      <GoInfo color={"#1a75ff"} size={17}/>
-                    </OverlayTrigger>
-                  </div>
-                </AwesomeButton>
-              </div>
+                  <RemoveArgvOneButton removeUserInput={this.removeUserInput}/>
+                </div>
               )}
               <div className="functions-input-container">
-                <AwesomeButton className="code-addon-button" onPress={this.displayAdditionalFunctionCallOptions} ripple={true} type="primary">
-                  <div style={{display: 'flex'}}>
-                    <div style={{marginTop: '1%'}}>
-                      <TiArrowForward color={"white"} size={22}/>
-                    </div>
-                    <h1 className="code-addon-button-text-style">Call Another Function</h1>
-                    <OverlayTrigger placement="right" delay={{ show: 250, hide: 400 }} overlay={this.additionalFunctionCalls}>
-                      <GoInfo color={"#1a75ff"} size={17}/>
-                    </OverlayTrigger>
-                  </div>
-                </AwesomeButton>
+                <AdditionalFuncCallButton displayAdditionalFunctionCallOptions={this.displayAdditionalFunctionCallOptions}/>
               </div>
             </div>
             <h1 className="error-input-text-style">{this.state.addFunctionError}</h1>
@@ -1261,14 +1220,7 @@ class Functions extends Component {
       <div className ="functions-container">
         <div className="main-container">
           <div  className="create-function-container">
-            <div className="create-function-title-container">
-              <div style={{display: 'flex'}}>
-                <div className="instruction-circle">
-                  <div className="instruction-text">1</div>
-                </div>
-                <h1 className="create-function-title-style">Create a function</h1>
-              </div>
-            </div>
+            <CreateAFunctionTitle/>
             {this.returnParamVariableInput()}
             <div className="return-function-form-container">
               {this.returnFunctionForm()}
@@ -1292,20 +1244,7 @@ class Functions extends Component {
             {this.returnProgram()}
           </div>
           <div style={{marginLeft: '1.5%'}}> 
-            <button class="pushable" onClick={this.onClick}>
-              <div class="shadow shadow-height-stack-button"></div>
-              <div class="edge edge-color-lighter-blue edge-height-stack-button"></div>
-              <div class="front front-color-white  front-padding-stack-button front-padding-execution-button-text-size">
-                <div style={{display: 'flex'}}>
-                  <div>
-                    <div className="instruction-circle">
-                      <div className="instruction-text-add-to-intro">3</div>
-                    </div>
-                  </div>
-                  <RiStackFill style={{marginLeft: "2%"}} color={"#1a75ff"} size={33}/>
-                </div>     
-              </div>
-            </button>
+            <GoToStackButton goToStack={this.onClick}/>
           </div>
         </div>
       </div>
