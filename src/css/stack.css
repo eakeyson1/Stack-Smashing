@@ -368,15 +368,16 @@
 
 .instruction-sub-text{
     color: white;
-    font-size: 1.9vh;
+    font-size: 1.7vh;
+    font-weight: bold;
     margin-top: 0.6vh;
-    margin-left: 0.6vh;
+    margin-left: 0.4vh;
 }
 
 .instruction-sub-circle {
     display: inline-block;
-    width: 4.2vh;
-    height: 4.2vh;
+    width: 3.8vh;
+    height: 3.8vh;
     margin: 0;
     border-radius: 50%;
     position: relative;
@@ -396,10 +397,10 @@
 }
 
 .construct-payload-text{
-    font-size: 2.7vh;
+    font-size: 2.9vh;
     color: #1a75ff;
     font-weight: bold;
-    margin-top: 3%;
+    margin-top: 0.2vh;
 }
 
 .construct-payload-sub-text{
@@ -423,8 +424,22 @@
 
 .hints-title{
     font-size: 2.1vh;
-    color: #ff3399;
+    color: #ff0080;
     font-weight: bold;
+}
+
+.hints-main-container{
+    margin-top: 5vh;
+    background-color: #fff8eb;
+    border: 0.45vh solid #ffdf9e;
+    border-radius: 0.5vh;
+    width: 65vh;
+}
+
+.hints-container{
+    margin-top: 2vh;
+    margin-left: 2vh;
+    margin-bottom: 3vh;
 }
 
 .hints{

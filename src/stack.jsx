@@ -3615,9 +3615,9 @@ class Stack extends Component {
           <div className="stack-container">
             <button style={{marginTop: '3%'}} class="pushable" onClick={this.goBack}>
               <div class="shadow shadow-height-back-button"></div>
-              <div class="edge edge-color-blue edge-height-back-button"></div>
-              <div class="front front-color-blue front-padding-back-button">
-                <AiOutlineArrowLeft color={"white"} size={25}/>
+              <div class="edge edge-color-lighter-blue edge-height-back-button"></div>
+              <div class="front front-color-white front-padding-back-button">
+                <AiOutlineArrowLeft color={"#1a75ff"} size={25}/>
               </div>
             </button>
             <div style={{marginLeft: '8%', marginTop: '5%'}}>
@@ -3851,18 +3851,20 @@ class Stack extends Component {
                       </div>
                       <div className="payload-next-button-container">
                         <button class="pushable" onClick={this.handleShellCodeClick}>
-                          <div class="edge edge-color-blue edge-height-back-button"></div>
-                          <div class="front front-color-blue front-padding-back-button">
-                            <AiOutlineArrowRight color={"white"} size={25}/>
+                          <div class="edge edge-color-lighter-blue edge-height-stack-next-button"></div>
+                          <div class="front front-color-white front-padding-back-button">
+                            <AiOutlineArrowRight color={"#1a75ff"} size={25}/>
                           </div>
                         </button>
                       </div>
                     </div>
-                    <div style={{marginTop: '5%'}}>
-                      <h1 className="hints-title">Hints</h1>
-                      <h1 className="hints">* Should only contain \x90</h1>
-                      <h1 className="hints">* Consider the space occupied by the local variables</h1>
-                      <h1 className="hints">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                    <div className="hints-main-container">
+                      <div className="hints-container">
+                        <h1 className="hints-title">Hints</h1>
+                        <h1 className="hints">* Should only contain \x90</h1>
+                        <h1 className="hints">* Consider the space occupied by the local variables</h1>
+                        <h1 className="hints">* Return Address and Saved Frame Pointer occupy 4 bytes</h1>
+                      </div>
                     </div>
                     {this.state.running && (
                       <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.nopSled}</h1>
@@ -3883,9 +3885,9 @@ class Stack extends Component {
                     <div style={{display: 'flex'}}>
                       <div className="payload-back-button-container">
                         <button class="pushable" onClick={this.handleNopClick}>
-                          <div class="edge edge-color-blue edge-height-back-button"></div>
-                          <div class="front front-color-blue front-padding-back-button">
-                            <AiOutlineArrowLeft color={"white"} size={25}/>
+                          <div class="edge edge-color-lighter-blue edge-height-stack-next-button"></div>
+                          <div class="front front-color-white front-padding-back-button">
+                            <AiOutlineArrowLeft color={"#1a75ff"} size={25}/>
                           </div>
                         </button>
                       </div>
@@ -3906,17 +3908,19 @@ class Stack extends Component {
                       </div>
                       <div className="payload-shellcode-next-button-shellcode-container">
                         <button class="pushable" onClick={this.handleReturnAddressClick}>
-                          <div class="edge edge-color-blue edge-height-back-button"></div>
-                          <div class="front front-color-blue front-padding-back-button">
-                            <AiOutlineArrowRight color={"white"} size={25}/>
+                          <div class="edge edge-color-lighter-blue edge-height-stack-next-button"></div>
+                          <div class="front front-color-white front-padding-back-button">
+                            <AiOutlineArrowRight color={"#1a75ff"} size={25}/>
                           </div>
                         </button>
                       </div>
                     </div>
-                    <div style={{marginTop: '5%'}}>
-                      <h1 className="hints-title">Hints</h1>
-                      <h1 className="hints">* Written in assembly</h1>
-                      <h1 className="hints">* Many examples of shellcode</h1>
+                    <div className="hints-main-container">
+                      <div className="hints-container">
+                        <h1 className="hints-title">Hints</h1>
+                        <h1 className="hints">* Written in assembly</h1>
+                        <h1 className="hints">* Many examples of shellcode</h1>
+                      </div>
                     </div>
                     {this.state.running && (
                       <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.shellcode}</h1>
@@ -3937,9 +3941,9 @@ class Stack extends Component {
                     <div style={{display: 'flex'}}>
                       <div>
                         <button class="pushable" onClick={this.handleShellCodeClick}>
-                          <div class="edge edge-color-blue edge-height-back-button"></div>
-                          <div class="front front-color-blue front-padding-back-button">
-                            <AiOutlineArrowLeft color={"white"} size={25}/>
+                          <div class="edge edge-color-lighter-blue edge-height-stack-next-button"></div>
+                          <div class="front front-color-white front-padding-back-button">
+                            <AiOutlineArrowLeft color={"#1a75ff"} size={25}/>
                           </div>
                         </button>
                       </div>
@@ -3959,11 +3963,13 @@ class Stack extends Component {
                         </OverlayTrigger>
                       </div>
                     </div>
-                    <div style={{marginTop: '5%'}}>
-                      <h1 className="hints-title">Hints</h1>
-                      <h1 className="hints">* Any address that contains a NOP from our payload</h1>
-                      <h1 className="hints">* Little endian based CPU</h1>
-                      <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
+                    <div className="hints-main-container">
+                      <div style={{marginBottom: '8%'}} className="hints-container">
+                        <h1 className="hints-title">Hints</h1>
+                        <h1 className="hints">* Any address that contains a NOP from our payload</h1>
+                        <h1 className="hints">* Little endian based CPU</h1>
+                        <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
+                      </div>
                     </div>
                     {this.state.running && (
                       <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.returnAddress}</h1>

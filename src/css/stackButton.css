@@ -48,6 +48,14 @@
     outline: none;
 }
 
+.front-color-white{
+  background-color: white;
+}
+
+.front-color-darker-green{
+  background-color: #00db00;
+}
+
 .front-color-green{
   background-color: #00e600;
 }
@@ -62,6 +70,10 @@
 
 .edge-color-blue{
   background-color: #002e72;
+}
+
+.edge-color-lighter-blue{
+  background-color: #1a75ff; 
 }
 
 .front-color-orange{
@@ -80,6 +92,26 @@
   padding: 0.1vh 2vh;
 }
 
+.front-padding-add-to-intro-button{
+  padding: 0.7vh 1vh;
+}
+
+.front-padding-clear-button{
+  padding: 1vh 2vh;
+}
+
+.front-padding-stack-button{
+  padding: 1vh 1vh;
+}
+
+.front-padding-add-additional-func-button{
+  padding: 1.2vh 2.3vh;
+}
+
+.front-padding-add-param-lv-button{
+  padding: 0.5vh 3vh;
+}
+
 .front-padding-execution-button-text-size{
   font-size: 2.8vh;
 }
@@ -92,6 +124,26 @@
   height: 2.25vh;
 }
 
+.edge-height-stack-next-button{
+  height: 2.35vh;
+}
+
+.edge-height-add-to-intro-button{
+  height: 5.2vh;
+}
+
+.edge-height-clear-button{
+  height: 3.7vh;
+}
+
+.edge-height-stack-button{
+  height: 5vh;
+}
+
+.edge-add-param-lv-button{
+  height: 3.1vh;
+}
+
 .shadow-height-execution-button{
   height: 4.92vh;
 }
@@ -100,7 +152,35 @@
   height: 2.35vh;
 }
 
+.shadow-height-add-to-intro-button{
+  height: 5.35vh;
+}
+
+.shadow-height-clear-button{
+  height: 3.85vh;
+}
+
+.shadow-height-stack-next-button{
+  height: 2.5vh;
+}
+
+.shadow-height-stack-button{
+  height: 5.15vh;
+}
+
+.shadow-height-add-param-lv-button{
+  height: 3.25vh;
+}
+
 .container-payload-next-button{
   margin-top: 5%;
   margin-left: 5%;
+}
+
+.front-padding-add-to-intro-button-text-size{
+  font-size: 2vh;
+}
+
+.add-to-intro-width{
+  width: 26vh
 }

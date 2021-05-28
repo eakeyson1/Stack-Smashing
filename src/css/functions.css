@@ -62,7 +62,7 @@ html, body, #root, .App {
 }
 
 .functions-input-container{
-    margin-top: 7%;
+    margin-top: 0.75vh;
 }
 
 .code-unsafe-addon-button-style{
@@ -129,10 +129,8 @@ html, body, #root, .App {
 
 .add-unsafe-func-button-text{
     color:#1a75ff;
-    font-size: 14px;
+    font-size: 2.1vh;
     font-weight: bold;
-    text-align: center;
-    margin-top: 6px;
 }
 
 .additional-func-call-container{
@@ -212,17 +210,25 @@ html, body, #root, .App {
     font-size: 1.8vh;
     font-weight: bold;
     text-align: center;
-    margin-top: 0.8vh;
-    width: 17.5vh;
+    margin-top: 1.1vh;
+    width: 22.5vh;
     
 }
 
-.add-param-lv-button-text{
+.add-to-intro-button-text{
     color: white;
-    font-size: 2vh;
+    font-size: 1.8vh;
     font-weight: bold;
     text-align: center;
     margin-top: 1vh;
+    width: 17vh;
+}
+
+.add-param-lv-button-text{
+    color: #1a75ff;
+    font-size: 2vh;
+    font-weight: bold;
+    text-align: center;
 }
 
 .code-addon-additional-function-name-style{
@@ -314,9 +320,13 @@ html, body, #root, .App {
 .input:focus {outline:none;}
 
 
+.code-addon-button{
+    width: 30vh;
+}
+
 .add-param-lv-button{
-    height: 1vh;
     width: 25vh;
+    height: 6vh
 }
 
 .add-to-program-button-style{
@@ -447,8 +457,8 @@ html, body, #root, .App {
 }
 
 .unsafe-functions-container{
-    margin-left: 30px;
-    margin-top: 60px;
+    justify-content: flex-end;
+    margin-top: 5vh;
     display: flex;
 }
 
@@ -557,17 +567,31 @@ html, body, #root, .App {
     font-weight: bold;
 }
 
+.clear-button-text{
+    color: #1a75ff;
+    font-size: 3.5vh;
+    font-weight: bold;
+    margin-top: 2vh;
+}
+
 .instruction-text{
     color: white;
-    font-size: 2.5vh;
-    margin-top: 0.6vh;
-    margin-left: 1.7vh;
+    font-size: 2vh;
+    margin-top: 0.5vh;
+    margin-left: 1.3vh;
+    font-weight: bold;
+}
+
+.instruction-text-add-to-intro{
+    color: white;
+    font-size: 2vh;
+    margin-top: 0.5vh;
 }
 
 .instruction-circle {
     display: inline-block;
-    width: 5vh;
-    height: 5vh;
+    width: 4vh;
+    height: 4vh;
     margin: 0;
     border-radius: 50%;
     position: relative;
@@ -618,7 +642,7 @@ html, body, #root, .App {
 
 .pointer-to-program{
     width: 1vh;
-    height: 67.25vh;
+    height: 10vh;
     background-color: #1a75ff;
     border-bottom-right-radius: 1vh;
     border-top-left-radius: 1vh;
@@ -628,7 +652,7 @@ html, body, #root, .App {
 .pointer-to-program-base{
     width: 3vh;
     height: 1vh;
-    margin-top: 68.75vh;
+    margin-top: 11.5vh;
     background-color: #1a75ff;
 }
 
@@ -642,7 +666,7 @@ html, body, #root, .App {
 .end-of-pointer{
     background-color: #1a75ff;
     height: 1vh;
-    width: 20vh;
+    width: 25vh;
     margin-top: 2.5vh;
 }
 
@@ -663,7 +687,7 @@ html, body, #root, .App {
 .pointer-to-program-base-green{
     width: 3vh;
     height: 1vh;
-    margin-top: 68.75vh;
+    margin-top: 11.5vh;
     background-color: #00cc3d;
 }
 
@@ -677,7 +701,7 @@ html, body, #root, .App {
 .end-of-pointer-green{
     background-color: #00cc3d;
     height: 1vh;
-    width: 20vh;
+    width: 25vh;
     margin-top: 2.5vh;
 }
 
@@ -697,7 +721,7 @@ html, body, #root, .App {
 
 .pointer-to-program-green{
     width: 1vh;
-    height: 67.25vh;
+    height: 10vh;
     background-color: #00cc3d;
     border-bottom-right-radius: 1vh;
     border-top-left-radius: 1vh;
@@ -708,4 +732,17 @@ html, body, #root, .App {
     border: none;
     background-color: white;
 }
+
+.add-to-intro-button-container{
+    display: flex;
+    margin-left: 20vh;
+    width: 30vh;
+}
+
+.stack-button-container{
+    display: flex;
+    margin-left: 1vh;
+    width: 30vh;
+}
+
 

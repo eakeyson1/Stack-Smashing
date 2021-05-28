@@ -6,9 +6,9 @@
     --button-raise-level: 0.5vh;
     --button-hover-pressure: 1;
     --transform-speed: 0.185s;
-    --button-primary-color: #1a75ff;
-    --button-primary-color-dark: #003d99;
+    --button-primary-color: #ffa733;
+    --button-primary-color-dark: #d37800;
     --button-primary-color-light: white;
-    --button-primary-color-hover: #00cc3d;
+    --button-primary-color-hover: #1a75ff;
     --button-primary-border: white;
 }
