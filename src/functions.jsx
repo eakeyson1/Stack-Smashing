@@ -594,8 +594,8 @@ class Functions extends Component {
               functionName={this.state.functionName} 
               updateFunctionName={(name) => this.updateFunctionName(name)}
               addFunctionToProgram={this.addFunctionToProgram}
-              hoverFalse= {() => this.setState({hoverAddToProgram: false})}
-              hoverTrue={() => this.setState({hoverAddToProgram: true})}
+              hoverFalse= {(bool) => this.setState({hoverAddToProgram: bool})}
+              hoverTrue={(bool) => this.setState({hoverAddToProgram: bool})}
               addToIntro={this.addToIntro}
               parameterName={this.state.parameterName}
               updateParameterName={(name) => this.updateParameterName(name)}

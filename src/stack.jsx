@@ -12,6 +12,7 @@ import { BsInfoCircle } from "react-icons/bs"
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import Carousel from "react-bootstrap/Carousel";
+import InstructCircle from "./components/InstructCircle"
 
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
@@ -3762,9 +3763,8 @@ class Stack extends Component {
             <div className="center-div">
               <div>
                 <div style={{display: 'flex', marginLeft: '15%', marginBottom: '10%'}}>
-                  <div className="instruction-circle">
-                    <div className="instruction-text">4</div>
-                  </div>
+                <InstructCircle marginLeft={"32%"} number={"4"}/>
+
                   <div className="construct-payload-title-container">
                     <h1 className="construct-payload-text">Construct Payload</h1>
                   </div>
@@ -3992,10 +3992,8 @@ class Stack extends Component {
             {!this.state.running && (
               <div>
                 <div style={{marginLeft: '30%', display: 'flex'}}>
-                  <div className="instruction-circle margin-right-5-percent">
-                    <div className="instruction-text">5</div>
-                  </div> 
-                  <button class="pushable" onClick={this.startProgram}>
+                  <InstructCircle marginLeft={"32%"} number={"5"}/>
+                  <button style={{marginLeft: '5%'}} class="pushable" onClick={this.startProgram}>
                     <div class="shadow shadow-height-execution-button"></div>
                     <div class="edge edge-color-green edge-height-execution-button"></div>
                     <div class="front front-color-green front-padding-execution-button front-padding-execution-button-text-size">
@@ -4027,11 +4025,8 @@ class Stack extends Component {
               <div>
                 <div style={{marginLeft: '30%', display: 'flex'}}>
 
-                  <div className="instruction-circle margin-right-5-percent">
-                    <div className="instruction-text">6</div>
-                  </div>
-
-                  <button class="pushable" onClick={this.programNext}>
+                  <InstructCircle marginLeft={"32%"} number={"6"}/>
+                  <button style={{marginLeft: '5%'}} class="pushable" onClick={this.programNext}>
                     <div class="shadow shadow-height-execution-button"></div>
                     <div class="edge edge-color-blue edge-height-execution-button"></div>
                     <div class="front front-color-blue front-padding-execution-button front-padding-execution-button-text-size">
@@ -4063,10 +4058,8 @@ class Stack extends Component {
             {this.state.displayFinishButton && (
               <div>
                 <div style={{display: 'flex', marginLeft: '30%'}}>
-                  <div className="instruction-circle margin-right-5-percent">
-                    <div className="instruction-text">7</div>
-                  </div>
-                  <button class="pushable" onClick={this.programFinish}>
+                  <InstructCircle marginLeft={"32%"} number={"7"}/>
+                  <button style={{marginLeft: '5%'}} class="pushable" onClick={this.programFinish}>
                     <div class="shadow shadow-height-execution-button"></div>
                     <div class="edge edge-color-orange edge-height-execution-button"></div>
                     <div class="front front-color-orange front-padding-execution-button front-padding-execution-button-text-size">

@@ -578,7 +578,6 @@ html, body, #root, .App {
     color: white;
     font-size: 2vh;
     margin-top: 0.5vh;
-    margin-left: 1.3vh;
     font-weight: bold;
 }
 
@@ -735,7 +734,7 @@ html, body, #root, .App {
 
 .add-to-intro-button-container{
     display: flex;
-    margin-left: 20vh;
+    margin-left: 25vh;
     width: 30vh;
 }
 

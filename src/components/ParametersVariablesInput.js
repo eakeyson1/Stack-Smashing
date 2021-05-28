@@ -31,16 +31,14 @@ function ParametersVariablesInput(props) {
                 </div>
               </div>
               <div className="add-to-intro-button-container">
-                  <button class="pushable add-to-intro-width" onClick={props.addFunctionToProgram} onMouseLeave={() => props.hoverFalse} onMouseEnter={() => props.hoverTrue}>
+                  <button class="pushable add-to-intro-width" onClick={props.addFunctionToProgram} onMouseLeave={() => props.hoverFalse(false)} onMouseEnter={() => props.hoverTrue(true)}>
                     <div class="shadow shadow-height-add-to-intro-button"></div>
                     <div class="edge edge-color-green edge-height-add-to-intro-button"></div>
                     <div class="front front-color-darker-green front-padding-add-to-intro-button front-padding-add-to-intro-button-text-size">
-                    <div style={{display: 'flex'}}>
-                      <div>
+                      <div style={{display: 'flex'}}>
                         <InstructCircle number={"2"}/>
+                        <h1 className="add-to-intro-button-text">Add to intro.c</h1>
                       </div>
-                      <h1 className="add-to-intro-button-text">Add to intro.c</h1>
-                    </div>
                     </div>
                   </button> 
               </div>

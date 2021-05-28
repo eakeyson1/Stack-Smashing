@@ -93,7 +93,7 @@
 }
 
 .front-padding-add-to-intro-button{
-  padding: 0.7vh 1vh;
+  padding: 0.7vh 0.5vh;
 }
 
 .front-padding-clear-button{
@@ -110,6 +110,10 @@
 
 .front-padding-add-param-lv-button{
   padding: 0.5vh 3vh;
+}
+
+.front-padding-begin-button{
+  padding: 0.1vh 2vh;
 }
 
 .front-padding-execution-button-text-size{
@@ -144,6 +148,10 @@
   height: 3.1vh;
 }
 
+.edge-height-begin-button{
+  height: 3.3vh;
+}
+
 .shadow-height-execution-button{
   height: 4.92vh;
 }
@@ -172,6 +180,11 @@
   height: 3.25vh;
 }
 
+.shadow-height-begin-button{
+  height: 3.45vh;
+}
+
+
 .container-payload-next-button{
   margin-top: 5%;
   margin-left: 5%;
@@ -182,5 +195,9 @@
 }
 
 .add-to-intro-width{
-  width: 26vh
+  width: 22vh
+}
+
+.begin-button-width{
+  width: 50vh
 }

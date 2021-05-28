@@ -5,7 +5,7 @@ function InstructCircle(props) {
   const circle = () => {
     return(
       <div className="instruction-circle">
-        <div className="instruction-text">{props.number}</div>
+        <div style={{marginLeft: props.marginLeft}} className="instruction-text">{props.number}</div>
     </div>
     )
   };

@@ -28,3 +28,10 @@
   color: #1a75ff;
   font-size: 3vmin;
 }
+
+.begin-button-text{
+  color: #1a75ff;
+  font-size: 3vh;
+  font-weight: bold;
+  text-align: center;
+}

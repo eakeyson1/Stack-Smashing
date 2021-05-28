@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./css/startPage.css";
+import "./css/functions.css";
 
 /**
  * The welcome page of the application.
@@ -9,9 +10,17 @@ class StartPage extends Component {
     return (
       <div className="start-page">
         <header>
-          <h1 className="start-page-header-text">Stack Smashing</h1>
-          <h3 className="start-page-sub-header-text">UNC Charlotte Edition</h3>
-          <button onClick={this.props.onStartClick} className="start-btn"> Start </button>
+          <h1 className="start-page-header-text">DISSAV</h1>
+          <h3 className="start-page-sub-header-text">Dynamic Interactive Stack Smashing Attack Visualization</h3>
+          <div style={{marginTop: '10%'}}> 
+            <button class="pushable begin-button-width" onClick={this.props.onStartClick}>
+              <div class="shadow shadow-height-begin-button"></div>
+              <div class="edge edge-color-lighter-blue edge-height-begin-button"></div>
+              <div class="front front-color-white  front-padding-begin-button front-padding-execution-button-text-size">
+                <h1 className="begin-button-text">Begin</h1>    
+              </div>
+            </button>
+          </div>
         </header>
       </div>
     );
