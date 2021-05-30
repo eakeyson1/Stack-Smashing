@@ -5,6 +5,7 @@ import "../css/functions.css";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import { GoInfo } from "react-icons/go"
+import { FaUserMinus } from "react-icons/fa"
 
 
 

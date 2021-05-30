@@ -181,6 +181,12 @@
     font-weight: 400;
 }
 
+.program-code-hightlight-text-style{
+    font-size: 1.9vh;
+    font-weight: 400;
+    color: #ff3300;
+}
+
 .program-functions{
     margin-top: 1%;
     margin-left: 1%;
@@ -203,6 +209,16 @@
 
 .exe-code-text{
     color: #1a75ff;
+    font-size: 2vh;
+}
+
+.exe-code-text-nop-sled{
+    color: #ffcd388f;
+    font-size: 2vh;
+}
+
+.exe-code-text-shellcode{
+    color: #5eee57;
     font-size: 2vh;
 }
 
@@ -401,6 +417,7 @@
     color: #1a75ff;
     font-weight: bold;
     margin-top: 0.2vh;
+    text-shadow: 0.25vh 0.25vh #cccccc
 }
 
 .construct-payload-sub-text{
@@ -429,7 +446,7 @@
 }
 
 .hints-main-container{
-    margin-top: 5vh;
+    margin-top: 4vh;
     background-color: #fff8eb;
     border: 0.45vh solid #ffdf9e;
     border-radius: 0.5vh;
@@ -495,11 +512,20 @@
     font-weight: bold;
     margin-left: 1%;
     font-size: 1.9vh;
+    width: 16vh;
 }
 
 .malicious-execution-text-running{
     font-size: 15px;
     color: #ff1a75;
+    font-weight: bold;
+    margin-left: 1%;
+    font-size: 1.9vh;
+}
+
+.malicious-execution-starting-text{
+    font-size: 15px;
+    color: #00e600;
     font-weight: bold;
     margin-left: 1%;
     font-size: 1.9vh;
@@ -541,14 +567,14 @@
 }
 
 .stack-smashing-status-title-container{
-    width: 18vh;
+    width: 16vh;
 }
 
 div.scrollmenu {
     background-color: white;
     overflow: auto;
     white-space: nowrap;
-    width: 50vh;
+    width: 70vh;
     margin-top: 10%;
 }
   
@@ -591,20 +617,23 @@ div.scrollmenu a:hover {
 }
 
 .payload-diagram-nop-container{
-    width: 18vh;
     height: 5vh;
     background-color: #FFF2CC;
 }
 
+.payload-diagram-intro-container{
+    width: 8vh;
+    height: 5vh;
+    background-color: #c8e2fc;
+}
+
 .payload-diagram-shellcode-container{
-    width: 18vh;
     height: 5vh;
     background-color: #D5E8D4; 
 }
 
 .payload-diagram-return-address-container{
-    width: 18vh;
-    height: 4.95vh;
+    height: 5vh;
     background-color: #F8CECC; 
 }
 
@@ -616,6 +645,8 @@ div.scrollmenu a:hover {
 
 .payload-diagram-text{
     font-size: 1.55vh;
+    padding-left: 1vh;
+    padding-right: 1vh;
 }
 
 .payload-diagram-nop-border{
@@ -628,5 +659,15 @@ div.scrollmenu a:hover {
 
 .payload-diagram-return-address-border{
     border: 0.35vh solid #cc7a76;
+}
+
+.shellcode-title-text{
+    font-size: 1.9vh;
+    color: #1a75ff;
+}
+
+.shellcode-text{
+    font-size: 1.9vh;
+    color: #ff4848;
 }
 

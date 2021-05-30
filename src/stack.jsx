@@ -13,6 +13,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 import Carousel from "react-bootstrap/Carousel";
 import InstructCircle from "./components/InstructCircle"
+import Checkbox from '@material-ui/core/Checkbox'
 
 import { AwesomeButton } from "react-awesome-button";
 import "react-awesome-button/dist/styles.css";
@@ -50,7 +51,7 @@ class Stack extends Component {
     this.programNext = this.programNext.bind(this)
     this.programFinish = this.programFinish.bind(this)
     this.returnProgramFunctionsLocalVariables = this.returnProgramFunctionsLocalVariables.bind(this)
-    this.returnUnsafeFunctionsMain = this.returnUnsafeFunctionsMain.bind(this)
+    this.returnUnsafeFunctions = this.returnUnsafeFunctions.bind(this)
     this.returnProgramFunctionsAdditionalFuncCalls= this.returnProgramFunctionsAdditionalFuncCalls.bind(this)
     this.returnMainFunctionCalls = this.returnMainFunctionCalls.bind(this)
     this.returnFunctions = this.returnFunctions.bind(this)
@@ -106,6 +107,11 @@ class Stack extends Component {
       payloadStateNop: true,
       payloadStateShellcode: false,
       payloadStateReturnAddress: false,
+      startingShell: true,
+      gettingRootPriviledges: false,
+      shutDownOs: false,
+      wipeOs: false,
+      highlightArgv: false,
     }
   }
 
@@ -119,8 +125,27 @@ class Stack extends Component {
     }
 
     /***** parameters for main() *****/
-    var startUserInput = "./intro " + this.state.nopSled + this.state.shellcode + this.state.returnAddress
-    var payload = this.state.nopSled + this.state.shellcode + this.state.returnAddress
+
+    var shellcode = ""
+    if(this.state.startingShell === true){
+      shellcode = "\\xF3\\xDD\\xA2\\xC9\\xAA\\xD3"
+    }
+    if(this.state.gettingRootPriviledges === true){
+      shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
+    }
+    if(this.state.shutDownOs === true){
+      shellcode = "\\xFF\\D3\\x99\\xA0"
+    }
+    if(this.state.wipeOs === true){
+      shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+    }
+    
+    
+
+
+
+    var startUserInput = "./intro " + this.state.nopSled + shellcode + this.state.returnAddress
+    var payload = this.state.nopSled + shellcode + this.state.returnAddress
     var userInputArray = startUserInput.split(" ")
     var argc = userInputArray.length
 
@@ -154,7 +179,10 @@ class Stack extends Component {
     }
     else{
       argvOne = userInputArray[1].split("")
+      this.setState({highlightArgv: true})
     }
+
+    
 
     var startAddress = 2882404352
     var endParametersAddress = startAddress - (reversedUserInputArray.length + 1)
@@ -315,7 +343,7 @@ class Stack extends Component {
               }
             }
 
-            /****** Pushing full machine code command if inputted *****/
+            /****** Pushing full machine code command is inputted *****/
             var userInputArr = payload.split(" ")
             var tempUserInput = userInputArr[0].split("")
             var tempUserInputArr = []
@@ -533,12 +561,11 @@ class Stack extends Component {
       strcpy: true,
     }
 
-      
+    this.setState({highlightArgv: false})
 
     if(this.state.stepProgramClickNumber === 0){
 
       // Always pushing func1
-
       var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
       this.setState({
         stackFrameRunningFunctions: runningFunctions,
@@ -3143,7 +3170,8 @@ class Stack extends Component {
     else{
       this.setState({maliciousExecution: "Unsuccessful"})
     }
-    setTimeout(() => { this.setState({maliciousExecution: "Starting"}) }, 15000);
+    setTimeout(() => { this.setState({maliciousExecution: "Starting"}) }, 12000);
+    setTimeout(() => { this.setState({malFuncNameArr: []}) }, 12000);
 
 
     this.setState({
@@ -3408,34 +3436,113 @@ class Stack extends Component {
     return localVariables
   }
 
-  returnUnsafeFunctionsMain(stackFrame){
-    return(
-      stackFrame.unsafeFunctions.map((func) =>
-        <div>
-          <h1 className="program-code-text-style"> strcpy({func.param1Name}, {func.param2Name});</h1>
-        </div>
+  returnUnsafeFunctions(stackFrame){
+
+    var functionCalls = []
+    var functionName = ""
+    if(this.state.stackFrameRunningFunctions.length !== 0){
+      if(this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-1].functionName === "strcpy"){
+        functionName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-2].functionName
+      }
+    }
+
+    var functionCall = null
+    if(stackFrame.functionName === functionName){
+      functionCall = (
+        <h1 className="program-code-hightlight-text-style">strcpy({stackFrame.unsafeFunctions[0].param1Name}, {stackFrame.unsafeFunctions[0].param2Name});</h1>
       )
-    )
+      functionCalls.push(functionCall)
+    }
+    else{
+      if(stackFrame.unsafeFunctions.length !==0){
+        functionCall = (
+          <h1 className="program-code-text-style">strcpy({stackFrame.unsafeFunctions[0].param1Name}, {stackFrame.unsafeFunctions[0].param2Name});</h1>
+          )
+        functionCalls.push(functionCall)
+      }
+    }
+
+    return functionCalls
   }
 
   returnProgramFunctionsAdditionalFuncCalls(stackFrame){
-    return(
-      stackFrame.additionalFunctionCalls.map((func) =>
-        <div>
-          <h1 className="program-code-text-style"> {func}</h1>
-        </div>
-      )
-    )
+
+
+    var functionName = ""
+    var parentFunctionName = ""
+    if(this.state.stackFrameRunningFunctions.length > 1){
+      functionName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-1].functionName
+      parentFunctionName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-2].functionName
+    }
+
+
+    var containsUnsafeFunctions = false
+    for(var i=0; i<this.props.stackFrameDataArr.length; i++){
+      if(this.props.stackFrameDataArr[i].unsafeFunctions.length !== 0){
+        containsUnsafeFunctions = true
+      }
+    }
+    
+    if(this.state.stackFrameRunningFunctions.length === 3 & !containsUnsafeFunctions){
+      parentFunctionName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-2].functionName
+      functionName = this.props.stackFrameDataArr[0].functionName
+    }
+
+    var additionalFunctionCalls = []
+    
+    for(var i=0; i<stackFrame.additionalFunctionCalls.length; i++){
+      var addFunctionName = stackFrame.additionalFunctionCalls[i].split('(')[0]
+      var additionalFunctionCall = null
+      if(functionName === addFunctionName && stackFrame.functionName === parentFunctionName){
+        additionalFunctionCall = (
+          <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+        )
+        additionalFunctionCalls.push(additionalFunctionCall)
+      }
+      else{
+        additionalFunctionCall = (
+          <h1 className="program-code-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+        )
+        additionalFunctionCalls.push(additionalFunctionCall)
+      }
+    }
+
+    return additionalFunctionCalls
   }
 
   returnMainFunctionCalls(){
-    return(
-      this.props.stackFrameDataArr.map((stackFrame) =>
-        <div>
-          <h1 className="program-code-text-style">{stackFrame.functionName}({stackFrame.unmodifiedParams});</h1>
-        </div>
-      )
-    )
+
+    var functionCalls = []
+
+    var functionName = ""
+    if(this.state.stackFrameRunningFunctions.length === 1){
+      var tempFuncName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-1].functionName
+      for(var i=0; i<this.props.stackFrameDataArr.length; i++){
+        if(tempFuncName === this.props.stackFrameDataArr[i].functionName){
+          if(!(this.props.stackFrameDataArr[i].additionalFunctionCalls.length > 0 && this.props.stackFrameDataArr[i].unsafeFunctions.length > 0)){
+            functionName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-1].functionName
+          }
+        }
+      }
+    }
+
+    for(var i=0; i<this.props.stackFrameDataArr.length; i++){
+      var functionCall = null
+      if(this.props.stackFrameDataArr[i].functionName === functionName){
+        functionCall = (
+          <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+        )
+        functionCalls.push(functionCall)
+      }
+      else{
+        functionCall = (
+          <h1 className="program-code-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+        )
+        functionCalls.push(functionCall)
+      }
+    }
+
+    return functionCalls
   }
 
   returnFunctions(){
@@ -3450,7 +3557,7 @@ class Stack extends Component {
         </div>
         <div style={{marginLeft: '1%'}}>
           {this.returnProgramFunctionsLocalVariables(stackFrame)}
-          {this.returnUnsafeFunctionsMain(stackFrame)}
+          {this.returnUnsafeFunctions(stackFrame)}
           {this.returnProgramFunctionsAdditionalFuncCalls(stackFrame)}
         </div>
         <h1 className="program-code-text-style">{"}"}</h1>
@@ -3476,7 +3583,15 @@ class Stack extends Component {
           <div className="code-lines-spacer">
             <h1 className="program-code-text-style">{"#include <stdio.h>"}</h1>
             <h1 className="program-code-text-style">{"#include <string.h>"}</h1>
-            <h1 className="program-code-text-style">int main( int argc, char* argv[])</h1>
+            <div style={{display: 'flex'}}>
+              <h1 className="program-code-text-style">int main(int argc,</h1>
+              {this.state.highlightArgv && (
+                <h1 className="program-code-hightlight-text-style"> char* argv[])</h1>
+              )}   
+              {!this.state.highlightArgv && (
+                <h1 className="program-code-text-style"> char* argv[])</h1>
+              )}   
+            </div>
             <div style={{marginLeft: '1%'}}>
               {this.returnMainFunctionCalls()}
             </div>
@@ -3547,6 +3662,42 @@ class Stack extends Component {
     })
   }
 
+  startingShellChecked(event){
+    this.setState({
+      startingShell: event,
+      gettingRootPriviledges: false,
+      shutDownOs: false,
+      wipeOs: false
+    })
+  }
+
+  gettingRootPriviledgesChecked(event){
+    this.setState({
+      gettingRootPriviledges: event,
+      startingShell: false,
+      shutDownOs: false,
+      wipeOs: false
+    })
+  }
+
+  shutDownOsChecked(event){
+    this.setState({
+      shutDownOs: event,
+      gettingRootPriviledges: false,
+      startingShell: false,
+      wipeOs: false
+    })
+  }
+
+  wipeOsChecked(event){
+    this.setState({
+      wipeOs: event,
+      gettingRootPriviledges: false,
+      shutDownOs: false,
+      startingShell: false
+    })
+  }
+
   nopSledDef = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       An assembly language instruction, considered a no operation, used as padding to compensate for variations in the location the code will be found in. It is represented by \x90. 
@@ -3568,14 +3719,16 @@ class Stack extends Component {
   returnMaliciousExecutionStatus(){
     if(this.state.maliciousExecution === "Starting"){
       return(
-        <h1 className="malicious-execution-text">Starting</h1>
+        <div style={{display: 'flex'}}> 
+        <h1 className="malicious-execution-starting-text">Starting</h1>
+        </div>
       )
     }
 
     if(this.state.maliciousExecution === "Successful"){
       return(
-        <div>
-          <h1 className="malicious-execution-text">Successful</h1>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <h1 className="malicious-execution-text">Successful in:</h1>
           {this.state.malFuncNameArr.map((name) => 
             <h1 className="malicious-execution-text">{name}</h1>
           )}
@@ -3606,6 +3759,31 @@ class Stack extends Component {
         </div> 
       )
     }
+  }
+
+  returnShellcode(){
+
+    if(this.state.startingShell === true){
+      return(
+        <div className="payload-diagram-text">\xF3\xDD\xA2\xC9\xAA\xD3</div>
+      )
+    }
+    if(this.state.gettingRootPriviledges === true){
+      return(
+        <div className="payload-diagram-text">\xCC\xB\xBB\xA1\x7B\xC8\xF4\xC6</div>
+      )
+    }
+    if(this.state.shutDownOs === true){
+      return(
+        <div className="payload-diagram-text">\xFF\D3\x99\xA0</div>
+      )
+    }
+    if(this.state.wipeOs === true){
+      return(
+        <div className="payload-diagram-text">\FA\xDA\x00\xB0\x77</div>
+      )
+    }
+
   }
   
 
@@ -3769,56 +3947,63 @@ class Stack extends Component {
                     <h1 className="construct-payload-text">Construct Payload</h1>
                   </div>
                 </div>
-                <div className="payload-diagram-container">
-                  {this.state.payloadStateNop && (
-                    <div style={{marginTop: '4%'}}>
-                      <div className="payload-diagram-title-text">NOP Sled</div>
-                      <div className="payload-diagram-nop-container center-div payload-diagram-nop-border">
-                        <div className="payload-diagram-text">\x90\x90\x90\...\x90</div>
-                      </div>
-                    </div>
-                  )}
-                  {!this.state.payloadStateNop && (
-                    <div style={{marginTop: '4%'}}>
-                      <div className="payload-diagram-title-text">NOP Sled</div>
-                      <div className="payload-diagram-nop-container center-div">
-                        <div className="payload-diagram-text">\x90\x90\x90\...\x90</div>
-                      </div>
-                    </div>
-                  )}
-                  {this.state.payloadStateShellcode && (
-                    <div style={{marginTop: '8.2%'}}>
-                      <div className="payload-diagram-shellcode-container center-div payload-diagram-shellcode-border">
-                        <div className="payload-diagram-text">Shellcode</div>
-                      </div>
-                    </div>
-                  )}
-                  {!this.state.payloadStateShellcode && (
-                    <div style={{marginTop: '8.2%'}}>
-                      <div className="payload-diagram-shellcode-container center-div">
-                        <div className="payload-diagram-text">Shellcode</div>
-                      </div>
-                    </div>
-                  )}
-                  {this.state.payloadStateReturnAddress && (
+                <div class="scrollmenu">
+                  <div className="payload-diagram-container">
                     <div>
-                      <div className="payload-diagram-title-text">0xABCDFFFE4</div>
-                      <div className="payload-diagram-title-text">Return Address</div>
-                      <div className="payload-diagram-return-address-container center-div payload-diagram-return-address-border">
-                        <div className="payload-diagram-text">0xE4FFCDAB</div>
+                      <div className="payload-diagram-title-text">argv[0]</div>
+                      <div className="payload-diagram-intro-container center-div">
+                        <div className="payload-diagram-text">./intro</div>
                       </div>
                     </div>
-                  )}
-                  {!this.state.payloadStateReturnAddress && (
-                    <div>
-                      <div className="payload-diagram-title-text">0xABCDFFFE4</div>
-                      <div className="payload-diagram-title-text">Return Address</div>
-                      <div className="payload-diagram-return-address-container center-div">
-                        <div className="payload-diagram-text">0xE4FFCDAB</div>
+                    {this.state.payloadStateNop && (
+                      <div>
+                        <div className="payload-diagram-title-text">NOP Sled</div>
+                        <div className="payload-diagram-nop-container center-div payload-diagram-nop-border">
+                          <div className="payload-diagram-text">{this.state.nopSled}</div>
+                        </div>
                       </div>
-                    </div>
-                  )}
-
+                    )}
+                    {!this.state.payloadStateNop && (
+                      <div>
+                        <div className="payload-diagram-title-text">NOP Sled</div>
+                        <div className="payload-diagram-nop-container center-div">
+                          <div className="payload-diagram-text">{this.state.nopSled}</div>
+                        </div>
+                      </div>
+                    )}
+                    {this.state.payloadStateShellcode && (
+                      <div>
+                        <div className="payload-diagram-title-text">Shellcode</div>
+                        <div className="payload-diagram-shellcode-container center-div payload-diagram-shellcode-border">
+                        {this.returnShellcode()}
+                        </div>
+                      </div>
+                    )}
+                    {!this.state.payloadStateShellcode && (
+                      <div>
+                        <div className="payload-diagram-title-text">Shellcode</div>
+                        <div className="payload-diagram-shellcode-container center-div">
+                          {this.returnShellcode()}
+                        </div>
+                      </div>
+                    )}
+                    {this.state.payloadStateReturnAddress && (
+                      <div>
+                        <div className="payload-diagram-title-text">Return Address</div>
+                        <div className="payload-diagram-return-address-container center-div payload-diagram-return-address-border">
+                          <div className="payload-diagram-text">{this.state.returnAddress}</div>
+                        </div>
+                      </div>
+                    )}
+                    {!this.state.payloadStateReturnAddress && (
+                      <div>
+                        <div className="payload-diagram-title-text">Return Address</div>
+                        <div className="payload-diagram-return-address-container center-div">
+                          <div className="payload-diagram-text">{this.state.returnAddress}</div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -3917,23 +4102,61 @@ class Stack extends Component {
                     </div>
                     <div className="hints-main-container">
                       <div className="hints-container">
-                        <h1 className="hints-title">Hints</h1>
-                        <h1 className="hints">* Written in assembly</h1>
-                        <h1 className="hints">* Many examples of shellcode</h1>
+                        <h1 className="hints-title">Note</h1>
+                        <h1 className="hints">* Be mindful of the length of the machine code</h1>
                       </div>
                     </div>
-                    {this.state.running && (
-                      <h1 style={{marginTop: '5%'}} className="exe-code-text">{this.state.shellcode}</h1>
-                    )}
-                    {!this.state.running && (
-                      <input
-                        value={this.state.shellcode}
-                        type="text"
-                        placeholder={"Start typing...."}
-                        onChange={event => this.updateShellCode(event.target.value)}
-                        className="user-input"
-                      />                   
-                    )}
+                    <div style={{display: 'flex', marginTop: '5%'}}>
+                      <div>
+                        <div style={{display: 'flex'}}>
+                          <Checkbox
+                            checked={this.state.startingShell}
+                            onChange={(event) => this.startingShellChecked(event.target.checked)}
+                            color="primary"
+                            />
+                          <div style={{marginTop: '3.5%'}}>
+                            <div className="shellcode-title-text">Start a remote shell</div>
+                          </div>
+                        </div>
+                        <div className="shellcode-text">\xF3\xDD\xA2\xC9\xAA\xD3</div>
+
+                        <div style={{display: 'flex', marginTop: '5%'}}>
+                          <Checkbox
+                            checked={this.state.gettingRootPriviledges}
+                            onChange={(event) => this.gettingRootPriviledgesChecked(event.target.checked)}
+                            color="primary"
+                            />
+                          <div style={{marginTop: '3.5%'}}>
+                            <div className="shellcode-title-text">Get root priviledge</div>
+                          </div>
+                        </div>
+                        <div className="shellcode-text">\xCC\xB2\xBB\xA1\x7B\xC8\xF4\xC6</div>
+                      </div>
+                      <div style={{marginLeft: '5%'}}>
+                        <div style={{display: 'flex'}}>
+                          <Checkbox
+                            checked={this.state.shutDownOs}
+                            onChange={(event) => this.shutDownOsChecked(event.target.checked)}
+                            color="primary"
+                            />
+                          <div  style={{marginTop: '6%'}}>
+                            <div className="shellcode-title-text">Shut down OS</div>
+                          </div>
+                        </div>
+                        <div className="shellcode-text">\xFF\D3\x99\xA0</div>
+                        <div style={{display: 'flex', marginTop: '8%'}}>
+                          <Checkbox
+                            checked={this.state.wipeOs}
+                            onChange={(event) => this.wipeOsChecked(event.target.checked)}
+                            color="primary"
+                            />
+                          <div style={{marginTop: '6%'}}>
+                            <div className="shellcode-title-text">Wipe OS</div>
+                          </div>
+                        </div>
+                        <div className="shellcode-text">\FA\xDA\x00\xB0\x77</div>
+                      </div>
+                    </div>
                 </div>
                 </Carousel.Item>
                 <Carousel.Item>
@@ -4011,14 +4234,6 @@ class Stack extends Component {
                     </div>
                   </div>
                 </div>
-                <div class="scrollmenu">
-                  <div style={{display: 'flex', marginBottom: '2%'}}>
-                    <div style={{marginRight: '1%'}} className="exe-code-text">./intro </div>
-                    <div className="exe-code-text">{this.state.nopSled}</div>
-                    <div className="exe-code-text">{this.state.shellcode}</div>
-                    <div className="exe-code-text">{this.state.returnAddress}</div>
-                  </div>
-                </div>
               </div>
             )}
             {this.state.running && !this.state.displayFinishButton && (
@@ -4045,14 +4260,6 @@ class Stack extends Component {
                     </div>
                   </div>
                 </div>
-                <div class="scrollmenu">
-                  <div style={{display: 'flex', marginBottom: '2%'}}>
-                    <div style={{marginRight: '1%'}} className="exe-code-text">./intro </div>
-                    <div className="exe-code-text">{this.state.nopSled}</div>
-                    <div className="exe-code-text">{this.state.shellcode}</div>
-                    <div className="exe-code-text">{this.state.returnAddress}</div>
-                  </div>
-                </div>
               </div>
             )}
             {this.state.displayFinishButton && (
@@ -4075,14 +4282,6 @@ class Stack extends Component {
                       </div>
                       {this.returnMaliciousExecutionStatus()}                   
                     </div>
-                  </div>
-                </div>
-                <div class="scrollmenu">
-                  <div style={{display: 'flex', marginBottom: '2%'}}>
-                    <div style={{marginRight: '1%'}} className="exe-code-text">./intro </div>
-                    <div className="exe-code-text">{this.state.nopSled}</div>
-                    <div className="exe-code-text">{this.state.shellcode}</div>
-                    <div className="exe-code-text">{this.state.returnAddress}</div>
                   </div>
                 </div>
               </div>

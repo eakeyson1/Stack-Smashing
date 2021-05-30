@@ -512,6 +512,7 @@ class Functions extends Component {
       returnAddressArr: returnAddressArr,
       sfpArr: sfpArr,
       strcpy: false,
+      nextStep: false,
     }
 
     var joined = this.state.stackFrameDataArray.concat(stackFrame)
