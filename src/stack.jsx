@@ -72,6 +72,7 @@ class Stack extends Component {
     this.handleShellCodeClick = this.handleShellCodeClick.bind(this)
     this.handleReturnAddressClick = this.handleReturnAddressClick.bind(this)
     this.handleNopClick = this.handleNopClick.bind(this)
+    this.returnMainFunctionTitle = this.returnMainFunctionTitle.bind(this)
 
     this.state = {
       displaySegFault: false,
@@ -123,7 +124,6 @@ class Stack extends Component {
     for(var i=0; i<this.props.stackFrameDataArr.length; i++){
       stackDataArr.push(JSON.parse(JSON.stringify(this.props.stackFrameDataArr[i])))
     }
-
     /***** parameters for main() *****/
 
     var shellcode = ""
@@ -139,10 +139,6 @@ class Stack extends Component {
     if(this.state.wipeOs === true){
       shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
     }
-    
-    
-
-
 
     var startUserInput = "./intro " + this.state.nopSled + shellcode + this.state.returnAddress
     var payload = this.state.nopSled + shellcode + this.state.returnAddress
@@ -529,7 +525,7 @@ class Stack extends Component {
       argvOne: argvOne,
       endParametersAddress: endParametersAddress,
       stackFrameDataArray: stackDataArr,
-      maliciousExecution: "Running"
+      maliciousExecution: "Running",
     })
   }
 
@@ -563,8 +559,7 @@ class Stack extends Component {
 
     this.setState({highlightArgv: false})
 
-    console.log(this.state.stepProgramClickNumber)
-
+    console.log("step number " + this.state.stepProgramClickNumber)
 
     if(this.state.stepProgramClickNumber === 0){
 
@@ -2803,136 +2798,101 @@ class Stack extends Component {
         return
       }
 
-      // PUSHING FUNC1
+        // PUSHING FUNC1
 
-      else if(
-        (this.props.stackFrameDataArr.length === 3 &&
-        this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
-        this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-        this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
-        this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-        this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-        this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-        
-        ){
-
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
-        this.setState({
-          stackFrameRunningFunctions: runningFunctions,
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
-        })        
-        return
-      }
-
-      // POPPING FUNCTION
-
-      else if(
-        (this.props.stackFrameDataArr.length === 3 &&
-        this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
-        this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-        this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
-        this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
-        this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-        this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-        
-        ||
-
-        //Func1, func2(strcpy)(AF), func3(AF2)
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
-          this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
-          this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
-          this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
-          this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 && 
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
-          this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
-          this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 && 
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0  && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
+        else if(
+          (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
           this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
           this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
           this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+          
+          ){
 
-        ||
+          var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+          this.setState({
+            stackFrameRunningFunctions: runningFunctions,
+            stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+          })        
+          return
+        }
 
-        (this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr.length === 2)
+        // POPPING FUNCTION
 
-        ){
+        else if(
 
-        var runningFunctions = this.state.stackFrameRunningFunctions
-        runningFunctions.pop()
-        this.setState({
-          stackFrameRunningFunctions: runningFunctions,
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
-        })        
-        return
-      }
+          //Func1, func2(strcpy)(AF), func3(AF2)
+          (this.props.stackFrameDataArr.length === 3 &&
+            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
+            this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === this.props.stackFrameDataArr[1].functionName)
 
-       // POPPING FINAL FUNCTION
-       else{
-        this.setState({
-          displayFinishButton: true, 
-          displayNextButton: false,
-          stackFrameRunningFunctions: [],
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
-        }) 
-        return
-      }
+          ||
+
+          (this.props.stackFrameDataArr.length === 3 &&
+            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+            this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+            this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+          ||
+
+          (this.props.stackFrameDataArr.length === 3 &&
+            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
+            this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+          ||
+
+          (this.props.stackFrameDataArr.length === 3 &&
+            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+            this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+            this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+          ||
+
+          (this.props.stackFrameDataArr.length === 3 &&
+            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
+            this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+          ){
+
+          var runningFunctions = this.state.stackFrameRunningFunctions
+          runningFunctions.pop()
+          this.setState({
+            stackFrameRunningFunctions: runningFunctions,
+            stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+          })        
+          return
+        }
+
+        // POPPING FINAL FUNCTION
+        else{
+          this.setState({
+            displayFinishButton: true, 
+            displayNextButton: false,
+            stackFrameRunningFunctions: [],
+            stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
+          }) 
+          return
+        }
     }
 
     else if(this.state.stepProgramClickNumber === 12){
@@ -3330,6 +3290,7 @@ class Stack extends Component {
       stackFrameDataArray: [],
       malExeMessage: "",
       mainStackOpen: false,
+      highlightArgv: false
     })
   }
 
@@ -3596,10 +3557,23 @@ class Stack extends Component {
 
     var functionCall = null
     if(stackFrame.functionName === functionName){
-      functionCall = (
-        <h1 className="program-code-hightlight-text-style">strcpy({stackFrame.unsafeFunctions[0].param1Name}, {stackFrame.unsafeFunctions[0].param2Name});</h1>
-      )
-      functionCalls.push(functionCall)
+      if(stackFrame.unsafeFunctions[0].param2Name === "userInput"){
+        functionCall = (
+          <div style={{display: 'flex'}}>
+            <h1 className="program-code-hightlight-text-style">strcpy({stackFrame.unsafeFunctions[0].param1Name}{", "}</h1>
+            <h1 className="program-code-hightlight-argv-text-style">{stackFrame.unsafeFunctions[0].param2Name}</h1>
+            <h1 className="program-code-hightlight-text-style">);</h1>
+
+          </div>
+        )
+        functionCalls.push(functionCall)
+      }
+      else{
+        functionCall = (
+          <h1 className="program-code-hightlight-text-style">strcpy({stackFrame.unsafeFunctions[0].param1Name}, {stackFrame.unsafeFunctions[0].param2Name});</h1>
+        )
+        functionCalls.push(functionCall)
+      }
     }
     else{
       if(stackFrame.unsafeFunctions.length !==0){
@@ -3642,10 +3616,111 @@ class Stack extends Component {
       var addFunctionName = stackFrame.additionalFunctionCalls[i].split('(')[0]
       var additionalFunctionCall = null
       if(functionName === addFunctionName && stackFrame.functionName === parentFunctionName){
-        additionalFunctionCall = (
-          <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
-        )
-        additionalFunctionCalls.push(additionalFunctionCall)
+        console.log("add calls " + stackFrame.additionalFunctionCalls[i])
+        if(stackFrame.additionalFunctionCalls[i].includes("userInput")){
+
+          var parameters = ""
+          stackFrame.parameterDetails.map((param) => {  
+            if(!param.name === "userInput"){
+              if(param.type === "char"){
+                parameters += '"' + param.value + '", '
+              }
+              else{
+                parameters += param.value + ", "
+              }
+            }
+            
+          })
+
+          var functionName = stackFrame.additionalFunctionCalls[i].substr(0, stackFrame.additionalFunctionCalls[i].indexOf('(')); 
+          var functionCall = functionName + "(" + parameters
+
+          if(this.state.stepProgramClickNumber === 6){
+
+            if(this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
+                
+              additionalFunctionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {functionCall}</h1>
+                  <h1 className="program-code-hightlight-argv-text-style">userInput</h1>
+                  <h1 className="program-code-hightlight-text-style">);</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+            else{
+              additionalFunctionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {functionCall}</h1>
+                  <h1 className="program-code-hightlight-argv-text-style">userInput</h1>
+                  <h1 className="program-code-hightlight-text-style">);</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 8){
+
+            if(
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              ){
+
+              var cleanFunctionName = stackFrame.additionalFunctionCalls[i].substr(0, stackFrame.additionalFunctionCalls[i].indexOf('(')); 
+              var cleanFunctionCall = "(" + parameters
+              additionalFunctionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {cleanFunctionName}</h1>
+                  <h1 className="program-code-text-style">{cleanFunctionCall}userInput</h1>
+                  <h1 className="program-code-text-style">);</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+        }
+        else{
+          /*if(this.state.stepProgramClickNumber === 8){
+
+
+            if(this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0){
+                additionalFunctionCall = (
+                  <div style={{display: 'flex'}}>
+                    <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+                    <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+                  </div>
+                )
+                additionalFunctionCalls.push(additionalFunctionCall)
+              }
+          }
+          else{*/
+            additionalFunctionCall = (
+              <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+            )
+            additionalFunctionCalls.push(additionalFunctionCall)
+          }
+        //}
       }
       else{
         additionalFunctionCall = (
@@ -3741,10 +3816,708 @@ class Stack extends Component {
     for(var i=0; i<this.props.stackFrameDataArr.length; i++){
       var functionCall = null
       if(this.props.stackFrameDataArr[i].functionName === functionName){
-        functionCall = (
-          <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
-        )
-        functionCalls.push(functionCall)
+
+        var userInputAsParam = false
+        for(var j=0; j<this.props.stackFrameDataArr[i].parameterDetails.length; j++){
+          if(this.props.stackFrameDataArr[i].parameterDetails[j].name === "userInput"){
+            userInputAsParam = true
+            break
+          }
+        }
+        console.log(userInputAsParam)
+        if(userInputAsParam === false){
+
+          if(this.state.stepProgramClickNumber === 1){
+
+            /***** Always highlighting first function name and parameters *****/
+
+            functionCall = (
+              <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+            )
+            functionCalls.push(functionCall)
+              
+          }
+          if(this.state.stepProgramClickNumber === 3){
+
+            /***** Hightling only function name *****/
+
+            if(
+              (this.props.stackFrameDataArr.length === 1 && this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0)
+              
+              ||
+              
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+                
+              ){  
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+           
+          }
+          if(this.state.stepProgramClickNumber === 5){
+
+            /***** Highlighting function name and parameter *****/
+
+            if(     
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionCall = (
+                <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+              )
+              functionCalls.push(functionCall)
+            }
+
+            /***** Hightling only function name *****/
+
+            else if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+
+            /***** No highlighting *****/
+
+            else if(this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0){
+
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 7){
+
+            /***** Highlighting function name and parameters */
+            if(
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              
+              ){
+                functionCall = (
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                )
+                functionCalls.push(functionCall)
+              }
+
+            /***** Highlighting function name */
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+              
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+
+            /***** No highlighting *****/
+
+            if(this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0){
+
+                functionCall = (
+                  <h1 className="program-code-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                )
+                functionCalls.push(functionCall)
+              }
+          
+          
+              (this.props.stackFrameDataArr.length === 2 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+          }
+          if(this.state.stepProgramClickNumber === 9){
+
+            /***** Highlighting function name */
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 11){
+
+            /***** Highlighting name *****/
+
+            if(this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+
+            /***** Highlighting name and parameters *****/
+            if(this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0){
+              functionCall = (
+                <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+        }
+        else{
+          var tempUnmodifiedParams = ""
+          this.props.stackFrameDataArr[i].parameterDetails.map(parameter =>{
+            if(parameter.name !== "userInput"){
+              if(parameter.type === "char" || parameter.type === "char[]"){
+                tempUnmodifiedParams += ( '"' + parameter.value + '", ') 
+              }
+              else{
+                tempUnmodifiedParams += (parameter.value + ', ') 
+              }            
+            }
+            
+          })
+          // func(strcpy)
+          if(this.state.stepProgramClickNumber === 1){
+            var unmodifiedParams = tempUnmodifiedParams
+            functionCall = (
+              <div style={{display: 'flex'}}>
+                <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}(</h1>
+                <h1 className="program-code-hightlight-text-style">{unmodifiedParams}</h1>
+                <h1 className="program-code-hightlight-argv-text-style">argv[1]</h1>
+                <h1 className="program-code-hightlight-text-style">);</h1>
+              </div>
+            )
+            functionCalls.push(functionCall)
+          }
+          // func, func2(strcpy)
+          else if(this.state.stepProgramClickNumber === 3){
+
+            if(this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0){
+
+              var unmodifiedParams = tempUnmodifiedParams
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}(</h1>
+                  <h1 className="program-code-hightlight-text-style">{unmodifiedParams}</h1>
+                  <h1 className="program-code-hightlight-argv-text-style">argv[1]</h1>
+                  <h1 className="program-code-hightlight-text-style">);</h1>
+
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          
+            else{
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+
+          else if(this.state.stepProgramClickNumber === 5){
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+              
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0)
+
+              ||
+
+              
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ){
+
+              var unmodifiedParams = tempUnmodifiedParams
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}(</h1>
+                  <h1 className="program-code-hightlight-text-style">{unmodifiedParams}</h1>
+                  <h1 className="program-code-hightlight-argv-text-style">argv[1]</h1>
+                  <h1 className="program-code-hightlight-text-style">);</h1>
+
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+            else{
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 7){
+
+            if(this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0){
+
+              functionCall = (
+                <h1 className="program-code-text-style">{this.props.stackFrameDataArr[i].functionName}({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+              )
+              functionCalls.push(functionCall)
+              
+            }
+
+            else{  
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 9){
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0)
+              
+              ||
+
+                  
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              
+              ){
+
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+
+          else if(this.state.stepProgramClickNumber === 11){
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0)
+              
+              ||
+              
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ){
+
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+            else if(
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+
+              var unmodifiedParams = tempUnmodifiedParams
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}(</h1>
+                  <h1 className="program-code-hightlight-text-style">{unmodifiedParams}</h1>
+                  <h1 className="program-code-hightlight-argv-text-style">argv[1]</h1>
+                  <h1 className="program-code-hightlight-text-style">);</h1>
+
+                </div>
+              )
+              functionCalls.push(functionCall)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 15){
+
+            if(this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName){
+
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall) 
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 17){
+            if
+            (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
+
+            
+              functionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style">{this.props.stackFrameDataArr[i].functionName}</h1>
+                  <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].unmodifiedParams});</h1>
+                </div>
+              )
+              functionCalls.push(functionCall) 
+            }
+          }
+        }
       }
       else{
         functionCall = (
@@ -3758,28 +4531,1253 @@ class Stack extends Component {
   }
 
   returnFunctions(){
-    return(
-      this.props.stackFrameDataArr.map((stackFrame) =>
-      <div className="program-functions">
-        <div className="functions-flex">
-          <h1 className="program-code-text-style">void {stackFrame.functionName} </h1>
-          <div className="functions-flex">
-            <h1 className="program-code-text-style">({stackFrame.localFuncParams}){"{"}</h1>
+
+    var functions = []
+    var lastFunctionName = ""
+    if(this.state.stackFrameRunningFunctions.length !==0){
+      lastFunctionName = this.state.stackFrameRunningFunctions[this.state.stackFrameRunningFunctions.length-1].functionName
+    }
+    for(var i=0; i<this.props.stackFrameDataArr.length; i++){
+
+      if(this.props.stackFrameDataArr[i].functionName === lastFunctionName){
+
+        var functionItem = null
+
+        var userInputAsParam = false
+        for(var j=0; j<this.props.stackFrameDataArr[i].parameterDetails.length; j++){
+          if(this.props.stackFrameDataArr[i].parameterDetails[j].name === "userInput"){
+            userInputAsParam = true
+            break
+          }
+        }
+
+        if(userInputAsParam === true){
+          var tempLocalFuncParams = ""
+          for(var j=0; j<this.props.stackFrameDataArr[i].parameterDetails.length; j++){
+            if(this.props.stackFrameDataArr[i].parameterDetails[j].name !== "userInput"){
+              if(this.props.stackFrameDataArr[i].parameterDetails[j].type === "char[]"){
+                tempLocalFuncParams += "char " + this.props.stackFrameDataArr[i].parameterDetails[j].name + "[], "
+              }
+              else{
+                tempLocalFuncParams += this.props.stackFrameDataArr[i].parameterDetails[j].type + " " + this.props.stackFrameDataArr[i].parameterDetails[j].name + ", "
+              }            
+            }
+          }
+
+          if(this.state.stepProgramClickNumber === 1){
+
+            /***** Highlighting both function name and argv *****/
+
+            if(
+              (this.props.stackFrameDataArr.length === 1 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length > 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 1 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-hightlight-argv-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 3){
+            if(
+
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ){
+
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-hightlight-argv-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+
+            }
+            else{
+
+                functionItem = (
+                  <div className="program-functions">
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                      <div className="functions-flex">
+                        <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                      </div>
+                    </div>
+                    <div style={{marginLeft: '1%'}}>
+                      {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                      {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                      {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                    </div>
+                    <h1 className="program-code-text-style">{"}"}</h1>
+                  </div>
+                )
+                functions.push(functionItem)
+              }
+          }
+          else if(this.state.stepProgramClickNumber === 5){
+
+            /***** Highlighting function name */
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0)
+              
+              ||
+              
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+                
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              
+              ){
+
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-hightlight-argv-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+
+            /***** No hightlighting  *****/
+
+
+            else if(
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              ){
+                functionItem = (
+                  <div className="program-functions">
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                      <div className="functions-flex">
+                        <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                        <h1 className="program-code-text-style">{"char userInput[]"}</h1>
+                        <h1 className="program-code-text-style">)</h1>
+                      </div>
+                    </div>
+                    <div style={{marginLeft: '1%'}}>
+                      {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                      {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                      {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                    </div>
+                    <h1 className="program-code-text-style">{"}"}</h1>
+                  </div>
+                )
+                functions.push(functionItem)
+              }
+          }  
+          else if(this.state.stepProgramClickNumber === 6){
+            /***** No highlighting *****/
+
+            if(this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 7){
+
+            /***** No highlighting *****/
+
+            if((
+              this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+              ){ 
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 8){
+            /***** No highlighting *****/
+
+            if
+            (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          else if(this.state.stepProgramClickNumber === 9){
+            /***** No highlighting *****/
+            if(this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName}(</h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">{tempLocalFuncParams}</h1>
+                      <h1 className="program-code-text-style">{"char userInput[]"}</h1>
+                      <h1 className="program-code-text-style">)</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+        }
+        else{
+
+          if(this.state.stepProgramClickNumber === 1){
+
+            /***** Highlighting only function name */
+
+            if((this.props.stackFrameDataArr.length === 1 && this.props.stackFrameDataArr[0].unsafeFunctions.length === 0) ||
+               (this.props.stackFrameDataArr.length === 1 && this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0)){
+              
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+
+            /***** Highlighting function name and parameters *****/
+
+            else{
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-hightlight-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 3){
+
+            /***** No highlghting *****/
+
+            if(
+              (this.props.stackFrameDataArr.length === 1 && this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0)
+              
+              ||
+              
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+
+            /***** Highlighting function name and parameters *****/
+            else{
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-hightlight-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 4){
+            
+            /***** No highlighting */
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 5){
+
+            /***** No highlghting *****/
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+
+            /***** Highlighing function name only *****/
+            else if(
+              (this.props.stackFrameDataArr.length === 2 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+                
+              ){
+
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+                
+            }
+
+
+            /***** Highlighing function name and parameters */
+
+            else if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-hightlight-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 6){
+
+            /***** No highlighting */
+
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 7){
+
+               
+            /***** Highlighting name and parameters *****/
+            if(
+              (this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-hightlight-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+            /***** No highlighting *****/
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 2 && 
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 8){
+
+            /***** No highlighting *****/
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 9){
+
+            /***** No highlighting */
+            if(
+              (this.props.stackFrameDataArr.length === 2 && 
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0)
+              
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 10){
+
+            /***** No highlighting */
+            if(
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+          if(this.state.stepProgramClickNumber === 11){
+
+            /***** No highlighting */
+            if(
+              (this.props.stackFrameDataArr.length === 3 &&
+                this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+              ){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+
+            /***** Highlighting name and parameters *****/
+            if(this.props.stackFrameDataArr.length === 3 &&
+              this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0){
+              functionItem = (
+                <div className="program-functions">
+                  <div className="functions-flex">
+                    <h1 className="program-code-hightlight-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+                    <div className="functions-flex">
+                      <h1 className="program-code-hightlight-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+                    </div>
+                  </div>
+                  <div style={{marginLeft: '1%'}}>
+                    {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+                    {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+                    {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+                  </div>
+                  <h1 className="program-code-text-style">{"}"}</h1>
+                </div>
+              )
+              functions.push(functionItem)
+            }
+          }
+
+
+        }
+      }
+      else{
+        functionItem = (
+          <div className="program-functions">
+            <div className="functions-flex">
+              <h1 className="program-code-text-style">void {this.props.stackFrameDataArr[i].functionName} </h1>
+              <div className="functions-flex">
+                <h1 className="program-code-text-style">({this.props.stackFrameDataArr[i].localFuncParams}){"{"}</h1>
+              </div>
+            </div>
+            <div style={{marginLeft: '1%'}}>
+              {this.returnProgramFunctionsLocalVariables(this.props.stackFrameDataArr[i])}
+              {this.returnUnsafeFunctions(this.props.stackFrameDataArr[i])}
+              {this.returnProgramFunctionsAdditionalFuncCalls(this.props.stackFrameDataArr[i])}
+            </div>
+            <h1 className="program-code-text-style">{"}"}</h1>
           </div>
-        </div>
-        <div style={{marginLeft: '1%'}}>
-          {this.returnProgramFunctionsLocalVariables(stackFrame)}
-          {this.returnUnsafeFunctions(stackFrame)}
-          {this.returnProgramFunctionsAdditionalFuncCalls(stackFrame)}
-        </div>
-        <h1 className="program-code-text-style">{"}"}</h1>
-      </div>
+        )
+        functions.push(functionItem)
+      }
+
+
+    }
+
+
+    return functions
+  }
+
+  returnMainFunctionTitle(){
+
+    var mainTitle = null
+
+    if(this.state.stepProgramClickNumber === 2 &&
+      this.props.stackFrameDataArr.length === 1 && 
+      this.props.stackFrameDataArr[0].unsafeFunctions.length === 0){
+
+      mainTitle = (
+        <h1 className="program-code-hightlight-pop-text-style">int main(int argc, char* argv[])</h1>
       )
-    )
+    }
+
+    if(this.state.running === true){
+      if(this.state.stackFrameRunningFunctions.length === 0){
+        if(this.state.stepProgramClickNumber === 0){
+          mainTitle = (
+            <div style={{display: 'flex'}}>
+              <h1 className="program-code-hightlight-text-style">int main(int argc,</h1>&nbsp;
+              <h1 className="program-code-hightlight-argv-text-style">char* argv[]</h1>
+              <h1 className="program-code-hightlight-text-style">)</h1>
+            </div>
+          )
+        }
+        else{
+          mainTitle = (
+            <div style={{display: 'flex'}}>
+              <h1 className="program-code-hightlight-text-style">int main</h1>
+              <h1 className="program-code-text-style">(int argc, char* argv[])</h1>
+            </div>
+          )
+        }
+      }
+      else{
+        mainTitle = (
+          <h1 className="program-code-text-style">int main(int argc, char* argv[])</h1>
+        )
+      }
+    }
+    else{
+      mainTitle = (
+        <h1 className="program-code-text-style">int main(int argc, char* argv[])</h1>
+      )
+    }
+
+
+   // #00e600
+    /*else{
+      mainTitle = (
+        <div style={{display: 'flex'}}>
+          <h1 className="program-code-hightlight-text-style">int main(int argc,</h1>&nbsp;
+          <h1 className="program-code-hightlight-argv-text-style">char* argv[]</h1>
+          <h1 className="program-code-hightlight-text-style">)</h1>
+        </div>
+      )
+    }*/
+
+
+    return mainTitle
   }
 
   returnProgram(){
-
     return(
       <div>
         <div className="program-code-container-stack">
@@ -3795,15 +5793,7 @@ class Stack extends Component {
           <div className="code-lines-spacer">
             <h1 className="program-code-text-style">{"#include <stdio.h>"}</h1>
             <h1 className="program-code-text-style">{"#include <string.h>"}</h1>
-            <div style={{display: 'flex'}}>
-              <h1 className="program-code-text-style">int main(int argc,</h1>
-              {this.state.highlightArgv && (
-                <h1 className="program-code-hightlight-text-style"> char* argv[])</h1>
-              )}   
-              {!this.state.highlightArgv && (
-                <h1 className="program-code-text-style"> char* argv[])</h1>
-              )}   
-            </div>
+            {this.returnMainFunctionTitle()}
             <div style={{marginLeft: '1%'}}>
               {this.returnMainFunctionCalls()}
             </div>
@@ -3871,6 +5861,7 @@ class Stack extends Component {
       stackFrameDataArray: [],
       malExeMessage: "",
       mainStackOpen: false,
+      highlightArgv: false,
     })
   }
 

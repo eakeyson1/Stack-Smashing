@@ -185,6 +185,21 @@
     font-size: 1.9vh;
     font-weight: 400;
     color: #ff3300;
+    font-weight: bold;
+}
+
+.program-code-hightlight-pop-text-style{
+    font-size: 1.9vh;
+    font-weight: 400;
+    color: #ff00aa;
+    font-weight: bold;
+}
+
+.program-code-hightlight-argv-text-style{
+    font-size: 1.9vh;
+    font-weight: 400;
+    color: #0004ff;
+    font-weight: bold;
 }
 
 .program-functions{
