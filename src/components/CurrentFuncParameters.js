@@ -8,13 +8,14 @@ function CurrentFuncParameters(props) {
         var parameters = ""
         props.parameters.map((parameter) =>{
           if(parameter.type === "char[]"){
-            parameters += " char" + " " +  parameter.name + "[],"
+            parameters += "char" + " " +  parameter.name + "[], "
           }
           else{
-            parameters += " " + parameter.type + " " +  parameter.name + ","
+            parameters += parameter.type + " " +  parameter.name + ", "
           }
         })
-        var removeComma = parameters.slice(0, -1)
+        var removeComma = parameters.slice(0, -2)
+        removeComma.slice(0,1)
         var tempParameters = "(" + removeComma + "){"
         return tempParameters
     }

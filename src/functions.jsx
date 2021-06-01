@@ -58,9 +58,10 @@ class Functions extends Component {
       localVariableType: "char",
       localVariableValue: "",
       functionName: "",
-      parameterError: "",
       parameterNameError: false,
+      parameterValueError: false,
       localVariableNameError: false,
+      localVariableValueError: false,
       localVariableError: "",
       numOfFunctions: 0,
       userInputBool: false,
@@ -72,6 +73,7 @@ class Functions extends Component {
       additionalFunctionCalls: [],
       strcpyParamError: "",
       functionNameError: "",
+      functionError: "",
       addFunctionError: "",
       hoverAddToProgram: false,
       strcpyParams1: [],
@@ -85,57 +87,58 @@ class Functions extends Component {
 
     // Check if maximum number of parameters is exceeded
     if(this.state.parameters.length > 2){
-      this.setState({parameterError: "Maximum of 3 parameters allowed"})
+      this.setState({functionError: "Maximum of 3 parameters allowed"})
+      setTimeout(() => { this.setState({functionError: ""}) }, 10000);
       return
     }
 
     //Check if input is a single character
     if(this.state.parameterType === "char" && this.state.parameterValue.length > 1){
-      this.setState({parameterError: "char contains only 1 character"})
-      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+      this.setState({parameterValueError: "char is 1 character"})
+      setTimeout(() => { this.setState({parameterValueError: ""}) }, 10000);
       return
     }
 
     // Check if input is an integer
     if(this.state.parameterType === "int" && isNaN(this.state.parameterValue)){
-      this.setState({parameterError: "That is not an integer"})
-      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+      this.setState({parameterValueError: "That is not an integer"})
+      setTimeout(() => { this.setState({parameterValueError: ""}) }, 10000);
       return
     }
 
     // Check if input is a float
     if(this.state.parameterType === "float" && isNaN(this.state.parameterValue)){
-      this.setState({parameterError: "That is not a float"})
-      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+      this.setState({parameterValueError: "That is not a float"})
+      setTimeout(() => { this.setState({parameterValueError: ""}) }, 10000);
       return
     }
 
 
     // Check if input is empty
     if(this.state.parameterName === ""){
-      this.setState({parameterError: "Please enter a parameter name"})
-      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+      this.setState({parameterNameError: "Please enter a name"})
+      setTimeout(() => { this.setState({parameterNameError: ""}) }, 10000);
       return
     }
     if(this.state.parameterValue === ""){
-      this.setState({parameterError: "Please enter a value"})
-      setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+      this.setState({parameterValueError: "Please enter a value"})
+      setTimeout(() => { this.setState({parameterValueError: ""}) }, 10000);
       return
     }
 
     // Check if name is already used
     for(var i=0; i<this.state.parameters.length; i++){
       if(this.state.parameters[i].name === this.state.parameterName){
-        this.setState({parameterError: "That name is aleady being used"})
-        setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+        this.setState({parameterNameError: "Already in use"})
+        setTimeout(() => { this.setState({parameterNameError: ""}) }, 10000);
         return
       }
     }
 
     for(var i=0; i<this.state.localVariables.length; i++){
       if(this.state.localVariables[i].name === this.state.parameterName){
-        this.setState({parameterError: "That name is aleady being used"})
-        setTimeout(() => { this.setState({parameterError: ""}) }, 10000);
+        this.setState({parameterNameError: "Already in use"})
+        setTimeout(() => { this.setState({parameterNameError: ""}) }, 10000);
         return
       }
     }
@@ -178,22 +181,22 @@ class Functions extends Component {
 
     // Check if maximum number of local variables is exceeded
     if(this.state.localVariables.length > 2){
-      this.setState({localVariableError: "Maximum of 3 parameters allowed"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({functionError: "Maximum of 3 parameters allowed"})
+      setTimeout(() => { this.setState({functionError: ""}) }, 10000);
       return
     }
 
     //Check if input is a single character
     if(this.state.localVariableType === "char" && this.state.localVariableValue.length > 1){
-      this.setState({localVariableError: "char contains only 1 character"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({localVariableValueError: "char is 1 character"})
+      setTimeout(() => { this.setState({localVariableVlueError: ""}) }, 10000);
       return
     }
 
     // Check if input is an integer
     if(this.state.localVariableType === "int" && isNaN(this.state.localVariableValue)){
-      this.setState({localVariableError: "That is not an integer"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({localVariableValueError: "That is not an integer"})
+      setTimeout(() => { this.setState({localVariableValueError: ""}) }, 10000);
       return
     }
 
@@ -204,8 +207,8 @@ class Functions extends Component {
 
     // Check if input is a float
     if(this.state.localVariableType === "float" && isNaN(this.state.localVariableValue)){
-      this.setState({localVariableError: "That is not a float"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({localVariableValueError: "That is not a float"})
+      setTimeout(() => { this.setState({localVariableValueError: ""}) }, 10000);
       return
     }
     
@@ -216,21 +219,21 @@ class Functions extends Component {
 
     // Check if input is empty
     if(this.state.localVariableName === ""){
-      this.setState({localVariableError: "Please enter a name"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({localVariableNameError: "Please enter a name"})
+      setTimeout(() => { this.setState({localVariableNameError: ""}) }, 10000);
       return
     }
 
     if(this.state.localVariableValue === ""){
-      this.setState({localVariableError: "Please enter a value"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({localVariableValueError: "Please enter a value"})
+      setTimeout(() => { this.setState({localVariableValueError: ""}) }, 10000);
       return
     }
 
     // Check if name is already used
     for(var i=0; i<this.state.parameters.length; i++){
       if(this.state.parameters[i].name === this.state.localVariableName){
-        this.setState({localVariableError: "That name is aleady being used"})
+        this.setState({localVariableNameError: "Already in use"})
         setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
         return
       }
@@ -238,7 +241,7 @@ class Functions extends Component {
 
     for(var i=0; i<this.state.localVariables.length; i++){
       if(this.state.localVariables[i].name === this.state.localVariableName){
-        this.setState({localVariableError: "That name is aleady being used"})
+        this.setState({localVariableNameError: "Already in use"})
         setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
         return
       }
@@ -246,8 +249,8 @@ class Functions extends Component {
 
     // Check if name equals "userinput"
     if(this.state.localVariableName === "userInput"){
-      this.setState({localVariableError: "Cannot have 'userInput' as a local variable name"})
-      setTimeout(() => { this.setState({localVariableError: ""}) }, 10000);
+      this.setState({localVariableNameError: "Cannot have 'userInput' as a local variable name"})
+      setTimeout(() => { this.setState({localVariableNameError: ""}) }, 10000);
       return
     }
 
@@ -366,15 +369,15 @@ class Functions extends Component {
     }
 
     if(this.state.stackFrameDataArray.length > 2){
-      this.setState({functionNameError: "Maximum of 3 functions allowed"})
-      setTimeout(() => { this.setState({functionNameError: ""}) }, 5000);
+      this.setState({functionError: "Maximum of 3 functions allowed"})
+      setTimeout(() => { this.setState({functionError: ""}) }, 5000);
       return
     }
 
     for(var i=0; i<this.state.stackFrameDataArray.length; i++){
       if(this.state.stackFrameDataArray[i].functionName === this.state.functionName){
-        this.setState({functionNameError: "Cannot have multiple functions with the same name"})
-        setTimeout(() => { this.setState({functionNameError: ""}) }, 10000);
+        this.setState({functionError: "Cannot have multiple functions with the same name"})
+        setTimeout(() => { this.setState({functionError: ""}) }, 10000);
         return
       }
     }
@@ -531,6 +534,7 @@ class Functions extends Component {
       displayAddFrame: false,
       addFunctionError: "",
       functionNameError: "",
+      functionError: "",
       parameterError: "",
       localVariableError: false,
       unsafeFunctions: [],
@@ -547,16 +551,17 @@ class Functions extends Component {
       localVariables: [], 
       unsafeFunctions: [], 
       additionalFunctionCalls: [],
+      userInputBool: false
     })
   }
 
   /***** Updating user inputs *****/
 
-  updateParameterName(event){this.setState({parameterName: event.target.value})}
-  updateParameterValue(event){this.setState({parameterValue: event.target.value})}
-  updateLocalVariableName(event){this.setState({localVariableName: event.target.value})}
-  updateLocalVariableValue(event){this.setState({localVariableValue: event.target.value})}
-  updateFunctionName(event){this.setState({functionName: event.target.value})}
+  updateParameterName(event){this.setState({parameterName: event.target.value, parameterNameError: ""})}
+  updateParameterValue(event){this.setState({parameterValue: event.target.value, parameterValueError: ""})}
+  updateLocalVariableName(event){this.setState({localVariableName: event.target.value, localVariableNameError: ""})}
+  updateLocalVariableValue(event){this.setState({localVariableValue: event.target.value,localVariableValueError: ""})}
+  updateFunctionName(event){this.setState({functionName: event.target.value, functionNameError: ""})}
   updateParameterType(event){this.setState({parameterType: event.target.value})}
   updateLocalVariableType(event){this.setState({localVariableType: event.target.value})}
 
@@ -572,8 +577,8 @@ class Functions extends Component {
   displayAdditionalFunctionCallOptions(){
 
     if(this.state.additionalFunctionCalls.length > 0){
-      this.setState({functionNameError: "Only 1 additional function call allowed"})
-      setTimeout(() => { this.setState({functionNameError: ""}) }, 8000);
+      this.setState({functionError: "Only 1 additional function call allowed"})
+      setTimeout(() => { this.setState({functionError: ""}) }, 8000);
       return
     }
 
@@ -584,15 +589,15 @@ class Functions extends Component {
 
     for(var i=0; i<this.state.stackFrameDataArray.length; i++){
       if(this.state.stackFrameDataArray[i].unsafeFunctions.length !== 0){
-        this.setState({functionNameError: "Only 1 unsafe function allowed for intro.c"})
-        setTimeout(() => { this.setState({functionNameError: ""}) }, 8000);
+        this.setState({functionError: "Only 1 unsafe function allowed for intro.c"})
+        setTimeout(() => { this.setState({functionError: ""}) }, 8000);
         return
       }
     }
 
     if(this.state.unsafeFunctions.length > 0){
-      this.setState({functionNameError: "Only 1 unsafe function allowed"})
-      setTimeout(() => { this.setState({functionNameError: ""}) }, 8000);
+      this.setState({functionError: "Only 1 unsafe function allowed"})
+      setTimeout(() => { this.setState({functionError: ""}) }, 8000);
       return
     }
 
@@ -621,6 +626,7 @@ class Functions extends Component {
               parameterName={this.state.parameterName}
               updateParameterName={(name) => this.updateParameterName(name)}
               parameterNameError={this.state.parameterNameError}
+              parameterValueError={this.state.parameterValueError}
               changeParameterType={(type) => this.changeParameterType(type)}
               parameterType={this.state.parameterType}
               parameterValue={this.state.parameterValue}
@@ -629,13 +635,16 @@ class Functions extends Component {
               localVariableName={this.state.localVariableName}
               updateLocalVariableName={(name) => this.updateLocalVariableName(name)}
               localVariableNameError={this.state.localVariableNameError}
+              localVariableValueError={this.state.localVariableValueError}
               changeLocalVariableType={(type) => this.changeLocalVariableType(type)}
               localVariableType={this.state.localVariableType}
               localVariableValue={this.state.localVariableValue}
               updateLocalVariableValue={(value) => this.updateLocalVariableValue(value)}
               addLocalVariable={this.addLocalVariable}
+              functionError={this.state.functionError}
               functionNameError={this.state.functionNameError}
               localVariableError={this.state.localVariableError}
+
             />
 
             <div className="return-function-form-container">

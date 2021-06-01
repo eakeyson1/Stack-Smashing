@@ -27,7 +27,9 @@ function ParametersVariablesInput(props) {
                     placeholder={"e.g. foo"}
                     onChange={props.updateFunctionName}
                     className="function-name-input-style"
+                    maxLength={12}
                   />
+                  <h1 className="error-input-text-style">{props.functionNameError}</h1>
                 </div>
               </div>
               <div className="add-to-intro-button-container">
@@ -56,12 +58,9 @@ function ParametersVariablesInput(props) {
                   placeholder={"Name"}
                   onChange={props.updateParameterName}
                   className="param-lv-input-style"
+                  maxLength={12}
                 />
-                <div className="height-10">
-                  {props.parameterNameError && (
-                    <h1 className="error-input-text-style">Enter a parameter name</h1>
-                  )}
-                </div>
+                <h1 className="error-input-text-style">{props.parameterNameError}</h1>
               </div>
     
               <div className="dropdown-params-lv">
@@ -76,7 +75,9 @@ function ParametersVariablesInput(props) {
                   placeholder={"Value"}
                   onChange={props.updateParameterValue}
                   className="param-lv-input-style"
+                  maxLength={5}
                 />
+                <h1 className="error-input-text-style">{props.parameterValueError}</h1>
               </div>
               <div style={{marginLeft: '5%'}}> 
                 <button class="pushable" onClick={props.addParameter}>
@@ -101,12 +102,9 @@ function ParametersVariablesInput(props) {
                   placeholder={"Name"}
                   onChange={props.updateLocalVariableName}
                   className="param-lv-input-style"
+                  maxLength={12}
                 />
-                <div className="height-10">
-                  {props.localVariableNameError && (
-                    <h1 className="error-input-text-style">Enter a variable name</h1>
-                  )}
-                </div>
+                <h1 className="error-input-text-style">{props.localVariableNameError}</h1>
               </div>
     
               <div className="dropdown-params-lv">
@@ -121,7 +119,9 @@ function ParametersVariablesInput(props) {
                   placeholder={"Value"}
                   onChange={props.updateLocalVariableValue}
                   className="param-lv-input-style"
+                  maxLength={5}
                 />
+                <h1 className="error-input-text-style">{props.localVariableValueError}</h1>
               </div>
               <div style={{marginLeft: '5%'}}> 
                 <button class="pushable" onClick={props.addLocalVariable}>
@@ -134,8 +134,7 @@ function ParametersVariablesInput(props) {
               </div>
     
             </div>
-            <h1 className="error-input-text-style">{props.functionNameError}</h1>
-            <h1 className="error-input-text-style">{props.localVariableError}</h1>
+            <h1 className="error-input-text-style">{props.functionError}</h1>
             <div className="border-bottom-param-lv"></div>
           </div>
         )

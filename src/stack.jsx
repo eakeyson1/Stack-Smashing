@@ -434,6 +434,7 @@ class Stack extends Component {
                 stackDataArr[k].sfpArr[1] = concatLV[2]
                 stackDataArr[k].sfpArr[0] = concatLV[1]
                 stackDataArr[k].returnAddressArr[3] = concatLV[0]
+                this.setState({segFault: true})
               }
               if(sfpOverFlowLength === 6){
                 stackDataArr[k].sfpArr[3] = concatLV[5]
@@ -442,7 +443,7 @@ class Stack extends Component {
                 stackDataArr[k].sfpArr[0] = concatLV[2]
                 stackDataArr[k].returnAddressArr[3] = concatLV[1]
                 stackDataArr[k].returnAddressArr[2] = concatLV[0]
-
+                this.setState({segFault: true})
               }
               if(sfpOverFlowLength === 7){
                 stackDataArr[k].sfpArr[3] = concatLV[6]
@@ -452,6 +453,7 @@ class Stack extends Component {
                 stackDataArr[k].returnAddressArr[3] = concatLV[2]
                 stackDataArr[k].returnAddressArr[2] = concatLV[1]
                 stackDataArr[k].returnAddressArr[1] = concatLV[0]
+                this.setState({segFault: true})
               }
               if(sfpOverFlowLength === 8){
                 stackDataArr[k].sfpArr[3] = concatLV[7]
@@ -462,6 +464,7 @@ class Stack extends Component {
                 stackDataArr[k].returnAddressArr[2] = concatLV[2]
                 stackDataArr[k].returnAddressArr[1] = concatLV[1]
                 stackDataArr[k].returnAddressArr[0] = concatLV[0]
+                this.setState({segFault: true})
               }
 
               /***** Correctly overwrritten return address *****/
@@ -488,17 +491,26 @@ class Stack extends Component {
                   totalLen += this.state.stackFrameRunningFunctions[j].parametersLetterArray.length + this.state.stackFrameRunningFunctions[j].localVariablesLetterArray.length + 8
                 }
                 
+                
                 var finalLen = currentStackFrameAddressLength + totalLen
                 var lowBoundAddress = startAddress - finalLen
                 var highBoundHigh = lowBoundAddress - 16
-                console.log("user input return address " + newReturnAddressInt)
-                console.log("low bound " + lowBoundAddress)
-                console.log("high bound " + highBoundHigh)
 
-                if(newReturnAddressInt < lowBoundAddress && newReturnAddressInt > highBoundHigh){
+                var validReturnAddressArr = []
+
+                var last16Vars = variableArr.slice(-16)
+                console.log(last16Vars)
+                for(var j=0; j<last16Vars.length; j++){
+                  if(last16Vars[j] === "\\x90"){
+                    var address = lowBoundAddress - (j+1)
+                    validReturnAddressArr.push(address)
+                  }
+                }
+                console.log(validReturnAddressArr)
+
+                if(validReturnAddressArr.includes(newReturnAddressInt)){
                   var tempMalFuncNameArr = this.state.malFuncNameArr
                   tempMalFuncNameArr.push(stackDataArr[k].functionName)
-                  console.log("malfuncnamearr length " + tempMalFuncNameArr.length)
                   var uniqueNames = [...new Set(tempMalFuncNameArr)];
                   this.setState({malFuncNameArr: uniqueNames})
                 }
@@ -514,6 +526,8 @@ class Stack extends Component {
                 stackDataArr[k].returnAddressArr[2] = []
                 stackDataArr[k].returnAddressArr[1] = []
                 stackDataArr[k].returnAddressArr[0] = []
+
+                this.setState({segFault: true})
               }
 
             }
@@ -527,7 +541,6 @@ class Stack extends Component {
 
     this.setState({
       running: true, 
-      segFault: false, 
       displaySegFault: false,
       mainStackParams: reversedUserInputArray, 
       argvOne: argvOne,
@@ -3247,8 +3260,11 @@ class Stack extends Component {
 
   programFinish(){
 
-    if(this.state.malFuncNameArr.length !== 0){
+    if(this.state.malFuncNameArr.length !== 0 && this.state.segFault === false){
       this.setState({maliciousExecution: "Successful", maliciousExecutionBool: true})
+    }
+    else if(this.state.segFault === true){
+      this.setState({maliciousExecution: "Segmentation Fault"})
     }
     else{
       this.setState({maliciousExecution: "Unsuccessful"})
@@ -7935,10 +7951,6 @@ class Stack extends Component {
     return(
       <div>
         <div className="program-code-container-stack">
-          {this.state.displaySegFault && (
-            <h1 className="seg-fault">Segmentation Fault</h1>
-          )}
-
           <h1 className="seg-fault">{this.state.malExeMessage}</h1>
 
           <div className="program-name-container">
@@ -8063,7 +8075,7 @@ class Stack extends Component {
 
   shellcodeDef = (props) => (
     <Tooltip id="button-tooltip" {...props}>
-      A small piece of code that allows a user launch a remote shell on a machine. Code is ran with the priviledges of the current process.
+      The code the attacker would like to execute. Often launches a remote shell.
     </Tooltip>
   );
 
@@ -8074,6 +8086,7 @@ class Stack extends Component {
   );
 
   returnMaliciousExecutionStatus(){
+    console.log(this.state.maliciousExecution)
     if(this.state.maliciousExecution === "Starting"){
       return(
       <div className="stack-smashing-status-container">
@@ -8088,7 +8101,7 @@ class Stack extends Component {
       </div>
       )
     }
-    if(this.state.maliciousExecution === "Running"){
+    else if(this.state.maliciousExecution === "Running"){
       return(
         <div className="stack-smashing-status-container">
           <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>
@@ -8129,6 +8142,18 @@ class Stack extends Component {
           <div className="stack-smashing-status-title-container">
             <h1 className="malicious-execution-title-text">Attack Status:</h1>
             <h1 className="malicious-execution-unsuccessful-text">Unsuccessful</h1>
+          </div>
+        </div>
+      </div>
+      )
+    }
+    else if(this.state.maliciousExecution === "Segmentation Fault"){
+      return(
+      <div className="stack-smashing-status-container">
+        <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>
+          <div className="stack-smashing-status-title-container">
+            <h1 className="malicious-execution-title-text">Attack Status:</h1>
+            <h1 className="malicious-execution-seg-fault-text">Segmentation Fault: Bad return address</h1>
           </div>
         </div>
       </div>

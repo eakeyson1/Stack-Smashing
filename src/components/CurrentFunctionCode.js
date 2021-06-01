@@ -11,10 +11,10 @@ function CurrentFunctionCode(props) {
         <div className="code-input">
             <div className="code-input-shift">
                 <div className="functions-flex">
-                <h1 className="code-input-style">void {props.functionName}</h1>
-                <div className="functions-flex">
-                    <CurrentFuncParameters parameters={props.parameters}/>
-                </div>
+                    <h1 className="code-input-style">void {props.functionName}</h1>
+                    <div className="functions-flex">
+                        <CurrentFuncParameters parameters={props.parameters}/>
+                    </div>
                 </div>
                 <div style={{marginLeft: '1%'}}>
                 <CurrentFuncLocalVariables localVariables={props.localVariables}/>

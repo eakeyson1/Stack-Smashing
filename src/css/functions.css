@@ -34,6 +34,7 @@ html, body, #root, .App {
     padding-top: 1vh;
     font-size: 3vh;
     padding-left: 1vh;
+    text-shadow: 0.2vh 0.2vh #cccccc
 }
 
 .return-function-form-container{
@@ -222,6 +223,7 @@ html, body, #root, .App {
     text-align: center;
     margin-top: 1vh;
     width: 17vh;
+    text-shadow: 0.2vh 0.2vh #979797
 }
 
 .add-param-lv-button-text{
@@ -401,6 +403,7 @@ html, body, #root, .App {
     font-weight: bold;
     padding-right: 18vh;
     padding-top: 0.9vh;
+    text-shadow: 0.2vh 0.2vh #cccccc
 }
 
 .program-name-intro-container{
@@ -492,9 +495,9 @@ html, body, #root, .App {
 
 .error-input-text-style{
     color: red;
-    font-size: 1.9vh;
+    font-size: 1.6vh;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-top: 0.25vh;
 }
 
 .width-75{
@@ -572,6 +575,7 @@ html, body, #root, .App {
     font-size: 3.5vh;
     font-weight: bold;
     margin-top: 2vh;
+    text-shadow: 0.2vh 0.2vh #cccccc
 }
 
 .clear-function-button-text{

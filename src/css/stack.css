@@ -556,11 +556,15 @@
 }
 
 .malicious-execution-unsuccessful-text{
-    font-size: 15px;
     color: red;
     font-weight: bold;
     margin-left: 1%;
     font-size: 1.9vh;
+}
+
+.malicious-execution-seg-fault-text{
+    color: red;
+    font-size: 1.6vh;
 }
 
 
