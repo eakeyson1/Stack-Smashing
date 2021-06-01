@@ -119,6 +119,7 @@ class Stack extends Component {
 
   startProgram(){
 
+
     /***** Must create a deep copy of the stackFrameDataArr prop *****/
     var stackDataArr = []
     for(var i=0; i<this.props.stackFrameDataArr.length; i++){
@@ -465,6 +466,7 @@ class Stack extends Component {
 
               /***** Correctly overwrritten return address *****/
               if(sfpOverFlowLength === 9){
+
                 stackDataArr[k].sfpArr[3] = concatLV[8]
                 stackDataArr[k].sfpArr[2] = concatLV[7]
                 stackDataArr[k].sfpArr[1] = concatLV[6]
@@ -489,10 +491,16 @@ class Stack extends Component {
                 var finalLen = currentStackFrameAddressLength + totalLen
                 var lowBoundAddress = startAddress - finalLen
                 var highBoundHigh = lowBoundAddress - 16
+                console.log("user input return address " + newReturnAddressInt)
+                console.log("low bound " + lowBoundAddress)
+                console.log("high bound " + highBoundHigh)
+
                 if(newReturnAddressInt < lowBoundAddress && newReturnAddressInt > highBoundHigh){
-                  var malFuncNameArr = this.state.malFuncNameArr
-                  malFuncNameArr.push(stackDataArr[k].functionName)
-                  this.setState({malFuncNameArr: malFuncNameArr})
+                  var tempMalFuncNameArr = this.state.malFuncNameArr
+                  tempMalFuncNameArr.push(stackDataArr[k].functionName)
+                  console.log("malfuncnamearr length " + tempMalFuncNameArr.length)
+                  var uniqueNames = [...new Set(tempMalFuncNameArr)];
+                  this.setState({malFuncNameArr: uniqueNames})
                 }
               }
 
@@ -558,9 +566,6 @@ class Stack extends Component {
     }
 
     this.setState({highlightArgv: false})
-
-    console.log("step number " + this.state.stepProgramClickNumber)
-
     if(this.state.stepProgramClickNumber === 0){
 
       // Always pushing func1
@@ -3248,7 +3253,11 @@ class Stack extends Component {
     else{
       this.setState({maliciousExecution: "Unsuccessful"})
     }
-    setTimeout(() => { this.setState({maliciousExecution: "Starting"}) }, 12000);
+    setTimeout(() => { 
+      if(this.state.maliciousExecution !== "Running"){
+        this.setState({maliciousExecution: "Starting"}) 
+      }
+    }, 12000);
     setTimeout(() => { this.setState({malFuncNameArr: []}) }, 12000);
 
 
@@ -3586,7 +3595,6 @@ class Stack extends Component {
       var addFunctionName = stackFrame.additionalFunctionCalls[i].split('(')[0]
       var additionalFunctionCall = null
       if(functionName === addFunctionName && stackFrame.functionName === parentFunctionName){
-        console.log("add calls " + stackFrame.additionalFunctionCalls[i])
         if(stackFrame.additionalFunctionCalls[i].includes("userInput")){
 
           var parameters = ""
@@ -8068,44 +8076,62 @@ class Stack extends Component {
   returnMaliciousExecutionStatus(){
     if(this.state.maliciousExecution === "Starting"){
       return(
-        <div style={{display: 'flex'}}> 
-        <h1 className="malicious-execution-starting-text">Starting</h1>
+      <div className="stack-smashing-status-container">
+        <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>
+          <div className="stack-smashing-status-title-container">
+            <h1 className="malicious-execution-title-text">Attack Status:</h1>
+            <div style={{marginLeft: '2%'}}>
+              <h1 className="malicious-execution-starting-text">Starting</h1>
+            </div> 
+          </div>
+        </div>
+      </div>
+      )
+    }
+    if(this.state.maliciousExecution === "Running"){
+      return(
+        <div className="stack-smashing-status-container">
+          <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>
+            <div className="stack-smashing-status-title-container">
+              <h1 className="malicious-execution-title-text">Attack Status:</h1>
+              <div style={{display: 'flex', marginLeft: '2%'}}>
+                <h1 className="malicious-execution-text-running">Running</h1>
+                <Dots/>         
+              </div> 
+            </div>
+          </div>
         </div>
       )
     }
-
-    if(this.state.maliciousExecution === "Successful"){
+    else if(this.state.maliciousExecution === "Successful"){
+      var successString = "Successful in: "
+      this.state.malFuncNameArr.map((name) => 
+        successString+= name
+      )
       return(
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <h1 className="malicious-execution-text">Successful in:</h1>
-          {this.state.malFuncNameArr.map((name) => 
-            <h1 className="malicious-execution-text">{name}</h1>
-          )}
+      <div className="stack-smashing-status-container">
+        <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>
+          <div className="stack-smashing-status-title-container">
+            <h1 className="malicious-execution-title-text">Attack Status:</h1>
+            <div className="success-string-container">
+              <h1 className="malicious-execution-starting-text">{successString}</h1>
+            </div> 
+          </div>
         </div>
+      </div>
       )
     }
 
-    if(this.state.maliciousExecution === "Unsuccessful"){
+    else if(this.state.maliciousExecution === "Unsuccessful"){
       return(
-        <h1 className="malicious-execution-unsuccessful-text">Unsuccessful</h1>
-      )
-    }
-
-    if(this.state.displayFinishButton){
-      return(
-      <div style={{display: 'flex'}}>
-        <h1 className="malicious-execution-text-running">{this.state.maliciousExecution}</h1>
-        <Dots/>         
-      </div> 
-      )
-    }
-
-    if(this.state.running && !this.state.displayFinishButton){
-      return(
-        <div style={{display: 'flex'}}>
-          <h1 className="malicious-execution-text-running">{this.state.maliciousExecution}</h1>
-          <Dots/>         
-        </div> 
+      <div className="stack-smashing-status-container">
+        <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>
+          <div className="stack-smashing-status-title-container">
+            <h1 className="malicious-execution-title-text">Attack Status:</h1>
+            <h1 className="malicious-execution-unsuccessful-text">Unsuccessful</h1>
+          </div>
+        </div>
+      </div>
       )
     }
   }
@@ -8137,6 +8163,7 @@ class Stack extends Component {
   
 
   render() {
+    console.log(this.state.malFuncNameArr)
     return(
       <div className="main-stack-frame-container">
         <div className="flex">
@@ -8455,57 +8482,91 @@ class Stack extends Component {
                         <h1 className="hints">* Be mindful of the length of the machine code</h1>
                       </div>
                     </div>
-                    <div style={{display: 'flex', marginTop: '5%'}}>
-                      <div>
-                        <div style={{display: 'flex'}}>
-                          <Checkbox
-                            checked={this.state.startingShell}
-                            onChange={(event) => this.startingShellChecked(event.target.checked)}
-                            color="primary"
-                            />
-                          <div style={{marginTop: '3.5%'}}>
-                            <div className="shellcode-title-text">Start a remote shell</div>
+                    {!this.state.running && (
+                      <div style={{display: 'flex', marginTop: '5%'}}>
+                        <div>
+                          <div style={{display: 'flex'}}>
+                            <Checkbox
+                              checked={this.state.startingShell}
+                              onChange={(event) => this.startingShellChecked(event.target.checked)}
+                              color="primary"
+                              />
+                            <div style={{marginTop: '3.5%'}}>
+                              <div className="shellcode-title-text">Start a remote shell</div>
+                            </div>
                           </div>
-                        </div>
-                        <div className="shellcode-text">\xF3\xDD\xA2\xC9\xAA\xD3</div>
+                          <div className="shellcode-text">\xF3\xDD\xA2\xC9\xAA\xD3</div>
 
-                        <div style={{display: 'flex', marginTop: '5%'}}>
-                          <Checkbox
-                            checked={this.state.gettingRootPriviledges}
-                            onChange={(event) => this.gettingRootPriviledgesChecked(event.target.checked)}
-                            color="primary"
-                            />
-                          <div style={{marginTop: '3.5%'}}>
-                            <div className="shellcode-title-text">Get root priviledge</div>
+                          <div style={{display: 'flex', marginTop: '5%'}}>
+                            <Checkbox
+                              checked={this.state.gettingRootPriviledges}
+                              onChange={(event) => this.gettingRootPriviledgesChecked(event.target.checked)}
+                              color="primary"
+                              />
+                            <div style={{marginTop: '3.5%'}}>
+                              <div className="shellcode-title-text">Get root priviledge</div>
+                            </div>
                           </div>
+                          <div className="shellcode-text">\xCC\xB2\xBB\xA1\x7B\xC8\xF4\xC6</div>
                         </div>
-                        <div className="shellcode-text">\xCC\xB2\xBB\xA1\x7B\xC8\xF4\xC6</div>
+                        <div style={{marginLeft: '5%'}}>
+                          <div style={{display: 'flex'}}>
+                            <Checkbox
+                              checked={this.state.shutDownOs}
+                              onChange={(event) => this.shutDownOsChecked(event.target.checked)}
+                              color="primary"
+                              />
+                            <div  style={{marginTop: '6%'}}>
+                              <div className="shellcode-title-text">Shut down OS</div>
+                            </div>
+                          </div>
+                          <div className="shellcode-text">\xFF\D3\x99\xA0</div>
+                          <div style={{display: 'flex', marginTop: '8%'}}>
+                            <Checkbox
+                              checked={this.state.wipeOs}
+                              onChange={(event) => this.wipeOsChecked(event.target.checked)}
+                              color="primary"
+                              />
+                            <div style={{marginTop: '6%'}}>
+                              <div className="shellcode-title-text">Wipe OS</div>
+                            </div>
+                          </div>
+                          <div className="shellcode-text">\FA\xDA\x00\xB0\x77</div>
+                        </div>
                       </div>
-                      <div style={{marginLeft: '5%'}}>
-                        <div style={{display: 'flex'}}>
-                          <Checkbox
-                            checked={this.state.shutDownOs}
-                            onChange={(event) => this.shutDownOsChecked(event.target.checked)}
-                            color="primary"
-                            />
-                          <div  style={{marginTop: '6%'}}>
-                            <div className="shellcode-title-text">Shut down OS</div>
+                    )}
+                    {this.state.running && (
+                      <div style={{display: 'flex', marginTop: '5%'}}>
+                        <div>
+                          <div style={{display: 'flex'}}>
+                            <div style={{marginTop: '3.5%'}}>
+                              <div className="shellcode-title-text">Start a remote shell</div>
+                            </div>
                           </div>
-                        </div>
-                        <div className="shellcode-text">\xFF\D3\x99\xA0</div>
-                        <div style={{display: 'flex', marginTop: '8%'}}>
-                          <Checkbox
-                            checked={this.state.wipeOs}
-                            onChange={(event) => this.wipeOsChecked(event.target.checked)}
-                            color="primary"
-                            />
-                          <div style={{marginTop: '6%'}}>
-                            <div className="shellcode-title-text">Wipe OS</div>
+                          <div className="shellcode-text">\xF3\xDD\xA2\xC9\xAA\xD3</div>
+                          <div style={{display: 'flex', marginTop: '5%'}}>
+                            <div style={{marginTop: '3.5%'}}>
+                              <div className="shellcode-title-text">Get root priviledge</div>
+                            </div>
                           </div>
+                          <div className="shellcode-text">\xCC\xB2\xBB\xA1\x7B\xC8\xF4\xC6</div>
                         </div>
-                        <div className="shellcode-text">\FA\xDA\x00\xB0\x77</div>
+                        <div style={{marginLeft: '5%'}}>
+                          <div style={{display: 'flex'}}>
+                            <div  style={{marginTop: '6%'}}>
+                              <div className="shellcode-title-text">Shut down OS</div>
+                            </div>
+                          </div>
+                          <div className="shellcode-text">\xFF\D3\x99\xA0</div>
+                          <div style={{display: 'flex', marginTop: '8%'}}>
+                            <div style={{marginTop: '6%'}}>
+                              <div className="shellcode-title-text">Wipe OS</div>
+                            </div>
+                          </div>
+                          <div className="shellcode-text">\FA\xDA\x00\xB0\x77</div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                 </div>
                 </Carousel.Item>
                 <Carousel.Item>
@@ -8573,16 +8634,7 @@ class Stack extends Component {
                     </div>
                   </button>
                 </div>
-                <div>
-                  <div className="stack-smashing-status-container">
-                    <div style={{display: 'flex', marginTop: '1%'}}>
-                      <div className="stack-smashing-status-title-container">
-                        <h1 className="malicious-execution-title-text">Attack Status:</h1>
-                      </div>
-                      {this.returnMaliciousExecutionStatus()}                   
-                    </div>
-                  </div>
-                </div>
+                {this.returnMaliciousExecutionStatus()}                   
               </div>
             )}
             {this.state.running && !this.state.displayFinishButton && (
@@ -8598,17 +8650,7 @@ class Stack extends Component {
                     </div>
                   </button>
                 </div>
-                <div>
-                  <div className="stack-smashing-status-container">
-                    <div style={{display: 'flex', marginTop: '1%'}}>
-                      <div className="stack-smashing-status-title-container">
-                        <h1 className="malicious-execution-title-text">Attack Status:</h1>
-                      </div>
-                      {this.returnMaliciousExecutionStatus()}                   
-                                
-                    </div>
-                  </div>
-                </div>
+                {this.returnMaliciousExecutionStatus()}                   
               </div>
             )}
             {this.state.displayFinishButton && (
@@ -8623,16 +8665,7 @@ class Stack extends Component {
                     </div>
                   </button>
                 </div>
-                <div>
-                  <div className="stack-smashing-status-container">
-                    <div style={{display: 'flex', marginTop: '1%'}}>
-                      <div className="stack-smashing-status-title-container">
-                        <h1 className="malicious-execution-title-text">Attack Status:</h1>
-                      </div>
-                      {this.returnMaliciousExecutionStatus()}                   
-                    </div>
-                  </div>
-                </div>
+                {this.returnMaliciousExecutionStatus()}                   
               </div>
             )}
             {this.returnProgram()}

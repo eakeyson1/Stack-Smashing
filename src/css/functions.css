@@ -134,8 +134,8 @@ html, body, #root, .App {
 }
 
 .additional-func-call-container{
-    margin-left: 60px;
-    margin-top: 60px;
+    margin-left: 86vh;
+    margin-top: 5vh;
     display: flex;
 }
 
@@ -572,6 +572,12 @@ html, body, #root, .App {
     font-size: 3.5vh;
     font-weight: bold;
     margin-top: 2vh;
+}
+
+.clear-function-button-text{
+    color: #1a75ff;
+    font-size: 2vh;
+    font-weight: bold;
 }
 
 .instruction-text{

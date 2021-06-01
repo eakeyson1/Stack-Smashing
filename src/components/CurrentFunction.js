@@ -21,10 +21,11 @@ function CurrentFunction(props) {
             <CurrentFunctionButtons 
               displayAddUnsafeFunction={props.displayAddUnsafeFunction}
               addUserInput={props.addUserInput}
-              removeUserInpu={props.removeUserInput}
+              removeUserInput={props.removeUserInput}
               displayAdditionalFunctionCallOptions={props.displayAdditionalFunctionCallOptions}
               addFunctionError={props.addFunctionError}
               userInputBool={props.userInputBool}
+              clearFunction={props.clearFunction}
             />
           </div>
           

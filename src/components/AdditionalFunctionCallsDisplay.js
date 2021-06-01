@@ -23,9 +23,15 @@ function AdditionalFunctionCallsDisplay(props) {
                   <div className="additional-func-param-container">
                     {/*this.returnAdditionalFunctionCallParams()*/}
                   </div>
-                  <button className="add-additional-func-call-button" onClick={() => props.addFunctionCall()}>
-                    <h1 className="add-additional-func-call-button-text">Add Function Call</h1>
-                  </button>
+                  <div style={{marginLeft: '5%'}}> 
+                    <button class="pushable" onClick={() => props.addFunctionCall()}>
+                      <div class="shadow shadow-height-stack-button"></div>
+                      <div class="edge edge-color-lighter-blue edge-height-stack-button"></div>
+                      <div class="front front-color-white  front-padding-add-additional-func-button front-padding-execution-button-text-size">
+                        <h1 className="add-unsafe-func-button-text">Add</h1>     
+                      </div>
+                    </button>
+                  </div>
                 </div>
               )
         )

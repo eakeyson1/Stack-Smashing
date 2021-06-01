@@ -100,6 +100,10 @@
   padding: 1vh 2vh;
 }
 
+.front-padding-clear-function-button{
+  padding: 0.5vh 1vh;
+}
+
 .front-padding-stack-button{
   padding: 1vh 1vh;
 }
@@ -166,6 +170,10 @@
 
 .shadow-height-clear-button{
   height: 3.85vh;
+}
+
+.shadow-height-clear-function-button{
+  height: 2.85vh;
 }
 
 .shadow-height-stack-next-button{

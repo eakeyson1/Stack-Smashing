@@ -43,6 +43,7 @@ class Functions extends Component {
     this.changeLocalVariableType = this.changeLocalVariableType.bind(this)
     this.addFunctionCall = this.addFunctionCall.bind(this)
     this.isInt = this.isInt.bind(this)
+    this.clearFunction = this.clearFunction.bind(this)
 
 
     this.state = {
@@ -522,7 +523,9 @@ class Functions extends Component {
       parameters: [],
       parameterType: "char",
       parameterName: "",
+      parameterValue: "",
       localVariables: [],
+      localVariableValue: "",
       localVariableName: "",
       localVariableType: "char",
       displayAddFrame: false,
@@ -536,6 +539,15 @@ class Functions extends Component {
       additionalFunctionCallName: ""
     })
     
+  }
+
+  clearFunction(){
+    this.setState({
+      parameters: [], 
+      localVariables: [], 
+      unsafeFunctions: [], 
+      additionalFunctionCalls: [],
+    })
   }
 
   /***** Updating user inputs *****/
@@ -569,6 +581,14 @@ class Functions extends Component {
   }
 
   displayAddUnsafeFunction(){
+
+    for(var i=0; i<this.state.stackFrameDataArray.length; i++){
+      if(this.state.stackFrameDataArray[i].unsafeFunctions.length !== 0){
+        this.setState({functionNameError: "Only 1 unsafe function allowed for intro.c"})
+        setTimeout(() => { this.setState({functionNameError: ""}) }, 8000);
+        return
+      }
+    }
 
     if(this.state.unsafeFunctions.length > 0){
       this.setState({functionNameError: "Only 1 unsafe function allowed"})
@@ -627,7 +647,7 @@ class Functions extends Component {
                 additionalFunctionCalls={this.state.additionalFunctionCalls}
                 displayAddUnsafeFunction={this.displayAddUnsafeFunction}
                 addUserInput={this.addUserInput}
-                removeUserInpu={this.removeUserInput}
+                removeUserInput={this.removeUserInput}
                 displayAdditionalFunctionCallOptions={this.displayAdditionalFunctionCallOptions}
                 addFunctionError={this.state.addFunctionError}
                 userInputBool={this.state.userInputBool}
@@ -643,6 +663,7 @@ class Functions extends Component {
                 localVariables={this.state.localVariables}
                 addUnsafeFunctionToProgram={this.addUnsafeFunctionToProgram}
                 strcpyParamError={this.state.strcpyParamError}
+                clearFunction={this.clearFunction}
               />
             </div>
           </div>

@@ -546,6 +546,15 @@
     font-size: 1.9vh;
 }
 
+.malicious-execution-success-text{
+    font-size: 15px;
+    color: #00e600;
+    font-weight: bold;
+    margin-left: 1%;
+    font-size: 1.9vh;
+    width: 35vh;
+}
+
 .malicious-execution-unsuccessful-text{
     font-size: 15px;
     color: red;
@@ -581,8 +590,16 @@
     border-radius: 0.5vh;
 }
 
+.success-string-container{
+    margin-left: 1vh;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .stack-smashing-status-title-container{
-    width: 16vh;
+    width: 55vh;
+    display: flex;
+    justify-content: center;
 }
 
 div.scrollmenu {

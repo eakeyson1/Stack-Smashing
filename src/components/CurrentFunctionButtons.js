@@ -4,6 +4,7 @@ import UnsafeCFunctionsButton from "./UnsafeCFunctionsButton"
 import PassArgvOneButton from "./PassArgvOneButton"
 import RemoveArgvOneButton from "./RemoveArgvOneButton"
 import AdditionalFuncCallButton from "./AdditionalFuncCallButton"
+import ClearFunctionButton from "./ClearFunctionButton"
 
 function CurrentFunctionButtons(props) {
 
@@ -24,6 +25,7 @@ function CurrentFunctionButtons(props) {
             <div className="functions-input-container">
                 <AdditionalFuncCallButton displayAdditionalFunctionCallOptions={props.displayAdditionalFunctionCallOptions}/>
             </div>
+                <ClearFunctionButton clearFunction={props.clearFunction}/>
             </div>
             <h1 className="error-input-text-style">{props.addFunctionError}</h1>
         </div>
