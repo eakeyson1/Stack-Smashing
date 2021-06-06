@@ -2,9 +2,34 @@ import React from "react";
 import { RiArrowDropRightLine } from "react-icons/ri";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
+
 function StackFrames(props) {
   
   var stackFramesStartAddress = props.endParametersAddress - 7
+
+  const openStackFrame = (functionName) => {
+
+    var tempRunningFuncs = props.stackFrameRunningFunctions
+    for(var i=0; i<tempRunningFuncs.length; i++){
+      if(tempRunningFuncs[i].functionName === functionName){
+        tempRunningFuncs[i].displayStackFrame = true
+        props.updateStackFrameRunningFunctions(tempRunningFuncs)
+        break
+      }
+    }
+  }
+
+  const closeStackFrame = (functionName) => {
+
+    var tempRunningFuncs = props.stackFrameRunningFunctions
+    for(var i=0; i<tempRunningFuncs.length; i++){
+      if(tempRunningFuncs[i].functionName === functionName){
+        tempRunningFuncs[i].displayStackFrame = false
+        props.updateStackFrameRunningFunctions(tempRunningFuncs)
+        break
+      }
+    }
+  }
 
   return(
 
@@ -14,7 +39,7 @@ function StackFrames(props) {
           <div>
             {stackFrame.displayStackFrame && (
               <div>
-                <button className="stack-frame-open-button" onClick={() => props.closeStackFrame(stackFrame.functionName)}>
+                <button className="stack-frame-open-button" onClick={() => closeStackFrame(stackFrame.functionName)}>
                   <div style={{display: 'flex'}}>
                     <div style={{marginLeft: "35%", width: '30%'}}>
                       <h1 className="stack-frame-button-text">{stackFrame.functionName}()</h1>
@@ -125,7 +150,7 @@ function StackFrames(props) {
             </div>
           )}
           {!stackFrame.displayStackFrame && (
-            <button className="stack-frame-open-button" onClick={() => props.openStackFrame(stackFrame.functionName)}>
+            <button className="stack-frame-open-button" onClick={() => openStackFrame(stackFrame.functionName)}>
               <div style={{display: 'flex'}}>
                 <div style={{marginLeft: "35%", width: '30%'}}>
                   <h1 className="stack-frame-button-text">{stackFrame.functionName}()</h1>
@@ -140,7 +165,7 @@ function StackFrames(props) {
       )}
       {stackFrame.strcpy && (
         <div>
-          <button className="stack-frame-open-button-strcpy" onClick={() => this.closeStackFrame(stackFrame.functionName)}>
+          <button className="stack-frame-open-button-strcpy" onClick={() => closeStackFrame(stackFrame.functionName)}>
               <div className="center-div">
                 <h1 className="stack-frame-button-text-strcpy">{stackFrame.functionName}()</h1>
               </div>

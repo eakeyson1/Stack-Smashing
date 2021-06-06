@@ -31,6 +31,23 @@ function MainStackFrame(props) {
     )
   }
 
+  const returnArgvOne = () => {
+    return(
+      this.state.argvOne.map((param) => 
+      <div className="main-stack-param-container">
+         <div className="main-stack-second-container">
+          <div className="main-stack-value-container">
+            <h1 className="main-stack-param-text">{param}</h1>
+          </div>
+          <div className="center">
+            <h1 className="main-stack-param-text">0xAC1A4B30</h1>
+          </div>
+        </div>
+      </div>
+      )
+    )
+  }
+
 
 
   return(
@@ -60,6 +77,7 @@ function MainStackFrame(props) {
             </div>
           </button>
           {returnMainStackParams}
+          {returnArgvOne}
           <div style={{display: 'flex'}}>
             <div className="return-address-title-container">
               <h1 className="main-stack-element-title-text">Return Address</h1>

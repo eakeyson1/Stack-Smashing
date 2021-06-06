@@ -4,15 +4,12 @@ import "./css/functions.css";
 import "./css/stack.css";
 import "./css/stackButton.css"
 
-import InstructCircle from "./components/InstructCircle"
 import StackFrames from "./components/Stack/StackFrames"
 import ConstructPayload from "./components/Stack/ConstructPayload"
 import MainStackFrame from "./components/Stack/MainStackFrame"
 import BackButton from "./components/Stack/BackButton"
 import ExecutionStatusButtons from "./components/Stack/ExecutionStatusButtons"
-import DisplayShellcode from "./components/Stack/DisplayShellcode"
 import MemorySections from "./components/Stack/MemorySections"
-
 import Program from "./components/Stack/Program"
 
 
@@ -29,9 +26,6 @@ class Stack extends Component {
     this.startProgram = this.startProgram.bind(this)
     this.programNext = this.programNext.bind(this)
     this.programFinish = this.programFinish.bind(this)
-    this.returnArgvOne = this.returnArgvOne.bind(this)
-    this.openStackFrame = this.openStackFrame.bind(this)
-    this.closeStackFrame = this.closeStackFrame.bind(this)
     this.goBack = this.goBack.bind(this)
     this.handleSelect = this.handleSelect.bind(this)
     this.handleShellCodeClick = this.handleShellCodeClick.bind(this)
@@ -39,17 +33,11 @@ class Stack extends Component {
     this.handleNopClick = this.handleNopClick.bind(this)
 
     this.state = {
-      displaySegFault: false,
-      displayAddFrame: false,
       displayFinishButton: false,
-      displayNextButton: false,
-      maliciousExecutionBool: false,
       maliciousExecution: "Starting",
       running: false,
       stackFrameDataArray:[],
       stackFrameRunningFunctions: [],
-      userInput: "",
-      maliciousPayload: false,
       segFault: false,
       mainStackParams: [],
       argvOne: "",
@@ -3225,7 +3213,7 @@ class Stack extends Component {
   programFinish(){
 
     if(this.state.malFuncNameArr.length !== 0 && this.state.segFault === false){
-      this.setState({maliciousExecution: "Successful", maliciousExecutionBool: true})
+      this.setState({maliciousExecution: "Successful"})
     }
     else if(this.state.segFault === true){
       this.setState({maliciousExecution: "Segmentation Fault"})
@@ -3251,32 +3239,6 @@ class Stack extends Component {
       mainStackOpen: false,
       highlightArgv: false
     })
-  }
-
-  openStackFrame(functionName){
-
-    var tempRunningFuncs = this.state.stackFrameRunningFunctions
-
-    for(var i=0; i<tempRunningFuncs.length; i++){
-      if(tempRunningFuncs[i].functionName === functionName){
-        tempRunningFuncs[i].displayStackFrame = true
-        this.setState({stackFrameRunningFunctions: tempRunningFuncs})
-        break
-      }
-    }
-  }
-
-  closeStackFrame(functionName){
-
-    var tempRunningFuncs = this.state.stackFrameRunningFunctions
-
-    for(var i=0; i<tempRunningFuncs.length; i++){
-      if(tempRunningFuncs[i].functionName === functionName){
-        tempRunningFuncs[i].displayStackFrame = false
-        this.setState({stackFrameRunningFunctions: tempRunningFuncs})
-        break
-      }
-    }
   }
 
   handleSelect(selectedIndex, showControls, e) {
@@ -3316,23 +3278,6 @@ class Stack extends Component {
       payloadStateNop: true,
       payloadStateReturnAddress: false
     })
-  }
-
-  returnArgvOne(){
-    return(
-      this.state.argvOne.map((param) => 
-      <div className="main-stack-param-container">
-         <div className="main-stack-second-container">
-          <div className="main-stack-value-container">
-            <h1 className="main-stack-param-text">{param}</h1>
-          </div>
-          <div className="center">
-            <h1 className="main-stack-param-text">0xAC1A4B30</h1>
-          </div>
-        </div>
-      </div>
-      )
-    )
   }
 
   goBack(){
@@ -3399,12 +3344,12 @@ class Stack extends Component {
                   <h1 className="stack-title-text-start">Stack</h1>
                 </div>
                 {this.state.running && (
-                  // Returning main stackframe
                   <MainStackFrame
                     mainStackOpen={this.state.mainStackOpen}
                     setMainStackOpen={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}
                     mainStackParams={this.state.mainStackParams}
                     endParametersAddress={this.state.endParametersAddress}
+                    argvOne={this.state.argvOne}
                   />
 
                 )}
@@ -3414,6 +3359,7 @@ class Stack extends Component {
                     endParametersAddress={this.state.endParametersAddress}
                     closeStackFrame={(val) => this.closeStackFrame(val)}
                     openStackFrame={(val) => this.openStackFrame(val)}
+                    updateStackFrameRunningFunctions={(val) => this.setState({stackFrameRunningFunctions: val})}
                   />
                 </div>
                 <h1 className="stack-end-address-text">Stack Limit</h1>
@@ -3422,110 +3368,36 @@ class Stack extends Component {
               <h1 className="stack-end-address-text">Low Memory Address</h1>
             </div>
           </div>
-          <div className="construct-payload-container">
-            <div className="center-div">
-              <div>
-                <div style={{display: 'flex', marginLeft: '15%', marginBottom: '10%'}}>
-                <InstructCircle marginLeft={"32%"} number={"4"}/>
-
-                  <div className="construct-payload-title-container">
-                    <h1 className="construct-payload-text">Construct Payload</h1>
-                  </div>
-                </div>
-                <div class="scrollmenu">
-                  <div className="payload-diagram-container">
-                    <div>
-                      <div className="payload-diagram-title-text">argv[0]</div>
-                      <div className="payload-diagram-intro-container center-div">
-                        <div className="payload-diagram-text">./intro</div>
-                      </div>
-                    </div>
-                    {this.state.payloadStateNop && (
-                      <div>
-                        <div className="payload-diagram-title-text">NOP Sled</div>
-                        <div className="payload-diagram-nop-container center-div payload-diagram-nop-border">
-                          <div className="payload-diagram-text">{this.state.nopSled}</div>
-                        </div>
-                      </div>
-                    )}
-                    {!this.state.payloadStateNop && (
-                      <div>
-                        <div className="payload-diagram-title-text">NOP Sled</div>
-                        <div className="payload-diagram-nop-container center-div">
-                          <div className="payload-diagram-text">{this.state.nopSled}</div>
-                        </div>
-                      </div>
-                    )}
-                    {this.state.payloadStateShellcode && (
-                      <div>
-                        <div className="payload-diagram-title-text">Shellcode</div>
-                        <div className="payload-diagram-shellcode-container center-div payload-diagram-shellcode-border">
-                          <DisplayShellcode
-                            startingShell={this.state.startingShell}
-                            gettingRootPriviledges={this.state.gettingRootPriviledges}
-                            shutDownOs={this.state.shutDownOs}
-                            wipeOs={this.state.wipeOs}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    {!this.state.payloadStateShellcode && (
-                      <div>
-                        <div className="payload-diagram-title-text">Shellcode</div>
-                        <div className="payload-diagram-shellcode-container center-div">
-                          <DisplayShellcode
-                            startingShell={this.state.startingShell}
-                            gettingRootPriviledges={this.state.gettingRootPriviledges}
-                            shutDownOs={this.state.shutDownOs}
-                            wipeOs={this.state.wipeOs}
-                          />
-                        </div>
-                      </div>
-                    )}
-                    {this.state.payloadStateReturnAddress && (
-                      <div>
-                        <div className="payload-diagram-title-text">Return Address</div>
-                        <div className="payload-diagram-return-address-container center-div payload-diagram-return-address-border">
-                          <div className="payload-diagram-text">{this.state.returnAddress}</div>
-                        </div>
-                      </div>
-                    )}
-                    {!this.state.payloadStateReturnAddress && (
-                      <div>
-                        <div className="payload-diagram-title-text">Return Address</div>
-                        <div className="payload-diagram-return-address-container center-div">
-                          <div className="payload-diagram-text">{this.state.returnAddress}</div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div style={{marginLeft: '8%', marginTop: '10%'}}>
-              <ConstructPayload 
-                handleShellCodeClick={this.handleShellCodeClick}
-                handleNopClick={this.handleNopClick}
-                handleReturnAddressClick={this.handleReturnAddressClick}
-                index={this.state.index}
-                handleSelect={this.handleSelect}
-                controls={this.state.showControls}
-                running={this.state.running}
-                nopSled={this.state.nopSled}
-                updateNopSled={(val) => this.setState({nopSled: val})}
-                startingShell={this.state.startingShell}
-                startingShellChecked={(val)=> this.startingShellChecked(val)}
-                gettingRootPriviledges={this.state.gettingRootPriviledges}
-                gettingRootPriviledgesChecked={(val) => this.gettingRootPriviledgesChecked(val)}
-                shutDownOs={this.state.shutDownOs}
-                shutDownOsChecked={(val) => this.shutDownOsChecked(val)}
-                wipeOs={this.state.wipeOs}
-                wipeOsChecked={(val) => this.wipeOsChecked(val)}
-                returnAddress={this.state.returnAddress}
-                updateReturnAddress={(val) => this.setState({returnAddress: val})}
-              />
-            </div>
-          </div>
+          <ConstructPayload
+            nopSled ={this.state.nopSled}
+            payloadStateNop={this.state.payloadStateNop}
+            payloadStateShellcode={this.state.payloadStateShellcode} 
+            startingShell={this.state.startingShell}
+            gettingRootPriviledges={this.state.gettingRootPriviledges}
+            shutDownOs={this.state.shutDownOs}
+            wipeOs={this.state.wipeOs}
+            payloadStateReturnAddress={this.state.payloadStateReturnAddress}
+            returnAddress={this.state.returnAddress}
+            handleShellCodeClick={() => this.handleShellCodeClick()}
+            handleNopClick={() =>this.handleNopClick()}
+            handleReturnAddressClick={() => this.handleReturnAddressClick()}
+            index={this.state.index}
+            handleSelect={() => this.handleSelect()}
+            controls={this.state.showControls}
+            running={this.state.running}
+            nopSled={this.state.nopSled}
+            updateNopSled={(val) => this.setState({nopSled: val})}
+            startingShell={this.state.startingShell}
+            startingShellChecked={(val)=> this.startingShellChecked(val)}
+            gettingRootPriviledges={this.state.gettingRootPriviledges}
+            gettingRootPriviledgesChecked={(val) => this.gettingRootPriviledgesChecked(val)}
+            shutDownOs={this.state.shutDownOs}
+            shutDownOsChecked={(val) => this.shutDownOsChecked(val)}
+            wipeOs={this.state.wipeOs}
+            wipeOsChecked={(val) => this.wipeOsChecked(val)}
+            returnAddress={this.state.returnAddress}
+            updateReturnAddress={(val) => this.setState({returnAddress: val})}
+          />
           <div className="second-main-container">
             <ExecutionStatusButtons
               running={this.state.running}
