@@ -8,7 +8,6 @@ function FunctionNoHighlight(props) {
         <h1 className="program-code-text-style">void {props.stackFrameDataArr[props.i].functionName}(</h1>
         <div className="functions-flex">
           <h1 className="program-code-text-style">{props.tempLocalFuncParams}</h1>
-          <h1 className="program-code-text-style">{"char userInput[]"}</h1>
           <h1 className="program-code-text-style">{"){"}</h1>
         </div>
       </div>

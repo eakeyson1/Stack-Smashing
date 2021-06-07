@@ -504,6 +504,8 @@ class Stack extends Component {
 
   programNext(){
 
+    console.log(this.state.stepProgramClickNumber)
+
     var currentStackFrame = []
 
     var returnAddressArr = ["\\xAB", "\\xCE", "\\x00", "\\x00"]
@@ -637,17 +639,6 @@ class Stack extends Component {
       // POPPING FUNCTION
 
       if(
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-          
-        ||
-
         (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -655,16 +646,6 @@ class Stack extends Component {
         this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
         this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
         this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-        
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
 
         ||
 
@@ -795,6 +776,26 @@ class Stack extends Component {
 
       // pushing func1
       else if(
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+        ||
+
         (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -1093,6 +1094,26 @@ class Stack extends Component {
 
       if(
         (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
         this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
@@ -1236,27 +1257,6 @@ class Stack extends Component {
       // PUSHING FUNC3
 
       if(
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
         (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
           this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -1421,6 +1421,26 @@ class Stack extends Component {
       // popping function
 
       else if(
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+        ||
+
         (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -1690,6 +1710,26 @@ class Stack extends Component {
 
       if(
         (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
         this.props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
@@ -1799,27 +1839,6 @@ class Stack extends Component {
       // popping function
 
       if(
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
         (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
           this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2050,6 +2069,7 @@ class Stack extends Component {
           this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
           this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 && 
           this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 && 
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 && 
           this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
           this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
 
@@ -2067,17 +2087,6 @@ class Stack extends Component {
       // PUSHING FUNC1
 
       else if(
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
         (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2138,6 +2147,26 @@ class Stack extends Component {
 
       else if(
         (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+        ||
+
+        (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2182,17 +2211,6 @@ class Stack extends Component {
       // PUSHING FUNC1
 
       if(
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
         (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
           this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2200,8 +2218,6 @@ class Stack extends Component {
           this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
           this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0  && 
           this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-
         ){
 
         var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
@@ -2215,6 +2231,16 @@ class Stack extends Component {
       // POPPING FUNCTION
 
       if(
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
+        
         (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2427,17 +2453,6 @@ class Stack extends Component {
       // POPPING FUNCTION
 
       if(
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
-
-        ||
-
         (this.props.stackFrameDataArr.length === 3 &&
         this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
         this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2488,14 +2503,6 @@ class Stack extends Component {
 
         ||
 
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0)
-
-        ||
 
         (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
@@ -2525,6 +2532,15 @@ class Stack extends Component {
       // PUSHING FUNC2  
 
       else if(
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
+
+        ||
 
         (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
@@ -2548,6 +2564,15 @@ class Stack extends Component {
       // PUSHING FUNC1
 
       else if(
+        (this.props.stackFrameDataArr.length === 3 &&
+          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
+
+        ||
 
         (this.props.stackFrameDataArr.length === 3 &&
           this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
@@ -2581,6 +2606,22 @@ class Stack extends Component {
     }
 
     else if(this.state.stepProgramClickNumber === 10){
+
+      // PUSHING FUNC1
+      if(this.props.stackFrameDataArr.length === 3 &&
+        this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+        this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+        this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+        this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+        this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+        this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
+        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        this.setState({
+          stackFrameRunningFunctions: runningFunctions,
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+        })        
+        return
+      }
 
       // PUSHING FUNC3
 
@@ -2643,16 +2684,6 @@ class Stack extends Component {
           this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
           this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
           this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
-
-        ||
-
-        (this.props.stackFrameDataArr.length === 3 &&
-          this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-          this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-          this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-          this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-          this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
 
         ||
 
@@ -2782,6 +2813,15 @@ class Stack extends Component {
         // POPPING FUNCTION
 
         else if(
+          (this.props.stackFrameDataArr.length === 3 &&
+            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 && 
+            this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === this.props.stackFrameDataArr[1].functionName)
+
+          ||
 
           //Func1, func2(strcpy)(AF), func3(AF2)
           (this.props.stackFrameDataArr.length === 3 &&
@@ -2791,16 +2831,6 @@ class Stack extends Component {
             this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
             this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
             this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === this.props.stackFrameDataArr[1].functionName)
-
-          ||
-
-          (this.props.stackFrameDataArr.length === 3 &&
-            this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-            this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-            this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-            this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
-            this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-            this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[0].functionName)
 
           ||
 
@@ -2836,6 +2866,23 @@ class Stack extends Component {
     }
 
     else if(this.state.stepProgramClickNumber === 12){
+      
+      // PPOPPING FUNCTION
+      if (this.props.stackFrameDataArr.length === 3 &&
+        this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+        this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 && 
+        this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+        this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+        this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+        this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === this.props.stackFrameDataArr[1].functionName){
+        var runningFunctions = this.state.stackFrameRunningFunctions
+        runningFunctions.pop()
+        this.setState({
+          stackFrameRunningFunctions: runningFunctions,
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+        })        
+        return
+      }
 
       // PUSHING FUNC1
 
@@ -3007,6 +3054,23 @@ class Stack extends Component {
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
+        return
+      }
+
+      // POPPING REMAINING FUNCTION
+      if(this.props.stackFrameDataArr.length === 3 &&
+        this.props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+        this.props.stackFrameDataArr[1].unsafeFunctions.length === 0 && 
+        this.props.stackFrameDataArr[2].unsafeFunctions.length !== 0 && 
+        this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+        this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 &&
+        this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
+        this.setState({
+          displayFinishButton: true, 
+          displayNextButton: false,
+          stackFrameRunningFunctions: [],
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
+        })
         return
       }
     }

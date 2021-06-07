@@ -166,16 +166,6 @@ function Functions(props) {
               ||
 
               (props.stackFrameDataArr.length === 3 &&
-                props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
-                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
-                props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
-                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
-
-              ||
-
-              (props.stackFrameDataArr.length === 3 &&
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
               props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
@@ -211,6 +201,16 @@ function Functions(props) {
                 props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
                 props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
                 props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
 
               ||
 
@@ -355,16 +355,7 @@ function Functions(props) {
 
             /***** Highlighting name and argv *****/
             if(
-              (props.stackFrameDataArr.length === 3 &&
-              props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
-              props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
-              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
-              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
-              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
-              
-              ||
-
+             
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -382,30 +373,52 @@ function Functions(props) {
               )
               additionalFunctionCalls.push(additionalFunctionCall)
             }
-          }
-          if(props.stepProgramClickNumber === 15){
-
-            /***** Highlighting name and argv *****/
-            if(props.stackFrameDataArr.length === 3 &&
-              props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
-              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+            /***** Highlighting name *****/
+            else if (props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
               props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
               props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
               props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              var cleanFunctionName = stackFrame.additionalFunctionCalls[i].substr(0, stackFrame.additionalFunctionCalls[i].indexOf('(')); 
+              var cleanFunctionCall = "(" + parameters
               additionalFunctionCall = (
                 <div style={{display: 'flex'}}>
-                  <h1 className="program-code-hightlight-text-style"> {functionCall}</h1>
-                  <h1 className="program-code-hightlight-argv-text-style">userInput</h1>
-                  <h1 className="program-code-hightlight-text-style">);</h1>
+                  <h1 className="program-code-hightlight-text-style"> {cleanFunctionName}</h1>
+                  <h1 className="program-code-text-style">{cleanFunctionCall}userInput</h1>
+                  <h1 className="program-code-text-style">);</h1>
                 </div>
               )
               additionalFunctionCalls.push(additionalFunctionCall)
             }
           }
+          if(props.stepProgramClickNumber === 15){
+
+            /***** Highlighting name *****/
+            if (props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+
+              var cleanFunctionName = stackFrame.additionalFunctionCalls[i].substr(0, stackFrame.additionalFunctionCalls[i].indexOf('(')); 
+              var cleanFunctionCall = "(" + parameters
+              additionalFunctionCall = (
+                <div style={{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {cleanFunctionName}</h1>
+                  <h1 className="program-code-text-style">{cleanFunctionCall}userInput</h1>
+                  <h1 className="program-code-text-style">);</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+              }
+          }
           if(props.stepProgramClickNumber === 16){
 
-            /***** Highlighting name and argv *****/
+            /***** Highlighting name *****/
             if(props.stackFrameDataArr.length === 3 &&
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -413,11 +426,13 @@ function Functions(props) {
               props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
               props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
               props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              var cleanFunctionName = stackFrame.additionalFunctionCalls[i].substr(0, stackFrame.additionalFunctionCalls[i].indexOf('(')); 
+              var cleanFunctionCall = "(" + parameters
               additionalFunctionCall = (
                 <div style={{display: 'flex'}}>
-                  <h1 className="program-code-hightlight-text-style"> {functionCall}</h1>
-                  <h1 className="program-code-hightlight-argv-text-style">userInput</h1>
-                  <h1 className="program-code-hightlight-text-style">);</h1>
+                  <h1 className="program-code-hightlight-text-style"> {cleanFunctionName}</h1>
+                  <h1 className="program-code-text-style">{cleanFunctionCall}userInput</h1>
+                  <h1 className="program-code-text-style">);</h1>
                 </div>
               )
               additionalFunctionCalls.push(additionalFunctionCall)
@@ -426,7 +441,106 @@ function Functions(props) {
         }
         else{
 
-          if(props.stepProgramClickNumber === 12){
+          if(props.stepProgramClickNumber === 8){
+
+              /***** Highlighting function name *****/
+              if(props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length !== 0 && 
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 && 
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === props.stackFrameDataArr[1].functionName){
+              additionalFunctionCall = (
+                <div style = {{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i].split('(')[0]}</h1>
+                  <h1 className="program-code-text-style"> ({stackFrame.additionalFunctionCalls[i].split('(')[1].slice(0, -2)});</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+
+            /***** Highlighting function name and parameters *****/
+            else if(
+              (props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+              
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+              ){
+              additionalFunctionCall = (
+                <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+          else if(props.stepProgramClickNumber === 10){
+
+             /***** Highlighting function name *****/
+             if(props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 && 
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === props.stackFrameDataArr[1].functionName){
+              additionalFunctionCall = (
+                <div style = {{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i].split('(')[0]}</h1>
+                  <h1 className="program-code-text-style"> ({stackFrame.additionalFunctionCalls[i].split('(')[1].slice(0, -2)});</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+            /***** Highlighting function name and parameters *****/
+            else if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+              props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === props.stackFrameDataArr[1].functionName)
+              
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+              ){
+              additionalFunctionCall = (
+                <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+          else if(props.stepProgramClickNumber === 12){
 
             /***** No highlighting *****/
             if(props.stackFrameDataArr.length === 3 &&
@@ -438,6 +552,92 @@ function Functions(props) {
               props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === props.stackFrameDataArr[1].functionName){
               additionalFunctionCall = (
                 <h1 className="program-code-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+
+            /***** Highlight name and parameters */
+            else if (props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              
+              additionalFunctionCall = (
+                <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i]}</h1>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+            /***** Highlight name *****/
+            else if(props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              additionalFunctionCall = (
+                <div style = {{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i].split('(')[0]}</h1>
+                  <h1 className="program-code-text-style"> ({stackFrame.additionalFunctionCalls[i].split('(')[1].slice(0, -2)});</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+          else if(props.stepProgramClickNumber === 14){
+
+            /***** Highlighting function name */
+            if(props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
+              props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&  
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] === props.stackFrameDataArr[1].functionName){
+              additionalFunctionCall = (
+                <div style = {{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i].split('(')[0]}</h1>
+                  <h1 className="program-code-text-style"> ({stackFrame.additionalFunctionCalls[i].split('(')[1].slice(0, -2)});</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+          else if(props.stepProgramClickNumber === 15){
+            /***** Highlighting function name *****/
+            if(props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              additionalFunctionCall = (
+                <div style = {{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i].split('(')[0]}</h1>
+                  <h1 className="program-code-text-style"> ({stackFrame.additionalFunctionCalls[i].split('(')[1].slice(0, -2)});</h1>
+                </div>
+              )
+              additionalFunctionCalls.push(additionalFunctionCall)
+            }
+          }
+          else if(props.stepProgramClickNumber === 16){
+            /***** Highlighting function name *****/
+            if(props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              additionalFunctionCall = (
+                <div style = {{display: 'flex'}}>
+                  <h1 className="program-code-hightlight-text-style"> {stackFrame.additionalFunctionCalls[i].split('(')[0]}</h1>
+                  <h1 className="program-code-text-style"> ({stackFrame.additionalFunctionCalls[i].split('(')[1].slice(0, -2)});</h1>
+                </div>
               )
               additionalFunctionCalls.push(additionalFunctionCall)
             }
@@ -481,20 +681,19 @@ function Functions(props) {
             break
           }
         }
+        var tempLocalFuncParams = ""
+        for(var j=0; j<props.stackFrameDataArr[i].parameterDetails.length; j++){
+          if(props.stackFrameDataArr[i].parameterDetails[j].name !== "userInput"){
+            if(props.stackFrameDataArr[i].parameterDetails[j].type === "char[]"){
+              tempLocalFuncParams += "char " + props.stackFrameDataArr[i].parameterDetails[j].name + "[], "
+            }
+            else{
+              tempLocalFuncParams += props.stackFrameDataArr[i].parameterDetails[j].type + " " + props.stackFrameDataArr[i].parameterDetails[j].name + ", "
+            }            
+          }
+        }
 
         if(userInputAsParam === true){
-          var tempLocalFuncParams = ""
-          for(var j=0; j<props.stackFrameDataArr[i].parameterDetails.length; j++){
-            if(props.stackFrameDataArr[i].parameterDetails[j].name !== "userInput"){
-              if(props.stackFrameDataArr[i].parameterDetails[j].type === "char[]"){
-                tempLocalFuncParams += "char " + props.stackFrameDataArr[i].parameterDetails[j].name + "[], "
-              }
-              else{
-                tempLocalFuncParams += props.stackFrameDataArr[i].parameterDetails[j].type + " " + props.stackFrameDataArr[i].parameterDetails[j].name + ", "
-              }            
-            }
-          }
-
           if(props.stepProgramClickNumber === 1){
 
             /***** Highlighting both function name and argv *****/
@@ -767,6 +966,49 @@ function Functions(props) {
               )
               functions.push(functionItem)
             }
+
+            /***** Hightlighting name and argv *****/
+            else if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+              props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+              props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+              props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+              props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+              
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+              
+              ){
+              functionItem = (
+                <FunctionHighlightNameArgv
+                  stackFrameDataArr = {props.stackFrameDataArr}
+                  i = {i}
+                  tempLocalFuncParams={tempLocalFuncParams}
+                  returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
+                  returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
+                  returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                />
+              )
+              functions.push(functionItem)
+            }
           }  
           else if(props.stepProgramClickNumber === 6){
             /***** No highlighting *****/
@@ -824,6 +1066,35 @@ function Functions(props) {
             /***** Highlighting name and argv *****/
             if(
               (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
               props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
@@ -857,6 +1128,35 @@ function Functions(props) {
             /***** No highlighting *****/
 
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
@@ -1008,6 +1308,54 @@ function Functions(props) {
             }
             /***** No highlighting *****/
             else if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
 
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
@@ -1106,6 +1454,16 @@ function Functions(props) {
 
             /***** No highlighting *****/
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -1219,13 +1577,25 @@ function Functions(props) {
           else if(props.stepProgramClickNumber === 13){
 
             /***** No highlighting *****/
-            if(props.stackFrameDataArr.length === 3 &&
+            if(
+              (props.stackFrameDataArr.length === 3 &&
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
               props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
               props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
               props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
-              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName){
+              props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+              
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+              ){
               functionItem = (
                 <FunctionUserInputNoHighlight
                   stackFrameDataArr = {props.stackFrameDataArr}
@@ -1371,7 +1741,6 @@ function Functions(props) {
           }
         }
         else{
-
           if(props.stepProgramClickNumber === 1){
 
             /***** Highlighting function name and parameters *****/
@@ -1382,6 +1751,7 @@ function Functions(props) {
                 returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                 returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                 returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                tempLocalFuncParams={tempLocalFuncParams}
               />
             )
             functions.push(functionItem)
@@ -1481,6 +1851,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -1495,6 +1866,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -1505,6 +1877,35 @@ function Functions(props) {
             /***** No highlighting */
 
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 2 &&
               props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -1540,6 +1941,8 @@ function Functions(props) {
                 props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
               ){
 
+              console.log("right spot")
+
               functionItem = (
                 <FunctionNoHighlight
                   stackFrameDataArr = {props.stackFrameDataArr}
@@ -1547,6 +1950,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -1557,6 +1961,35 @@ function Functions(props) {
             /***** No highlghting *****/
 
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
@@ -1669,6 +2102,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -1678,6 +2112,36 @@ function Functions(props) {
             /***** Highlighing function name and parameters */
 
             else if(
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -1791,6 +2255,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -1835,7 +2300,18 @@ function Functions(props) {
                 props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
                 props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
                 props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+              
+              
+                ||
 
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+              
               ||
 
               (props.stackFrameDataArr.length === 2 && 
@@ -1887,6 +2363,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -1897,6 +2374,35 @@ function Functions(props) {
                
             /***** Highlighting name and parameters *****/
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
@@ -1990,12 +2496,42 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
             }
             /***** No highlighting *****/
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
@@ -2065,6 +2601,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2074,6 +2611,26 @@ function Functions(props) {
 
             /***** No highlighting *****/
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
@@ -2175,6 +2732,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2218,6 +2776,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2225,6 +2784,55 @@ function Functions(props) {
 
             /***** No highlighting */
             else if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length === 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
@@ -2253,6 +2861,7 @@ function Functions(props) {
                 props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
 
               ||
+
               (props.stackFrameDataArr.length === 2 && 
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2304,6 +2913,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2313,6 +2923,26 @@ function Functions(props) {
 
             /***** No highlighting */
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
@@ -2368,6 +2998,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2377,6 +3008,26 @@ function Functions(props) {
 
             /***** No highlighting */
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[0].functionName)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 &&
@@ -2422,6 +3073,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2463,6 +3115,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2472,6 +3125,16 @@ function Functions(props) {
 
             /***** No highlighting */
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
                 props.stackFrameDataArr[0].unsafeFunctions.length === 0 && 
                 props.stackFrameDataArr[1].unsafeFunctions.length !== 0 && 
@@ -2508,6 +3171,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2517,6 +3181,16 @@ function Functions(props) {
 
             /***** No highlighting */
             if(
+              (props.stackFrameDataArr.length === 3 &&
+                props.stackFrameDataArr[0].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
+                props.stackFrameDataArr[2].unsafeFunctions.length !== 0 &&
+                props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
+                props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
+                props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == props.stackFrameDataArr[1].functionName)
+
+              ||
+
               (props.stackFrameDataArr.length === 3 &&
               props.stackFrameDataArr[0].unsafeFunctions.length !== 0 &&
               props.stackFrameDataArr[1].unsafeFunctions.length === 0 &&
@@ -2542,6 +3216,8 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
+
                 />
               )
               functions.push(functionItem)
@@ -2576,6 +3252,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2620,6 +3297,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2644,6 +3322,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
@@ -2668,6 +3347,7 @@ function Functions(props) {
                   returnProgramFunctionsLocalVariables={(val) => returnProgramFunctionsLocalVariables(val)}
                   returnUnsafeFunctions={(val) => returnUnsafeFunctions(val)}
                   returnProgramFunctionsAdditionalFuncCalls={(val) => returnProgramFunctionsAdditionalFuncCalls(val)}
+                  tempLocalFuncParams={tempLocalFuncParams}
                 />
               )
               functions.push(functionItem)
