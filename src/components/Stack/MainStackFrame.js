@@ -48,6 +48,7 @@ function MainStackFrame(props) {
     )
   }
 
+  var startAddress = 2882404352
 
 
   return(
@@ -76,7 +77,25 @@ function MainStackFrame(props) {
               </div>
             </div>
           </button>
-          {returnMainStackParams}
+          <div style={{display: 'flex'}}>
+            <div className="stack-frame-param-title-container">
+              <div><h1 className="main-stack-element-title-text">Parameters</h1></div>
+            </div> 
+          <div>
+            {props.mainStackParams.map((param) => 
+              <div className="stack-frame-param-container">
+                <div className="main-stack-second-container">
+                  <div className="main-stack-value-container">
+                    <h1 className="main-stack-param-text">{param}</h1>
+                  </div>
+                  <div className="center">
+                    <h1 className="main-stack-param-text">0x{((startAddress -= 1).toString(16)).toUpperCase()}</h1>
+                  </div>
+                </div>
+              </div> 
+            )}
+          </div>
+        </div>
           {returnArgvOne}
           <div style={{display: 'flex'}}>
             <div className="return-address-title-container">

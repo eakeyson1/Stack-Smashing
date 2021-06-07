@@ -651,7 +651,7 @@ html, body, #root, .App {
 
 .pointer-to-program{
     width: 1vh;
-    height: 10vh;
+    height: 11vh;
     background-color: #1a75ff;
     border-bottom-right-radius: 1vh;
     border-top-left-radius: 1vh;
@@ -661,7 +661,7 @@ html, body, #root, .App {
 .pointer-to-program-base{
     width: 3vh;
     height: 1vh;
-    margin-top: 11.5vh;
+    margin-top: 12.5vh;
     background-color: #1a75ff;
 }
 
@@ -696,7 +696,7 @@ html, body, #root, .App {
 .pointer-to-program-base-green{
     width: 3vh;
     height: 1vh;
-    margin-top: 11.5vh;
+    margin-top: 12.5vh;
     background-color: #00cc3d;
 }
 
@@ -730,7 +730,7 @@ html, body, #root, .App {
 
 .pointer-to-program-green{
     width: 1vh;
-    height: 10vh;
+    height: 11vh;
     background-color: #00cc3d;
     border-bottom-right-radius: 1vh;
     border-top-left-radius: 1vh;
@@ -746,6 +746,7 @@ html, body, #root, .App {
     display: flex;
     margin-left: 25vh;
     width: 30vh;
+    height: 9vh;
 }
 
 .stack-button-container{

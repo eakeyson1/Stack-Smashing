@@ -101,8 +101,6 @@ class Stack extends Component {
     if(payload === ""){
       argc = 1
     }
-    var argcArr = []
-    argcArr.push(argc)
 
     var tempUserInputArray = []
     for(var i=0; i<userInputArray.length; i++){
@@ -120,8 +118,10 @@ class Stack extends Component {
       tempUserInputArray.push("\\0")
     }
 
-    var reversedUserInputArray = tempUserInputArray.reverse().concat(argcArr)
+    var reversedUserInputArray = tempUserInputArray.reverse()
+    reversedUserInputArray.push(argc)
     var argvOne = []
+
 
     if(payload === ""){
       reversedUserInputArray.splice(reversedUserInputArray, 1)
@@ -451,15 +451,12 @@ class Stack extends Component {
                 var validReturnAddressArr = []
 
                 var last16Vars = variableArr.slice(-16)
-                console.log(last16Vars)
                 for(var j=0; j<last16Vars.length; j++){
                   if(last16Vars[j] === "\\x90"){
                     var address = lowBoundAddress - (j+1)
                     validReturnAddressArr.push(address)
                   }
                 }
-                console.log(validReturnAddressArr)
-
                 if(validReturnAddressArr.includes(newReturnAddressInt)){
                   var tempMalFuncNameArr = this.state.malFuncNameArr
                   tempMalFuncNameArr.push(stackDataArr[k].functionName)
