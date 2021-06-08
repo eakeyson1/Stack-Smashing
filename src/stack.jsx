@@ -71,6 +71,7 @@ class Stack extends Component {
 
   startProgram(){
 
+    this.setState({malFuncNameArr: []}) 
 
     /***** Must create a deep copy of the stackFrameDataArr prop *****/
     var stackDataArr = []
@@ -3287,7 +3288,7 @@ class Stack extends Component {
         this.setState({maliciousExecution: "Starting"}) 
       }
     }, 12000);
-    setTimeout(() => { this.setState({malFuncNameArr: []}) }, 12000);
+    //setTimeout(() => { this.setState({malFuncNameArr: []}) }, 12000);
 
 
     this.setState({
@@ -3353,6 +3354,7 @@ class Stack extends Component {
       malExeMessage: "",
       mainStackOpen: false,
       highlightArgv: false,
+      maliciousExecution: "Starting"
     })
   }
 

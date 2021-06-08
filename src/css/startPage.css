@@ -2,8 +2,6 @@
   text-align: center;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
   color: white;
   font-family: "Roboto Mono";
@@ -34,4 +32,12 @@
   font-size: 3vh;
   font-weight: bold;
   text-align: center;
+}
+
+.logo{
+  height: 40vh;
+  width: 50vh;
+  margin-left: 4vh;
+  margin-bottom: 5vh;
+  margin-top: 5vh;
 }

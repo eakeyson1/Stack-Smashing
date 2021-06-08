@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./css/startPage.css";
 import "./css/functions.css";
+import logo from "./DISSAV Logo.PNG"
 
 /**
  * The welcome page of the application.
@@ -10,6 +11,7 @@ class StartPage extends Component {
     return (
       <div className="start-page">
         <header>
+          <img className="logo" src={logo} />;
           <h1 className="start-page-header-text">DISSAV</h1>
           <h3 className="start-page-sub-header-text">Dynamic Interactive Stack Smashing Attack Visualization</h3>
           <div style={{marginTop: '10%'}}> 
