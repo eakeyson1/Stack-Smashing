@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/Stack-Smashing/static/css/main.e9ca32f0.chunk.css",
-    "main.js": "/Stack-Smashing/static/js/main.5b7162c5.chunk.js",
-    "main.js.map": "/Stack-Smashing/static/js/main.5b7162c5.chunk.js.map",
+    "main.css": "/Stack-Smashing/static/css/main.76f9f068.chunk.css",
+    "main.js": "/Stack-Smashing/static/js/main.234da76d.chunk.js",
+    "main.js.map": "/Stack-Smashing/static/js/main.234da76d.chunk.js.map",
     "runtime-main.js": "/Stack-Smashing/static/js/runtime-main.2ba6f7f4.js",
     "runtime-main.js.map": "/Stack-Smashing/static/js/runtime-main.2ba6f7f4.js.map",
     "static/css/2.229715a2.chunk.css": "/Stack-Smashing/static/css/2.229715a2.chunk.css",
@@ -12,14 +12,15 @@
     "static/js/3.2d26bf31.chunk.js.map": "/Stack-Smashing/static/js/3.2d26bf31.chunk.js.map",
     "index.html": "/Stack-Smashing/index.html",
     "static/css/2.229715a2.chunk.css.map": "/Stack-Smashing/static/css/2.229715a2.chunk.css.map",
-    "static/css/main.e9ca32f0.chunk.css.map": "/Stack-Smashing/static/css/main.e9ca32f0.chunk.css.map",
-    "static/js/2.1335ebd2.chunk.js.LICENSE.txt": "/Stack-Smashing/static/js/2.1335ebd2.chunk.js.LICENSE.txt"
+    "static/css/main.76f9f068.chunk.css.map": "/Stack-Smashing/static/css/main.76f9f068.chunk.css.map",
+    "static/js/2.1335ebd2.chunk.js.LICENSE.txt": "/Stack-Smashing/static/js/2.1335ebd2.chunk.js.LICENSE.txt",
+    "static/media/DISSAV Logo.15c84644.PNG": "/Stack-Smashing/static/media/DISSAV Logo.15c84644.PNG"
   },
   "entrypoints": [
     "static/js/runtime-main.2ba6f7f4.js",
     "static/css/2.229715a2.chunk.css",
     "static/js/2.1335ebd2.chunk.js",
-    "static/css/main.e9ca32f0.chunk.css",
-    "static/js/main.5b7162c5.chunk.js"
+    "static/css/main.76f9f068.chunk.css",
+    "static/js/main.234da76d.chunk.js"
   ]
 }
