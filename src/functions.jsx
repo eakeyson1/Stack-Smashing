@@ -106,13 +106,6 @@ class Functions extends Component {
       return
     }
 
-    // Check if input is a float
-    if(this.state.parameterType === "float" && isNaN(this.state.parameterValue)){
-      this.setState({parameterValueError: "That is not a float"})
-      setTimeout(() => { this.setState({parameterValueError: ""}) }, 10000);
-      return
-    }
-
 
     // Check if input is empty
     if(this.state.parameterName === ""){
@@ -198,23 +191,6 @@ class Functions extends Component {
       this.setState({localVariableValueError: "That is not an integer"})
       setTimeout(() => { this.setState({localVariableValueError: ""}) }, 10000);
       return
-    }
-
-    //Workaround
-    if(this.state.localVariableType === "int"){
-      localVariableValue = parseInt(this.state.localVariableValue)
-    }
-
-    // Check if input is a float
-    if(this.state.localVariableType === "float" && isNaN(this.state.localVariableValue)){
-      this.setState({localVariableValueError: "That is not a float"})
-      setTimeout(() => { this.setState({localVariableValueError: ""}) }, 10000);
-      return
-    }
-    
-    //Workaround
-    if(this.state.localVariableType === "float"){
-      localVariableValue = Number(this.state.localVariableValue).toFixed(2)
     }
 
     // Check if input is empty
@@ -411,9 +387,14 @@ class Functions extends Component {
       }
 
       /***** Formatting parameters *****/
-      var paramValArr = parameter.value.split("")
-      paramValArr.push("\\0")
-      paramArr = paramArr.concat(paramValArr)
+      if(parameter.type === "int"){
+        paramArr.push((parameter.value >>> 0).toString(2))
+      }
+      else{
+        var paramValArr = parameter.value.split("")
+        paramValArr.push("\\0")
+        paramArr = paramArr.concat(paramValArr)
+      }
 
 
       parameterDetailsArr.push(param)
@@ -460,9 +441,14 @@ class Functions extends Component {
       }
 
       /***** Formatting local variables *****/
-      var variableValArr = variable.value.split("")
-      variableValArr.push("\\0")
-      variableArr = variableArr.concat(variableValArr)
+      if(variable.type !== "int"){
+        var variableValArr = variable.value.split("")
+        variableValArr.push("\\0")
+        variableArr = variableArr.concat(variableValArr)
+      }
+      else{
+        variableArr.push((variable.value >>> 0).toString(2))
+      }
 
       mainLocalVariables.push(variable)
     })

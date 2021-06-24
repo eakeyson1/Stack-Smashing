@@ -9,8 +9,8 @@ function ParametersVariablesInput(props) {
 
     const returnParametersVariablesInput = () => {
 
-        const parameterOptions = ["char", "int", "float", "char[]"]
-        const localVariableOptions = ["char", "int", "float", "char[]"]
+        const parameterOptions = ["char", "int", "char[]"]
+        const localVariableOptions = ["char", "int", "char[]"]
     
         return(
           <div className="add-to-program-spacer">

@@ -18,7 +18,7 @@ function CurrentFuncLocalVariables(props) {
                 <h1 className="code-input-text-style">char {variable.name}[] = "{variable.value}"; </h1>
               )
             }
-            else if(variable.type === "int" || variable.type === "float"){
+            else if(variable.type === "int"){
               displayLV.push(
                 <h1 className="code-input-text-style">{variable.type} {variable.name} = {variable.value}; </h1>
               )

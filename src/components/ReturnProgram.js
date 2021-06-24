@@ -42,7 +42,7 @@ function ReturnProgram(props) {
               <h1 className="program-code-text-style-functions">char {variable.name}[] = "{variable.value}"; </h1>
             )
           }
-          else if(variable.type === "int" || variable.type === "float"){
+          else if(variable.type === "int"){
             localVariables.push(
               <h1 className="program-code-text-style-functions">{variable.type} {variable.name} = {variable.value}; </h1>
             )

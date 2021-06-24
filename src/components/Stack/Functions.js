@@ -16,7 +16,7 @@ function Functions(props) {
           <h1 className="program-code-text-style">char {variable.name}[] = "{variable.value}"; </h1>
         )
       }
-      else if(variable.type === "int" || variable.type === "float"){
+      else if(variable.type === "int"){
         localVariables.push(
           <h1 className="program-code-text-style">{variable.type} {variable.name} = {variable.value}; </h1>
         )
