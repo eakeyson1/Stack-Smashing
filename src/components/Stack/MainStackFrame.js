@@ -31,25 +31,14 @@ function MainStackFrame(props) {
     )
   }
 
-  const returnArgvOne = () => {
-    return(
-      this.state.argvOne.map((param) => 
-      <div className="main-stack-param-container">
-         <div className="main-stack-second-container">
-          <div className="main-stack-value-container">
-            <h1 className="main-stack-param-text">{param}</h1>
-          </div>
-          <div className="center">
-            <h1 className="main-stack-param-text">0xAC1A4B30</h1>
-          </div>
-        </div>
-      </div>
-      )
-    )
-  }
-
   var startAddress = 2882404352
+  var sfpPosition = startAddress - props.mainStackParams.length - 8
 
+  var sfpHexAddress = (sfpPosition).toString(16)
+  var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+  for(var j=0; j<sfpHexAddressArr.length; j++){
+    sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+  }
 
   return(
     <div>
@@ -96,7 +85,6 @@ function MainStackFrame(props) {
             )}
           </div>
         </div>
-          {returnArgvOne}
           <div style={{display: 'flex'}}>
             <div className="return-address-title-container">
               <h1 className="main-stack-element-title-text">Return Address</h1>
@@ -104,7 +92,7 @@ function MainStackFrame(props) {
             <div className="return-address-container">
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                  <h1 className="main-stack-param-text">{"\\x00"}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{(props.endParametersAddress.toString(16)).toUpperCase()}</h1>
@@ -112,7 +100,7 @@ function MainStackFrame(props) {
               </div>
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xCE"}</h1>
+                  <h1 className="main-stack-param-text">{"\\x00"}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 1).toString(16)).toUpperCase()}</h1>
@@ -120,7 +108,7 @@ function MainStackFrame(props) {
               </div>
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\x00"}</h1>
+                  <h1 className="main-stack-param-text">{"\\xCE"}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 2).toString(16)).toUpperCase()}</h1>
@@ -128,7 +116,7 @@ function MainStackFrame(props) {
               </div>
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xAC"}</h1>
+                  <h1 className="main-stack-param-text">{"\\xAB"}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 3).toString(16)).toUpperCase()}</h1>
@@ -143,7 +131,7 @@ function MainStackFrame(props) {
             <div className="saved-frame-pointer-container">
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xAB"}</h1>
+                  <h1 className="main-stack-param-text">{sfpHexAddressArr[3]}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 4).toString(16)).toUpperCase()}</h1>
@@ -151,7 +139,7 @@ function MainStackFrame(props) {
               </div>
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xCD"}</h1>
+                  <h1 className="main-stack-param-text">{sfpHexAddressArr[2]}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 5).toString(16)).toUpperCase()}</h1>
@@ -159,7 +147,7 @@ function MainStackFrame(props) {
               </div>
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xFF"}</h1>
+                  <h1 className="main-stack-param-text">{sfpHexAddressArr[1]}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 6).toString(16)).toUpperCase()}</h1>
@@ -167,7 +155,7 @@ function MainStackFrame(props) {
               </div>
               <div className="main-stack-second-container">
                 <div className="main-stack-value-container">
-                  <h1 className="main-stack-param-text">{"\\xF2"}</h1>
+                  <h1 className="main-stack-param-text">{sfpHexAddressArr[0]}</h1>
                 </div>
                 <div className="center">
                   <h1 className="main-stack-param-text">0x{((props.endParametersAddress - 7).toString(16)).toUpperCase()}</h1>

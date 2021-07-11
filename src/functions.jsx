@@ -478,7 +478,7 @@ class Functions extends Component {
       result[i] = temp
     }
 
-    var returnAddressArr = ["\\xAB", "\\xCE", "\\x00", "\\x00"]
+    var returnAddressArr = ["\\x00", "\\x00", "\\xCE", "\\xAB"]
     var sfpArr = ["\\x00", "\\x00", "\\x00", "\\x00"]
 
     savedFramePointer = result
@@ -503,6 +503,7 @@ class Functions extends Component {
       sfpArr: sfpArr,
       strcpy: false,
       nextStep: false,
+      startAddress: 0
     }
 
     var joined = this.state.stackFrameDataArray.concat(stackFrame)

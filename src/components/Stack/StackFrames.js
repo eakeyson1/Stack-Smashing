@@ -36,57 +36,10 @@ function StackFrames(props) {
       runningFunctions.push(JSON.parse(JSON.stringify(props.stackFrameRunningFunctions[i])))
     }
 
-
-    var sfpLength = 0
-    for(var i=0; i<runningFunctions.length; i++){
-
-      var parameterLen = runningFunctions[i].parametersLetterArray.length
-      var raAndSFPLen = 8
-      var variableLen = runningFunctions[i].localVariablesLetterArray.length
-
-      var totalLen = parameterLen + raAndSFPLen + variableLen
-      sfpLength += totalLen
-
-      /***** Setting return address value *****/
-      if(i === 1){
-        var raHexAddress = (stackFramesStartAddress-1).toString(16)
-        var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
-        for(var j=0; j<raHexAddressArr.length; j++){
-          raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
-        }
-        runningFunctions[i].returnAddressArr = raHexAddressArr
-      }
-
-      if(i === 2){
-        var raHexAddressOne = (stackFramesStartAddress - 1).toString(16)
-        var raHexAddressArrOne = raHexAddressOne.match(/.{1,2}/g)
-        for(var j=0; j<raHexAddressArrOne.length; j++){
-          raHexAddressArrOne[j] = "\\x" + raHexAddressArrOne[j].toUpperCase() 
-        }
-        runningFunctions[1].returnAddressArr = raHexAddressArrOne
-
-        var frameOneLen = runningFunctions[0].parametersLetterArray.length + 8 + runningFunctions[0].localVariablesLetterArray.length
-        var raHexAddressTwo = (stackFramesStartAddress - frameOneLen - 1).toString(16)
-        var raHexAddressArrTwo = raHexAddressTwo.match(/.{1,2}/g)
-        for(var j=0; j<raHexAddressArrTwo.length; j++){
-          raHexAddressArrTwo[j] = "\\x" + raHexAddressArrTwo[j].toUpperCase() 
-        }
-        runningFunctions[2].returnAddressArr = raHexAddressArrTwo
-      }
-
-      /***** Setting SFP value *****/
-
-      var sfpHexAddress = (stackFramesStartAddress - sfpLength).toString(16)
-      var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
-      for(var j=0; j<sfpHexAddressArr.length; j++){
-        sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
-      }
-
-      runningFunctions[i].sfpArr = sfpHexAddressArr
-    }
     return(
 
       runningFunctions.map((stackFrame) =>
+      //var startAddress = stackFrame.startAddress
         <div>
           {!stackFrame.strcpy && (
             <div>
@@ -202,8 +155,9 @@ function StackFrames(props) {
                 </div>
               </div>
             )}
-            {!stackFrame.displayStackFrame && (
+            {!stackFrame.displayStackFrame && ( 
               <button className="stack-frame-open-button" onClick={() => openStackFrame(stackFrame.functionName)}>
+                <div style={{display: 'none'}}>{((stackFramesStartAddress -= (stackFrame.parametersLetterArray.length + 8 + stackFrame.localVariablesLetterArray.length)).toString(16)).toUpperCase()}</div>
                 <div style={{display: 'flex'}}>
                   <div style={{marginLeft: "35%", width: '30%'}}>
                     <h1 className="stack-frame-button-text">{stackFrame.functionName}()</h1>
@@ -228,6 +182,7 @@ function StackFrames(props) {
       </div>
       )
     )
+        
   }
 
   return(

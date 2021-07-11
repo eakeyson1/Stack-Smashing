@@ -31,6 +31,7 @@ class Stack extends Component {
     this.handleShellCodeClick = this.handleShellCodeClick.bind(this)
     this.handleReturnAddressClick = this.handleReturnAddressClick.bind(this)
     this.handleNopClick = this.handleNopClick.bind(this)
+    this.calculateStackFrame = this.calculateStackFrame.bind(this)
 
     this.state = {
       displayFinishButton: false,
@@ -40,7 +41,6 @@ class Stack extends Component {
       stackFrameRunningFunctions: [],
       segFault: false,
       mainStackParams: [],
-      argvOne: "",
       endParametersAddress: 0,
       stepProgramClickNumber: 0,
       mainStackOpen: false,
@@ -121,14 +121,12 @@ class Stack extends Component {
 
     var reversedUserInputArray = tempUserInputArray.reverse()
     reversedUserInputArray.push(argc)
-    var argvOne = []
 
 
     if(payload === ""){
       reversedUserInputArray.splice(reversedUserInputArray, 1)
     }
     else{
-      argvOne = userInputArray[1].split("")
       this.setState({highlightArgv: true})
     }
 
@@ -137,122 +135,19 @@ class Stack extends Component {
     var startAddress = 2882404352
     var endParametersAddress = startAddress - (reversedUserInputArray.length + 1)
 
-    /***** Displaying pop main is main is the only function in program *****/
+    /***** Displaying pop main if main is the only function in program *****/
     if(stackDataArr.length === 0){
       this.setState({displayFinishButton: true})
     }
     else{
       this.setState({displayNextButton: true})
     }
-
-
-    /***** Updating values if function contains strcpy without user input *****/
-    for(var k=0; k<stackDataArr.length; k++){
-
-      var bool = false
-      stackDataArr[k].parameterDetails.map((param) => {
-        if(param.name === "userInput"){
-          bool = true
-        }
-      })
-
-      if(bool === false){
-
-        // Checking if function contains strcpy and updating stack accordingly
-        if(stackDataArr[k].unsafeFunctions.length !== 0){
-
-          // checking in params and local varables for param2 of strcpy and getting value
-          var param1Name = stackDataArr[k].unsafeFunctions[0].param1Name
-          var param2Name = stackDataArr[k].unsafeFunctions[0].param2Name
-          var newValue = ""
-          var oldValue = ""
-
-          for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
-            if(stackDataArr[k].mainLocalVariables[i].name === param2Name){
-              newValue = stackDataArr[k].mainLocalVariables[i].value
-              break
-            }
-          }
-          for(var i=0; i<stackDataArr[k].parameterDetails.length; i++){
-            if(stackDataArr[k].parameterDetails[i].name === param2Name){
-              newValue = stackDataArr[k].parameterDetails[i].value
-              break
-            }
-          }
-
-          for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
-            if(stackDataArr[k].mainLocalVariables[i].name === param1Name){
-              oldValue = stackDataArr[k].mainLocalVariables[i].value
-              break
-            }
-          }
-          for(var i=0; i<stackDataArr[k].parameterDetails.length; i++){
-            if(stackDataArr[k].parameterDetails[i].name === param1Name){
-              oldValue = stackDataArr[k].parameterDetails[i].value
-              break
-            }
-          }
-
-          /* 
-            *  If the new value length is less than the old value length:
-            *    Retrieve all local variable besides the old value
-            *    Add new value onto local variable arr
-            */
-
-          if(newValue.length < oldValue.length){
-
-            var variableArr = []
-            stackDataArr[k].mainLocalVariables.map(variable =>{
-        
-              if(variable.value !== oldValue){
-                var variableValArr = variable.value.split("")
-                variableValArr.push("\\0")
-                variableArr = variableArr.concat(variableValArr)  
-              }      
-            })
-
-            var newValArr = newValue.split("")
-            newValArr.push("\\0") 
-            variableArr = variableArr.concat(newValArr)
-            variableArr.reverse()
-
-            stackDataArr[k].localVariablesLetterArray = variableArr
-          }
-
-          // Buffer overflow occurs
-          else{
-
-            var variableArr = []
-            stackDataArr[k].mainLocalVariables.map(variable =>{
-        
-              if(variable.value !== oldValue){
-                var variableValArr = variable.value.split("")
-                variableValArr.push("\\0")
-                variableArr = variableArr.concat(variableValArr)  
-              }      
-            })
-
-            var newValArr = newValue.split("")
-            newValArr.push("\\0") 
-            variableArr = variableArr.concat(newValArr)
-            variableArr.reverse()
-
-            stackDataArr[k].localVariablesLetterArray = variableArr
-
-            /***** Adding function to seg fault function list *****/
-            var segFaultFuncNameArr = this.state.segFaultFuncNameArr.concat(stackDataArr[k].functionName)
-            this.setState({segFaultFuncNameArr: segFaultFuncNameArr})
-
-          }
-        }
-      }
-    }
     
     // Checking for userinput and strcpy
-    for(var k=0; k<stackDataArr.length; k++){
+    /*for(var k=0; k<stackDataArr.length; k++){
       if(stackDataArr[k].parameterDetails.length !== 0 && stackDataArr[k].unsafeFunctions.length !== 0){
 
-        /***** Checking if parameters contains userinput *****/
+        // Checking if parameters contains userinput 
         var bool = false
         stackDataArr[k].parameterDetails.map((param) => {
           if(param.name === "userInput"){
@@ -262,11 +157,11 @@ class Stack extends Component {
 
         if(bool === true){
 
-          /***** Checking is userinput is copied into local variable *****/
+          // Checking is userinput is copied into local variable 
           var param2Name = stackDataArr[k].unsafeFunctions[0].param2Name
           if(param2Name === "userInput"){
 
-            /***** Getting length of buffer that is being copied into *****/
+            // Getting length of buffer that is being copied into 
             for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
               if(stackDataArr[k].mainLocalVariables[i].name === stackDataArr[k].unsafeFunctions[0].param1Name){
                 length = stackDataArr[k].mainLocalVariables[i].value.length
@@ -276,7 +171,7 @@ class Stack extends Component {
 
             var userInputArr = payload.split(" ")
 
-            /***** Getting value of param2 or source array *****/
+            // Getting value of param2 or source array 
             var param1Name = stackDataArr[k].unsafeFunctions[0].param1Name
             var oldValue = ""
 
@@ -293,7 +188,7 @@ class Stack extends Component {
               }
             }
 
-            /****** Pushing full machine code command is inputted *****/
+            // Pushing full machine code command is inputted 
             var userInputArr = payload.split(" ")
             var tempUserInput = userInputArr[0].split("")
             var tempUserInputArr = []
@@ -309,7 +204,7 @@ class Stack extends Component {
             }
             tempUserInputArr.push("\\0")
 
-            /***** Reconstrucing parameters *****/
+            // Reconstrucing parameters 
 
             var paramArr = []
             stackDataArr[k].parameterDetails.map(param =>{
@@ -327,7 +222,7 @@ class Stack extends Component {
 
             stackDataArr[k].parametersLetterArray = paramArr
 
-            /***** Reconstructing local variables *****/
+            // Reconstructing local variables 
 
             var variableArr = []
             stackDataArr[k].mainLocalVariables.map(variable =>{
@@ -346,9 +241,9 @@ class Stack extends Component {
             var concatLV = variableArr
     
 
-            /* If new length with variable replaced in greater than 16:
-            *   updated SFP and return address
-            */
+            // If new length with variable replaced in greater than 16:
+            //   updated SFP and return address
+            
             if(sfpOverFlowLength > 0){
 
 
@@ -420,7 +315,7 @@ class Stack extends Component {
                 this.setState({segFault: true})
               }
 
-              /***** Correctly overwrritten return address *****/
+              // Correctly overwrritten return address 
               if(sfpOverFlowLength === 9){
 
                 stackDataArr[k].sfpArr[3] = concatLV[8]
@@ -487,13 +382,12 @@ class Stack extends Component {
           }
         }
       }
-    }
+    }*/
 
     this.setState({
       running: true, 
       displaySegFault: false,
       mainStackParams: reversedUserInputArray, 
-      argvOne: argvOne,
       endParametersAddress: endParametersAddress,
       stackFrameDataArray: stackDataArr,
       maliciousExecution: "Running",
@@ -504,11 +398,11 @@ class Stack extends Component {
 
     console.log(this.state.stepProgramClickNumber)
 
-    var currentStackFrame = []
+    this.setState({highlightArgv: false})
 
+    var currentStackFrame = []
     var returnAddressArr = ["\\xAB", "\\xCE", "\\x00", "\\x00"]
     var sfpArr = ["\\x00", "\\x00", "\\x00", "\\x00"]
-
     var stackFrame = {      
       functionName: "strcpy",
       parameters: [],
@@ -529,23 +423,22 @@ class Stack extends Component {
       sfpArr: sfpArr,
       strcpy: true,
     }
-
-    this.setState({highlightArgv: false})
+    
     if(this.state.stepProgramClickNumber === 0){
 
-      // Always pushing func1
-      var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+      // Always pushing func1    
+      var stackFrame = this.calculateStackFrame(0)
+      runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
       this.setState({
         stackFrameRunningFunctions: runningFunctions,
         stepProgramClickNumber: this.state.stepProgramClickNumber + 1
       })        
-      return    
+      return  
     }
 
     else if(this.state.stepProgramClickNumber === 1){
 
       // PUSHING STRCPY
-
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0){
         var runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
@@ -556,7 +449,6 @@ class Stack extends Component {
       }
 
       // POPPING FUNCTION
-
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length === 0){
 
         if(this.props.stackFrameDataArr. length === 1){
@@ -597,7 +489,6 @@ class Stack extends Component {
     else if(this.state.stepProgramClickNumber === 2){
 
       // POPPING FUNCTION
-
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0){
         var runningFunctions = this.state.stackFrameRunningFunctions
         runningFunctions.pop()
@@ -609,14 +500,14 @@ class Stack extends Component {
       }
 
       // PUSHING FUNC2
-
       else if(this.props.stackFrameDataArr[0].unsafeFunctions.length === 0){
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
+        var stackFrame = this.calculateStackFrame(1)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
-        })
-        return
+        })        
+        return 
       }
 
       // POPPING FINAL STACKFRAME
@@ -840,12 +731,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
-        })
-        return
+        })        
+        return 
       }
 
       // pushing strcpy
@@ -958,11 +850,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.props.stackFrameDataArr[2])
+        var stackFrame = this.calculateStackFrame(2)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
-        })
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+        })        
+        return 
       }
 
       // POPPING FINAL FUNCTION
@@ -1080,12 +974,13 @@ class Stack extends Component {
         
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
+        var stackFrame = this.calculateStackFrame(1)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // POPPING FUNCTION
@@ -1303,12 +1198,13 @@ class Stack extends Component {
           this.props.stackFrameDataArr[2].additionalFunctionCalls.length === 0)
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
+        var stackFrame = this.calculateStackFrame(2)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
-        })
-        return
+        })        
+        return 
       }
     }
 
@@ -1408,12 +1304,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // popping function
@@ -1557,12 +1454,13 @@ class Stack extends Component {
         this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0  && 
         this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
+        var stackFrame = this.calculateStackFrame(1)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
-        })
-        return
+        })        
+        return 
       }
 
       // pushing strcpy
@@ -1826,12 +1724,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
+        var stackFrame = this.calculateStackFrame(2)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // popping function
@@ -2074,12 +1973,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
+        var stackFrame = this.calculateStackFrame(1)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // PUSHING FUNC1
@@ -2133,12 +2033,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // PUSHING STRCPY
@@ -2218,12 +2119,13 @@ class Stack extends Component {
           this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName)
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // POPPING FUNCTION
@@ -2437,12 +2339,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
+        var stackFrame = this.calculateStackFrame(2)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
-        })
-        return
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+        })        
+        return 
       }
     }
 
@@ -2551,12 +2454,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
+        var stackFrame = this.calculateStackFrame(1)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
-        })
-        return
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+        })        
+        return 
       }
 
       // PUSHING FUNC1
@@ -2583,12 +2487,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
-          stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
-        })
-        return
+          stepProgramClickNumber: this.state.stepProgramClickNumber + 1
+        })        
+        return 
       }
 
       // POPPING FINAL FUNCTION
@@ -2613,13 +2518,15 @@ class Stack extends Component {
         this.props.stackFrameDataArr[1].additionalFunctionCalls.length !== 0 &&
         this.props.stackFrameDataArr[2].additionalFunctionCalls.length !== 0 && 
         this.props.stackFrameDataArr[2].additionalFunctionCalls[0].split("(")[0] == this.props.stackFrameDataArr[1].functionName){
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
-      }
+        return 
+    }
 
       // PUSHING FUNC3
 
@@ -2654,12 +2561,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[2])
+        var stackFrame = this.calculateStackFrame(2)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // POPPING FUNCTION
@@ -2779,12 +2687,13 @@ class Stack extends Component {
         
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[1])
+        var stackFrame = this.calculateStackFrame(1)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
         // PUSHING FUNC1
@@ -2800,12 +2709,13 @@ class Stack extends Component {
           
           ){
 
-          var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+          var stackFrame = this.calculateStackFrame(0)
+          runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
           this.setState({
             stackFrameRunningFunctions: runningFunctions,
             stepProgramClickNumber: this.state.stepProgramClickNumber + 1
           })        
-          return
+          return 
         }
 
         // POPPING FUNCTION
@@ -2937,12 +2847,13 @@ class Stack extends Component {
 
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions.concat(this.state.stackFrameDataArray[0])
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
 
       // PUSHING STRCPY
@@ -3141,13 +3052,13 @@ class Stack extends Component {
         
         ){
 
-        var runningFunctions = this.state.stackFrameRunningFunctions
-        runningFunctions.pop()
+        var stackFrame = this.calculateStackFrame(0)
+        runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
         })        
-        return
+        return 
       }
     }
 
@@ -3270,6 +3181,508 @@ class Stack extends Component {
       stepProgramClickNumber: this.state.stepProgramClickNumber + 1,
       stackFrameRunningFunctions: currentStackFrame
     })
+  }
+
+  calculateStackFrame(index){
+
+    var stackFramesStartAddress = this.state.endParametersAddress - 7
+    var runningFunctions = this.state.stackFrameDataArray
+
+    // Calculating start address
+    if(this.state.stackFrameRunningFunctions.length === 0){
+      runningFunctions[index].startAddress = stackFramesStartAddress - 1
+    }
+    if(this.state.stackFrameRunningFunctions.length === 1){
+
+      var prevParamsLen = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
+      var prevVars = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
+      var prevStackFrameLen = prevParamsLen + prevVars + 8
+
+      runningFunctions[index].startAddress = stackFramesStartAddress - 1 - prevStackFrameLen
+    }
+    if(this.state.stackFrameRunningFunctions.length === 2){
+
+      console.log("2 on")
+
+      var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
+      var prevVars1 = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
+      var prevStackFrameLen1 = prevParamsLen1 + prevVars1 + 8
+
+      var prevParamsLen2 = this.state.stackFrameRunningFunctions[1].parametersLetterArray.length
+      var prevVars2 = this.state.stackFrameRunningFunctions[1].localVariablesLetterArray.length
+      var prevStackFrameLen2 = prevParamsLen2 + prevVars2 + 8
+
+      runningFunctions[index].startAddress = stackFramesStartAddress - 1 - prevStackFrameLen1 - prevStackFrameLen2
+    }
+
+    // Calulating return address
+    if(this.state.stackFrameRunningFunctions.length === 1){
+      var returnAddress = stackFramesStartAddress - 1
+      var raHexAddress = (returnAddress).toString(16)
+      var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
+      for(var j=0; j<raHexAddressArr.length; j++){
+        raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
+      }
+
+      runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
+    }
+    if(this.state.stackFrameRunningFunctions.length === 2){
+      var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
+      var prevVars1 = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
+      var prevStackFrameLen1 = prevParamsLen1 + prevVars1 + 8
+      var returnAddress = stackFramesStartAddress - 1 - prevStackFrameLen1
+      var raHexAddress = (returnAddress).toString(16)
+      var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
+      for(var j=0; j<raHexAddressArr.length; j++){
+        raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
+      }
+
+      runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
+    }
+
+
+    // Check if functions contains user input as a parameter
+    var bool = false
+    this.state.stackFrameDataArray[index].parameterDetails.map((param) => {
+      if(param.name === "userInput"){
+        bool = true
+      }
+    })
+
+    // strcpy is not used and no user input as parameter
+    if(bool === false && this.state.stackFrameDataArray[index].unsafeFunctions.length === 0){
+ 
+      // Setting saved frame pointer address
+      var previousStackFrameLength = 0
+      for(var i=0; i<this.state.stackFrameRunningFunctions.length; i++){
+        previousStackFrameLength += this.state.stackFrameRunningFunctions[i].parametersLetterArray.length
+        previousStackFrameLength += 8
+        previousStackFrameLength += this.state.stackFrameRunningFunctions[i].localVariablesLetterArray.length
+      }
+
+      var currentStackFrameLength = this.state.stackFrameDataArray[index].parametersLetterArray.length + 8 + this.state.stackFrameDataArray[index].localVariablesLetterArray.length
+      var sfpPosition = stackFramesStartAddress - previousStackFrameLength - currentStackFrameLength
+      var sfpHexAddress = (sfpPosition).toString(16)
+      var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+
+      for(var j=0; j<sfpHexAddressArr.length; j++){
+        sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+      }
+
+      runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+
+      return runningFunctions[index]
+
+    }
+
+    // strcpy is not used with user input as parameter
+    else if(bool === true && this.state.stackFrameDataArray[index].unsafeFunctions.length === 0){
+
+      var shellcode = ""
+      if(this.state.startingShell === true){
+        shellcode = "\\xF3\\xDD\\xA2\\xC9\\xAA\\xD3"
+      }
+      if(this.state.gettingRootPriviledges === true){
+        shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
+      }
+      if(this.state.shutDownOs === true){
+        shellcode = "\\xFF\\D3\\x99\\xA0"
+      }
+      if(this.state.wipeOs === true){
+        shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+      }
+
+      var payload = this.state.nopSled + shellcode + this.state.returnAddress
+
+      var userInputArr = payload.split(" ")
+      var tempUserInput = userInputArr[0].split("")
+      var tempUserInputArr = []
+      for(var j=0; j<tempUserInput.length; j++){
+        if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
+          var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
+          tempUserInputArr.push(val)
+          j +=3
+        }
+        else{
+          tempUserInputArr.push(tempUserInput[j])
+        }
+      }
+      tempUserInputArr.push("\\0")
+
+      // Constructing local variables
+      var variableArr = []
+      this.state.stackFrameDataArray[index].mainLocalVariables.map(variable =>{
+        var variableValArr = variable.value.split("")
+        variableValArr.push("\\0")
+        variableArr = variableArr.concat(variableValArr)       
+      })
+
+      variableArr.reverse()
+      runningFunctions[index].localVariablesLetterArray = variableArr
+
+      // Constructing parameters
+      var paramArr = []
+      this.state.stackFrameDataArray[index].parameterDetails.map(param =>{
+        var paramValArr = param.value.split("")
+        paramValArr.push("\\0")
+        paramArr = paramArr.concat(paramValArr)        
+      })
+
+      paramArr.splice(-1,1)
+      paramArr = paramArr.concat(tempUserInputArr)
+      paramArr.reverse()
+
+
+      runningFunctions[index].parametersLetterArray = paramArr
+
+      var currentStackFrameLength = paramArr.length + 8 + variableArr.length
+      var sfpPosition = runningFunctions[index].startAddress - currentStackFrameLength + 1
+
+      var sfpHexAddress = (sfpPosition).toString(16)
+      var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+
+      for(var j=0; j<sfpHexAddressArr.length; j++){
+        sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+      }
+
+      runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+
+      return runningFunctions[index]
+    }
+
+    // strcpy is used but not with user input
+    else if(bool === false && this.state.stackFrameDataArray[index].unsafeFunctions.length !== 0){
+
+      // checking in params and local varables for param2 of strcpy and getting value
+      var param1Name = this.state.stackFrameDataArray[index].unsafeFunctions[0].param1Name
+      var param2Name = this.state.stackFrameDataArray[index].unsafeFunctions[0].param2Name
+      var newValue = ""
+      var oldValue = ""
+
+      for(var i=0; i<this.state.stackFrameDataArray[index].mainLocalVariables.length; i++){
+        if(this.state.stackFrameDataArray[index].mainLocalVariables[i].name === param2Name){
+          newValue = this.state.stackFrameDataArray[index].mainLocalVariables[i].value
+          break
+        }
+      }
+      for(var i=0; i<this.state.stackFrameDataArray[index].parameterDetails.length; i++){
+        if(this.state.stackFrameDataArray[index].parameterDetails[i].name === param2Name){
+          newValue = this.state.stackFrameDataArray[index].parameterDetails[i].value
+          break
+        }
+      }
+
+      for(var i=0; i<this.state.stackFrameDataArray[index].mainLocalVariables.length; i++){
+        if(this.state.stackFrameDataArray[index].mainLocalVariables[i].name === param1Name){
+          oldValue = this.state.stackFrameDataArray[index].mainLocalVariables[i].value
+          break
+        }
+      }
+      for(var i=0; i<this.state.stackFrameDataArray[index].parameterDetails.length; i++){
+        if(this.state.stackFrameDataArray[index].parameterDetails[i].name === param1Name){
+          oldValue = this.state.stackFrameDataArray[index].parameterDetails[i].value
+          break
+        }
+      }
+
+      //  If the new value length is less than the old value length:
+      //    Retrieve all local variable besides the old value
+      //    Add new value onto local variable arr
+          
+
+      if(newValue.length < oldValue.length){
+
+        var variableArr = []
+        this.state.stackFrameDataArray[index].mainLocalVariables.map(variable =>{
+    
+          if(variable.value !== oldValue){
+            var variableValArr = variable.value.split("")
+            variableValArr.push("\\0")
+            variableArr = variableArr.concat(variableValArr)  
+          }      
+        })
+
+        var newValArr = newValue.split("")
+        newValArr.push("\\0") 
+        variableArr = variableArr.concat(newValArr)
+        variableArr.reverse()
+
+        runningFunctions[index].localVariablesLetterArray = variableArr
+        return runningFunctions[index]
+      }
+      // Buffer overflow occurs
+      else{
+        var variableArr = []
+        this.state.stackFrameDataArray[index].mainLocalVariables.map(variable =>{
+          if(variable.value !== oldValue){
+            var variableValArr = variable.value.split("")
+            variableValArr.push("\\0")
+            variableArr = variableArr.concat(variableValArr)  
+          }      
+        })
+
+        var newValArr = newValue.split("")
+        newValArr.push("\\0") 
+        variableArr = variableArr.concat(newValArr)
+        variableArr.reverse()
+
+        runningFunctions[index].localVariablesLetterArray = variableArr
+
+        // Adding function to seg fault function list 
+        var segFaultFuncNameArr = this.state.segFaultFuncNameArr.concat(this.state.stackFrameDataArray[index].functionName)
+        this.setState({segFaultFuncNameArr: segFaultFuncNameArr})
+
+        // Setting saved frame pointer address
+        var previousStackFrameLength = 0
+        for(var i=0; i<this.state.stackFrameRunningFunctions.length; i++){
+          previousStackFrameLength += this.state.stackFrameRunningFunctions[i].parametersLetterArray.length
+          previousStackFrameLength += 8
+          previousStackFrameLength += this.state.stackFrameRunningFunctions[i].localVariablesLetterArray.length
+        }
+
+        var currentStackFrameLength = this.state.stackFrameDataArray[index].parametersLetterArray.length + 8 + variableArr.length
+        var sfpPosition = stackFramesStartAddress - previousStackFrameLength - currentStackFrameLength
+
+        var sfpHexAddress = (sfpPosition).toString(16)
+        var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+        for(var j=0; j<sfpHexAddressArr.length; j++){
+          sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+        }
+
+        runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+
+        return runningFunctions[index]
+      }
+    }
+
+    // strcpy is used with user input
+    else if(bool === true && this.state.stackFrameDataArray[index].unsafeFunctions.length !== 0){
+
+      if(this.state.stackFrameDataArray[index].unsafeFunctions.length !== 0){
+        
+        var shellcode = ""
+        if(this.state.startingShell === true){
+          shellcode = "\\xF3\\xDD\\xA2\\xC9\\xAA\\xD3"
+        }
+        if(this.state.gettingRootPriviledges === true){
+          shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
+        }
+        if(this.state.shutDownOs === true){
+          shellcode = "\\xFF\\D3\\x99\\xA0"
+        }
+        if(this.state.wipeOs === true){
+          shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+        }
+
+        var payload = this.state.nopSled + shellcode + this.state.returnAddress
+
+        var userInputArr = payload.split(" ")
+        var tempUserInput = userInputArr[0].split("")
+        var tempUserInputArr = []
+        for(var j=0; j<tempUserInput.length; j++){
+          if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
+            var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
+            tempUserInputArr.push(val)
+            j +=3
+          }
+          else{
+            tempUserInputArr.push(tempUserInput[j])
+          }
+        }
+        tempUserInputArr.push("\\0")
+
+        var param1Name = this.state.stackFrameDataArray[index].unsafeFunctions[0].param1Name
+        var param2Name = this.state.stackFrameDataArray[index].unsafeFunctions[0].param2Name
+        var newValue = ""
+        var oldValue = ""
+
+        for(var i=0; i<this.state.stackFrameDataArray[index].mainLocalVariables.length; i++){
+          if(this.state.stackFrameDataArray[index].mainLocalVariables[i].name === param2Name){
+            newValue = this.state.stackFrameDataArray[index].mainLocalVariables[i].value
+            break
+          }
+        }
+        for(var i=0; i<this.state.stackFrameDataArray[index].parameterDetails.length; i++){
+          if(this.state.stackFrameDataArray[index].parameterDetails[i].name === param2Name){
+            newValue = this.state.stackFrameDataArray[index].parameterDetails[i].value
+            break
+          }
+        }
+
+        for(var i=0; i<this.state.stackFrameDataArray[index].mainLocalVariables.length; i++){
+          if(this.state.stackFrameDataArray[index].mainLocalVariables[i].name === param1Name){
+            oldValue = this.state.stackFrameDataArray[index].mainLocalVariables[i].value
+            break
+          }
+        }
+        for(var i=0; i<this.state.stackFrameDataArray[index].parameterDetails.length; i++){
+          if(this.state.stackFrameDataArray[index].parameterDetails[i].name === param1Name){
+            oldValue = this.state.stackFrameDataArray[index].parameterDetails[i].value
+            break
+          }
+        }
+
+        // Constructing local variables
+        var variableArr = []
+        this.state.stackFrameDataArray[index].mainLocalVariables.map(variable =>{
+
+          if(variable.value !== oldValue){
+            var variableValArr = variable.value.split("")
+            variableValArr.push("\\0")
+            variableArr = variableArr.concat(variableValArr)  
+          }      
+        })
+
+        variableArr = variableArr.concat(tempUserInputArr)
+        variableArr.reverse()
+
+      
+
+        var localVariableLength = 0
+        if(variableArr.length > 16){
+          var displayVariableArr = []
+          for(var i=variableArr.length-1; i>variableArr.length-17; i--){
+            displayVariableArr.push(variableArr[i])
+          }
+        
+          runningFunctions[index].localVariablesLetterArray = displayVariableArr.reverse()
+          localVariableLength = 16
+        }
+        else{
+          localVariableLength = variableArr.length
+          runningFunctions[index].localVariablesLetterArray = variableArr
+        }
+
+
+        // Constructing parameters
+        var paramArr = []
+        this.state.stackFrameDataArray[index].parameterDetails.map(param =>{
+          if(param.value !== oldValue){
+            var paramValArr = param.value.split("")
+            paramValArr.push("\\0")
+            paramArr = paramArr.concat(paramValArr)  
+          }      
+        })
+
+        paramArr.splice(-1,1)
+        paramArr = paramArr.concat(tempUserInputArr)
+        paramArr.reverse()
+
+
+        runningFunctions[index].parametersLetterArray = paramArr
+
+        // Setting saved frame pointer address
+        var previousStackFrameLength = 0
+        for(var i=0; i<this.state.stackFrameRunningFunctions.length; i++){
+          previousStackFrameLength += this.state.stackFrameRunningFunctions[i].parametersLetterArray.length
+          previousStackFrameLength += 8
+          previousStackFrameLength += this.state.stackFrameRunningFunctions[i].localVariablesLetterArray.length
+        }
+
+        var currentStackFrameLength = this.state.stackFrameDataArray[index].parametersLetterArray.length + 8 + this.state.stackFrameDataArray[index].localVariablesLetterArray.length
+        var currentStackFrameLength = paramArr.length + 8 + localVariableLength
+        var sfpPosition = stackFramesStartAddress - previousStackFrameLength - currentStackFrameLength
+
+        var sfpHexAddress = (sfpPosition).toString(16)
+        var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+        for(var j=0; j<sfpHexAddressArr.length; j++){
+          sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+        }
+
+        runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+
+
+        // Update overwritten SFP
+        if(variableArr.length === 17){
+          runningFunctions[index].sfpArr[3] = variableArr[0]
+        }
+        if(variableArr.length === 18){
+          runningFunctions[index].sfpArr[3] = variableArr[1]
+          runningFunctions[index].sfpArr[2] = variableArr[0]
+        }
+        if(variableArr.length === 19){
+          runningFunctions[index].sfpArr[3] = variableArr[2]
+          runningFunctions[index].sfpArr[2] = variableArr[1]
+          runningFunctions[index].sfpArr[1] = variableArr[0]
+        }
+        if(variableArr.length === 20){
+          runningFunctions[index].sfpArr[3] = variableArr[3]
+          runningFunctions[index].sfpArr[2] = variableArr[2]
+          runningFunctions[index].sfpArr[1] = variableArr[1]
+          runningFunctions[index].sfpArr[0] = variableArr[0]
+        }
+        if(variableArr.length === 21){
+          runningFunctions[index].sfpArr[3] = variableArr[4]
+          runningFunctions[index].sfpArr[2] = variableArr[3]
+          runningFunctions[index].sfpArr[1] = variableArr[2]
+          runningFunctions[index].sfpArr[0] = variableArr[1]
+          runningFunctions[index].returnAddressArr[3] = variableArr[0]
+        }
+        if(variableArr.length === 22){
+          runningFunctions[index].sfpArr[3] = variableArr[5]
+          runningFunctions[index].sfpArr[2] = variableArr[4]
+          runningFunctions[index].sfpArr[1] = variableArr[3]
+          runningFunctions[index].sfpArr[0] = variableArr[2]
+          runningFunctions[index].returnAddressArr[3] = variableArr[1]
+          runningFunctions[index].returnAddressArr[2] = variableArr[0]
+        }
+        if(variableArr.length === 23){
+          runningFunctions[index].sfpArr[3] = variableArr[6]
+          runningFunctions[index].sfpArr[2] = variableArr[5]
+          runningFunctions[index].sfpArr[1] = variableArr[4]
+          runningFunctions[index].sfpArr[0] = variableArr[3]
+          runningFunctions[index].returnAddressArr[3] = variableArr[2]
+          runningFunctions[index].returnAddressArr[2] = variableArr[1]
+          runningFunctions[index].returnAddressArr[1] = variableArr[0]
+        }
+        if(variableArr.length === 24){
+          runningFunctions[index].sfpArr[3] = variableArr[7]
+          runningFunctions[index].sfpArr[2] = variableArr[6]
+          runningFunctions[index].sfpArr[1] = variableArr[5]
+          runningFunctions[index].sfpArr[0] = variableArr[4]
+          runningFunctions[index].returnAddressArr[3] = variableArr[3]
+          runningFunctions[index].returnAddressArr[2] = variableArr[2]
+          runningFunctions[index].returnAddressArr[1] = variableArr[1]
+          runningFunctions[index].returnAddressArr[0] = variableArr[0]
+        }
+        // Successfully overwritten return address
+        if(variableArr.length === 25){
+          runningFunctions[index].sfpArr[3] = variableArr[8]
+          runningFunctions[index].sfpArr[2] = variableArr[7]
+          runningFunctions[index].sfpArr[1] = variableArr[6]
+          runningFunctions[index].sfpArr[0] = variableArr[5]
+          runningFunctions[index].returnAddressArr[3] = variableArr[4]
+          runningFunctions[index].returnAddressArr[2] = variableArr[3]
+          runningFunctions[index].returnAddressArr[1] = variableArr[2]
+          runningFunctions[index].returnAddressArr[0] = variableArr[1]
+
+          // Calculate if its a NOP sled
+
+          /*var malFuncNameArr = this.state.malFuncNameArr
+          malFuncNameArr.push(this.state.stackFrameDataArray[index].functionName)
+          this.setState({malFuncNameArr: malFuncNameArr})*/
+        }
+        if(variableArr.length > 25){
+          runningFunctions[index].returnAddressArr[3] = "\\x00"
+          runningFunctions[index].returnAddressArr[2] = "\\x00"
+          runningFunctions[index].returnAddressArr[1] = "\\x00"
+          runningFunctions[index].returnAddressArr[0] = "\\x00"
+
+          // Calculate if its a NOP sled
+
+          /*var malFuncNameArr = this.state.malFuncNameArr
+          malFuncNameArr.push(this.state.stackFrameDataArray[index].functionName)
+          this.setState({malFuncNameArr: malFuncNameArr})*/
+        }
+
+        return runningFunctions[index]
+      }
+    }
+
+    else{
+      return runningFunctions[index]
+    }
+
   }
 
   programFinish(){
@@ -3412,7 +3825,6 @@ class Stack extends Component {
                     setMainStackOpen={() => this.setState({mainStackOpen: !this.state.mainStackOpen})}
                     mainStackParams={this.state.mainStackParams}
                     endParametersAddress={this.state.endParametersAddress}
-                    argvOne={this.state.argvOne}
                   />
 
                 )}
