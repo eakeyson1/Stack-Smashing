@@ -31,7 +31,8 @@ class Stack extends Component {
     this.handleShellCodeClick = this.handleShellCodeClick.bind(this)
     this.handleReturnAddressClick = this.handleReturnAddressClick.bind(this)
     this.handleNopClick = this.handleNopClick.bind(this)
-    this.calculateStackFrame = this.calculateStackFrame.bind(this)
+    this.returnUpdatedStackFrame = this.returnUpdatedStackFrame.bind(this)
+    this.returnOriginalStackFrame = this.returnOriginalStackFrame.bind(this)
 
     this.state = {
       displayFinishButton: false,
@@ -427,7 +428,8 @@ class Stack extends Component {
     if(this.state.stepProgramClickNumber === 0){
 
       // Always pushing func1    
-      var stackFrame = this.calculateStackFrame(0)
+      //var stackFrame = this.calculateStackFrame(0)
+      var stackFrame = this.returnOriginalStackFrame(0)
       runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
       this.setState({
         stackFrameRunningFunctions: runningFunctions,
@@ -441,6 +443,8 @@ class Stack extends Component {
       // PUSHING STRCPY
       if(this.props.stackFrameDataArr[0].unsafeFunctions.length !== 0){
         var runningFunctions = this.state.stackFrameRunningFunctions.concat(stackFrame)
+        var updatedStackFrame = this.returnUpdatedStackFrame(0)
+        runningFunctions[0] = updatedStackFrame
         this.setState({
           stackFrameRunningFunctions: runningFunctions,
           stepProgramClickNumber: this.state.stepProgramClickNumber + 1
@@ -3183,7 +3187,142 @@ class Stack extends Component {
     })
   }
 
-  calculateStackFrame(index){
+  returnOriginalStackFrame(index){
+    var stackFramesStartAddress = this.state.endParametersAddress - 7
+    var runningFunctions = this.state.stackFrameDataArray
+
+    // Calculating start address
+    if(this.state.stackFrameRunningFunctions.length === 0){
+      runningFunctions[index].startAddress = stackFramesStartAddress - 1
+    }
+    if(this.state.stackFrameRunningFunctions.length === 1){
+      var prevParamsLen = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
+      var prevVars = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
+      var prevStackFrameLen = prevParamsLen + prevVars + 8
+
+      runningFunctions[index].startAddress = stackFramesStartAddress - 1 - prevStackFrameLen
+    }
+    if(this.state.stackFrameRunningFunctions.length === 2){
+      var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
+      var prevVars1 = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
+      var prevStackFrameLen1 = prevParamsLen1 + prevVars1 + 8
+      var prevParamsLen2 = this.state.stackFrameRunningFunctions[1].parametersLetterArray.length
+      var prevVars2 = this.state.stackFrameRunningFunctions[1].localVariablesLetterArray.length
+      var prevStackFrameLen2 = prevParamsLen2 + prevVars2 + 8
+
+      runningFunctions[index].startAddress = stackFramesStartAddress - 1 - prevStackFrameLen1 - prevStackFrameLen2
+    }
+
+    // Check if functions contains user input as a parameter
+    var bool = false
+    this.state.stackFrameDataArray[index].parameterDetails.map((param) => {
+      if(param.name === "userInput"){
+        bool = true
+      }
+    })
+
+    if(bool === true && this.state.stackFrameDataArray[index].unsafeFunctions.length !== 0){
+      var shellcode = ""
+      if(this.state.startingShell === true){
+        shellcode = "\\xF3\\xDD\\xA2\\xC9\\xAA\\xD3"
+      }
+      if(this.state.gettingRootPriviledges === true){
+        shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
+      }
+      if(this.state.shutDownOs === true){
+        shellcode = "\\xFF\\D3\\x99\\xA0"
+      }
+      if(this.state.wipeOs === true){
+        shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+      }
+
+      var payload = this.state.nopSled + shellcode + this.state.returnAddress
+
+      var userInputArr = payload.split(" ")
+      var tempUserInput = userInputArr[0].split("")
+      var tempUserInputArr = []
+      for(var j=0; j<tempUserInput.length; j++){
+        if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
+          var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
+          tempUserInputArr.push(val)
+          j +=3
+        }
+        else{
+          tempUserInputArr.push(tempUserInput[j])
+        }
+      }
+      tempUserInputArr.push("\\0")
+
+      // Constructing parameters
+      var paramArr = []
+      this.state.stackFrameDataArray[index].parameterDetails.map(param =>{
+          var paramValArr = param.value.split("")
+          paramValArr.push("\\0")
+          paramArr = paramArr.concat(paramValArr)       
+      })
+
+      paramArr.splice(-1,1)
+      paramArr = paramArr.concat(tempUserInputArr)
+      paramArr.reverse()
+
+
+      runningFunctions[index].parametersLetterArray = paramArr
+
+      // Setting saved frame pointer
+      var currentStackFrameLength = paramArr.length + 8 + runningFunctions[index].localVariablesLetterArray.length
+      var sfpPosition = runningFunctions[index].startAddress - currentStackFrameLength + 1
+      var sfpHexAddress = (sfpPosition).toString(16)
+      var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+
+      for(var j=0; j<sfpHexAddressArr.length; j++){
+        sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+      }
+
+      runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+    }
+    if(bool === false && this.state.stackFrameDataArray[index].unsafeFunctions.length !== 0){
+
+      // Constructing local variables
+      var variableArr = []
+      this.state.stackFrameDataArray[index].mainLocalVariables.map(variable =>{
+        var variableValArr = variable.value.split("")
+        variableValArr.push("\\0")
+        variableArr = variableArr.concat(variableValArr)       
+      })
+      variableArr.reverse()
+
+      runningFunctions[index].localVariablesLetterArray = variableArr
+
+      // Constructing parameters
+      var paramArr = []
+      this.state.stackFrameDataArray[index].parameterDetails.map(param =>{
+        var paramValArr = param.value.split("")
+        paramValArr.push("\\0")
+        paramArr = paramArr.concat(paramValArr)        
+      })
+      paramArr.splice(-1,1)
+      paramArr.push("\\0")
+      paramArr.reverse()
+
+      runningFunctions[index].parametersLetterArray = paramArr
+
+      // Setting saved frame pointer
+      var currentStackFrameLength = paramArr.length + 8 + variableArr.length
+      var sfpPosition = runningFunctions[index].startAddress - currentStackFrameLength + 1
+      var sfpHexAddress = (sfpPosition).toString(16)
+      var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
+
+      for(var j=0; j<sfpHexAddressArr.length; j++){
+        sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
+      }
+
+      runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+    }
+
+    return runningFunctions[index]
+  }
+
+  returnUpdatedStackFrame(index){
 
     var stackFramesStartAddress = this.state.endParametersAddress - 7
     var runningFunctions = this.state.stackFrameDataArray
@@ -3216,28 +3355,30 @@ class Stack extends Component {
     }
 
     // Calulating return address
-    if(this.state.stackFrameRunningFunctions.length === 1){
-      var returnAddress = stackFramesStartAddress - 1
-      var raHexAddress = (returnAddress).toString(16)
-      var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
-      for(var j=0; j<raHexAddressArr.length; j++){
-        raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
-      }
+    if(runningFunctions[index].unsafeFunctions.length === 0){
+      if(this.state.stackFrameRunningFunctions.length === 1){
+        var returnAddress = stackFramesStartAddress - 1
+        var raHexAddress = (returnAddress).toString(16)
+        var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
+        for(var j=0; j<raHexAddressArr.length; j++){
+          raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
+        }
 
-      runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
-    }
-    if(this.state.stackFrameRunningFunctions.length === 2){
-      var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
-      var prevVars1 = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
-      var prevStackFrameLen1 = prevParamsLen1 + prevVars1 + 8
-      var returnAddress = stackFramesStartAddress - 1 - prevStackFrameLen1
-      var raHexAddress = (returnAddress).toString(16)
-      var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
-      for(var j=0; j<raHexAddressArr.length; j++){
-        raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
+        runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
       }
+      if(this.state.stackFrameRunningFunctions.length === 2){
+        var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
+        var prevVars1 = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
+        var prevStackFrameLen1 = prevParamsLen1 + prevVars1 + 8
+        var returnAddress = stackFramesStartAddress - 1 - prevStackFrameLen1
+        var raHexAddress = (returnAddress).toString(16)
+        var raHexAddressArr = raHexAddress.match(/.{1,2}/g)
+        for(var j=0; j<raHexAddressArr.length; j++){
+          raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
+        }
 
-      runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
+        runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
+      }
     }
 
 
@@ -3249,7 +3390,7 @@ class Stack extends Component {
       }
     })
 
-    // strcpy is not used and no user input as parameter
+    // strcpy is not used with no user input as parameter
     if(bool === false && this.state.stackFrameDataArray[index].unsafeFunctions.length === 0){
  
       // Setting saved frame pointer address
@@ -3335,6 +3476,7 @@ class Stack extends Component {
 
       runningFunctions[index].parametersLetterArray = paramArr
 
+      // Setting saved frame pointer
       var currentStackFrameLength = paramArr.length + 8 + variableArr.length
       var sfpPosition = runningFunctions[index].startAddress - currentStackFrameLength + 1
 
@@ -3350,7 +3492,7 @@ class Stack extends Component {
       return runningFunctions[index]
     }
 
-    // strcpy is used but not with user input
+    // strcpy is used with no user input
     else if(bool === false && this.state.stackFrameDataArray[index].unsafeFunctions.length !== 0){
 
       // checking in params and local varables for param2 of strcpy and getting value
@@ -3433,16 +3575,10 @@ class Stack extends Component {
         this.setState({segFaultFuncNameArr: segFaultFuncNameArr})
 
         // Setting saved frame pointer address
-        var previousStackFrameLength = 0
-        for(var i=0; i<this.state.stackFrameRunningFunctions.length; i++){
-          previousStackFrameLength += this.state.stackFrameRunningFunctions[i].parametersLetterArray.length
-          previousStackFrameLength += 8
-          previousStackFrameLength += this.state.stackFrameRunningFunctions[i].localVariablesLetterArray.length
-        }
-
-        var currentStackFrameLength = this.state.stackFrameDataArray[index].parametersLetterArray.length + 8 + variableArr.length
-        var sfpPosition = stackFramesStartAddress - previousStackFrameLength - currentStackFrameLength
-
+        var currentStackFrameLength = runningFunctions[index].parametersLetterArray.length + 8 + runningFunctions[index].localVariablesLetterArray.length
+        console.log(currentStackFrameLength)
+        console.log(runningFunctions[index].startAddress)
+        var sfpPosition = runningFunctions[index].startAddress + 1
         var sfpHexAddress = (sfpPosition).toString(16)
         var sfpHexAddressArr = sfpHexAddress.match(/.{1,2}/g)
         for(var j=0; j<sfpHexAddressArr.length; j++){
@@ -3657,107 +3793,22 @@ class Stack extends Component {
           runningFunctions[index].returnAddressArr[0] = variableArr[1]
 
           // Calculate if its a NOP sled
-          
-          // Calulating user input
-          var tempUserInputArray = []
-          for(var i=0; i<userInputArr.length; i++){
-            var tempUserInput = userInputArr[i].split("")
-            for(var j=0; j<tempUserInput.length; j++){
-              if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
-                var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
-                tempUserInputArray.push(val)
-                j +=3
-              }
-              else{
-                tempUserInputArray.push(tempUserInput[j])
-              }
-            }
-            tempUserInputArray.push("\\0")
-          }
 
-          var reversedUserInputArray = tempUserInputArray.reverse()
-
-          // Converting new return address to hex
-
-          var tempReturnAddress = variableArr[1] + variableArr[2] + variableArr[3] + variableArr[4]
-          var returnAddressHex = tempReturnAddress.replaceAll("\\x", "")
-          var newReturnAddressInt = parseInt(returnAddressHex, 16)
-
-          // Starting after main stack frame
-          var startAddress = this.state.endParametersAddress - 8
-
-          // Substract previous function length
-          var totalLen = 0
-          for(var j=0; j < this.state.stackFrameRunningFunctions.length-1; j++){
-            totalLen += this.state.stackFrameRunningFunctions[j].parametersLetterArray.length + this.state.stackFrameRunningFunctions[j].localVariablesLetterArray.length + 8
-          }
-
-          // Starting address of current stack frame
-          var beginCurrentFunctionAddress = startAddress - totalLen
-
-          // Substract parameter length and 8 (return address and SFP)
-          var startAddressLocalVariables = beginCurrentFunctionAddress - paramArr.length - 8
-
-          // Constructing array of valid return address
-
-          var validReturnAddressArr = []
-          var last16Vars = variableArr.slice(-16)
-          for(var j=0; j<last16Vars.length; j++){
-            if(last16Vars[j] === "\\x90"){
-              var address = startAddressLocalVariables - j
-              validReturnAddressArr.push(address)
-            }
-          }
-
-          console.log(validReturnAddressArr)
-          console.log(newReturnAddressInt)
-          // Checking if new return address is included in valid return address array
-          if(validReturnAddressArr.includes(newReturnAddressInt)){
-            var tempMalFuncNameArr = this.state.malFuncNameArr
-            tempMalFuncNameArr.push(this.state.stackFrameDataArray[index].functionName)
-            var uniqueNames = [...new Set(tempMalFuncNameArr)];
-            this.setState({malFuncNameArr: uniqueNames})
-          }
-
-
-          /*var startAddress = 2882404352 - reversedUserInputArray.length
-          var currentStackFrameAddressLength = tempUserInputArray.length + 8
-
-          var totalLen = 0
-          for(var j=0; j < this.state.stackFrameRunningFunctions.length-1; j++){
-            totalLen += this.state.stackFrameRunningFunctions[j].parametersLetterArray.length + this.state.stackFrameRunningFunctions[j].localVariablesLetterArray.length + 8
-          }
-          
-          
-          var finalLen = currentStackFrameAddressLength + totalLen
-          var lowBoundAddress = startAddress - finalLen
-
-          var validReturnAddressArr = []
-
-          var last16Vars = variableArr.slice(-16)
-          for(var j=0; j<last16Vars.length; j++){
-            if(last16Vars[j] === "\\x90"){
-              var address = lowBoundAddress - (j+1)
-              validReturnAddressArr.push(address)
-            }
-          }
-
-          console.log(validReturnAddressArr)
-
-          if(validReturnAddressArr.includes(newReturnAddressInt)){
-            var tempMalFuncNameArr = this.state.malFuncNameArr
-            tempMalFuncNameArr.push(stackDataArr[k].functionName)
-            var uniqueNames = [...new Set(tempMalFuncNameArr)];
-            this.setState({malFuncNameArr: uniqueNames})
-          }*/
+          /*var malFuncNameArr = this.state.malFuncNameArr
+          malFuncNameArr.push(this.state.stackFrameDataArray[index].functionName)
+          this.setState({malFuncNameArr: malFuncNameArr})*/
         }
         if(variableArr.length > 25){
           runningFunctions[index].returnAddressArr[3] = "\\x00"
           runningFunctions[index].returnAddressArr[2] = "\\x00"
           runningFunctions[index].returnAddressArr[1] = "\\x00"
           runningFunctions[index].returnAddressArr[0] = "\\x00"
-          this.setState({segFault: true})
 
+          // Calculate if its a NOP sled
+
+          /*var malFuncNameArr = this.state.malFuncNameArr
+          malFuncNameArr.push(this.state.stackFrameDataArray[index].functionName)
+          this.setState({malFuncNameArr: malFuncNameArr})*/
         }
 
         return runningFunctions[index]
