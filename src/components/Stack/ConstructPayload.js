@@ -37,9 +37,9 @@ function ConstructPayload(props) {
           </div>
         )}
         {props.attemptAttack && (
-        <div class="scrollmenu">
+        <div style={{marginLeft: '8%'}} class="scrollmenu">
           <div className="payload-diagram-container">
-            <div style={{marginLeft: '20%'}}>
+            <div>
               <div className="payload-diagram-title-text">argv[0]</div>
               <div className="payload-diagram-intro-container center-div">
                 <div className="payload-diagram-text">./intro</div>
