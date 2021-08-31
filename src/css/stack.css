@@ -125,6 +125,27 @@
     outline-offset: none !important;
 }
 
+.user-input-container{
+    margin-top: 20vh;
+    margin-left: 25vh;
+}
+
+.user-input-text{
+    outline: none !important;
+    outline-offset: none !important;
+    width: 25vh;
+    height: 4.5vh;
+    background-color: white;
+    border-bottom: 0.3vh solid #1a75ff;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    color: #1a75ff;
+    font-size: 2vh;
+    margin-top: 1vh;
+}
+
+
 .user-input{
     height: 4vh;
     border-bottom: 0.25vh solid #1a75ff;
@@ -512,7 +533,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30vh;
+    width: 60vh;
+}
+
+.attempt-attack-text{
+    font-size: 2vh;
+    color: #0004ff;
 }
 
 .malicious-execution-title-text{

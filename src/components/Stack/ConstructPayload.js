@@ -2,24 +2,44 @@ import React from "react";
 import ConstructPayloadCarousel from "./ConstructPayloadCarousel"
 import InstructCircle from "../InstructCircle"
 import DisplayShellcode from "./DisplayShellcode"
+import Checkbox from '@material-ui/core/Checkbox'
 
-function BackButton(props) {
+function ConstructPayload(props) {
  
 
   return(
     <div className="construct-payload-container">
     <div className="center-div">
-      <div>
+      <div style={{width: '100%'}}>
         <div style={{display: 'flex', marginLeft: '15%', marginBottom: '10%'}}>
-        <InstructCircle marginLeft={"32%"} number={"4"}/>
-
+          <InstructCircle marginLeft={"32%"} number={"4"}/>
           <div className="construct-payload-title-container">
             <h1 className="construct-payload-text">Construct Payload</h1>
+            <p style={{paddingTop: '2.5%', marginLeft: '5%'}} className="attempt-attack-text">Attempt Attack?</p>
+            <Checkbox
+              checked={props.attemptAttack}
+              onChange={(event) => props.attemptAttackChecked(event.target.checked)}
+              color="primary"
+            />
           </div>
         </div>
+        {!props.attemptAttack && (
+          <div className="user-input-container">
+            <input
+              value={props.userInput}
+              type="text"
+              id="inputID"
+              placeholder={"User Input"}
+              onChange={props.updateUserInput}
+              className="user-input-text"
+              maxLength={12}
+            />
+          </div>
+        )}
+        {props.attemptAttack && (
         <div class="scrollmenu">
           <div className="payload-diagram-container">
-            <div>
+            <div style={{marginLeft: '20%'}}>
               <div className="payload-diagram-title-text">argv[0]</div>
               <div className="payload-diagram-intro-container center-div">
                 <div className="payload-diagram-text">./intro</div>
@@ -85,8 +105,10 @@ function BackButton(props) {
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
+    {props.attemptAttack && (
     <div style={{marginLeft: '8%', marginTop: '10%'}}>
       <ConstructPayloadCarousel
         handleShellCodeClick={() => props.handleShellCodeClick()}
@@ -110,7 +132,9 @@ function BackButton(props) {
         updateReturnAddress={(val) => props.updateReturnAddress(val)}
       />
     </div>
+    )}
+    
   </div>
   )
 }
-export default BackButton;
+export default ConstructPayload;

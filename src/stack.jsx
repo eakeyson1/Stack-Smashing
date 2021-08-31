@@ -65,6 +65,8 @@ class Stack extends Component {
       shutDownOs: false,
       wipeOs: false,
       highlightArgv: false,
+      attemptAttack: false,
+      userInput: "",
     }
   }
 
@@ -94,8 +96,16 @@ class Stack extends Component {
       shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
     }
 
-    var startUserInput = "./intro " + this.state.nopSled + shellcode + this.state.returnAddress
-    var payload = this.state.nopSled + shellcode + this.state.returnAddress
+    var startUserInput = ""
+    var payload = ""
+    if(this.state.attemptAttack === false){
+      payload = this.state.userInput
+      startUserInput = "./intro " + this.state.userInput
+    }
+    else{
+      payload = this.state.nopSled + shellcode + this.state.returnAddress
+      startUserInput = "./intro " + this.state.nopSled + shellcode + this.state.returnAddress
+    }
     var userInputArray = startUserInput.split(" ")
     var argc = userInputArray.length
 
@@ -142,247 +152,6 @@ class Stack extends Component {
     else{
       this.setState({displayNextButton: true})
     }
-    
-    // Checking for userinput and strcpy
-    /*for(var k=0; k<stackDataArr.length; k++){
-      if(stackDataArr[k].parameterDetails.length !== 0 && stackDataArr[k].unsafeFunctions.length !== 0){
-
-        // Checking if parameters contains userinput 
-        var bool = false
-        stackDataArr[k].parameterDetails.map((param) => {
-          if(param.name === "userInput"){
-            bool = true
-          }
-        })
-
-        if(bool === true){
-
-          // Checking is userinput is copied into local variable 
-          var param2Name = stackDataArr[k].unsafeFunctions[0].param2Name
-          if(param2Name === "userInput"){
-
-            // Getting length of buffer that is being copied into 
-            for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
-              if(stackDataArr[k].mainLocalVariables[i].name === stackDataArr[k].unsafeFunctions[0].param1Name){
-                length = stackDataArr[k].mainLocalVariables[i].value.length
-                break
-              }
-            }
-
-            var userInputArr = payload.split(" ")
-
-            // Getting value of param2 or source array 
-            var param1Name = stackDataArr[k].unsafeFunctions[0].param1Name
-            var oldValue = ""
-
-            for(var i=0; i<stackDataArr[k].mainLocalVariables.length; i++){
-              if(stackDataArr[k].mainLocalVariables[i].name === param1Name){
-                oldValue = stackDataArr[k].mainLocalVariables[i].value
-                break
-              }
-            }
-            for(var i=0; i<stackDataArr[k].parameterDetails.length; i++){
-              if(stackDataArr[k].parameterDetails[i].name === param1Name){
-                oldValue = stackDataArr[k].parameterDetails[i].value
-                break
-              }
-            }
-
-            // Pushing full machine code command is inputted 
-            var userInputArr = payload.split(" ")
-            var tempUserInput = userInputArr[0].split("")
-            var tempUserInputArr = []
-            for(var j=0; j<tempUserInput.length; j++){
-              if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
-                var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
-                tempUserInputArr.push(val)
-                j +=3
-              }
-              else{
-                tempUserInputArr.push(tempUserInput[j])
-              }
-            }
-            tempUserInputArr.push("\\0")
-
-            // Reconstrucing parameters 
-
-            var paramArr = []
-            stackDataArr[k].parameterDetails.map(param =>{
-              if(param.value !== oldValue){
-                var paramValArr = param.value.split("")
-                paramValArr.push("\\0")
-                paramArr = paramArr.concat(paramValArr)  
-              }      
-            })
-
-            paramArr.splice(-1,1)
-            paramArr = paramArr.concat(tempUserInputArr)
-            paramArr.reverse()
-
-
-            stackDataArr[k].parametersLetterArray = paramArr
-
-            // Reconstructing local variables 
-
-            var variableArr = []
-            stackDataArr[k].mainLocalVariables.map(variable =>{
-        
-              if(variable.value !== oldValue){
-                var variableValArr = variable.value.split("")
-                variableValArr.push("\\0")
-                variableArr = variableArr.concat(variableValArr)  
-              }      
-            })
-
-            variableArr = variableArr.concat(tempUserInputArr)
-            variableArr.reverse()
-
-            var sfpOverFlowLength = variableArr.length - 16
-            var concatLV = variableArr
-    
-
-            // If new length with variable replaced in greater than 16:
-            //   updated SFP and return address
-            
-            if(sfpOverFlowLength > 0){
-
-
-              var partLVArray = []
-              for(i=sfpOverFlowLength; i<sfpOverFlowLength+16; i++){
-                partLVArray.push(variableArr[i])
-              }
-
-              stackDataArr[k].localVariablesLetterArray = partLVArray
-
-              // Updating SFP values
-              if(sfpOverFlowLength === 1){
-                stackDataArr[k].sfpArr[3] = concatLV[0]
-              }
-              if(sfpOverFlowLength === 2){
-                stackDataArr[k].sfpArr[3] = concatLV[1]
-                stackDataArr[k].sfpArr[2] = concatLV[0]
-              }
-              if(sfpOverFlowLength === 3){
-                stackDataArr[k].sfpArr[3] = concatLV[2]
-                stackDataArr[k].sfpArr[2] = concatLV[1]
-                stackDataArr[k].sfpArr[1] = concatLV[0]
-              }
-              if(sfpOverFlowLength === 4){
-                stackDataArr[k].sfpArr[3] = concatLV[3]
-                stackDataArr[k].sfpArr[2] = concatLV[2]
-                stackDataArr[k].sfpArr[1] = concatLV[1]
-                stackDataArr[k].sfpArr[0] = concatLV[0]
-              }
-
-              // Updating SFP values and return address
-
-              if(sfpOverFlowLength === 5){
-                stackDataArr[k].sfpArr[3] = concatLV[4]
-                stackDataArr[k].sfpArr[2] = concatLV[3]
-                stackDataArr[k].sfpArr[1] = concatLV[2]
-                stackDataArr[k].sfpArr[0] = concatLV[1]
-                stackDataArr[k].returnAddressArr[3] = concatLV[0]
-                this.setState({segFault: true})
-              }
-              if(sfpOverFlowLength === 6){
-                stackDataArr[k].sfpArr[3] = concatLV[5]
-                stackDataArr[k].sfpArr[2] = concatLV[4]
-                stackDataArr[k].sfpArr[1] = concatLV[3]
-                stackDataArr[k].sfpArr[0] = concatLV[2]
-                stackDataArr[k].returnAddressArr[3] = concatLV[1]
-                stackDataArr[k].returnAddressArr[2] = concatLV[0]
-                this.setState({segFault: true})
-              }
-              if(sfpOverFlowLength === 7){
-                stackDataArr[k].sfpArr[3] = concatLV[6]
-                stackDataArr[k].sfpArr[2] = concatLV[5]
-                stackDataArr[k].sfpArr[1] = concatLV[4]
-                stackDataArr[k].sfpArr[0] = concatLV[3]
-                stackDataArr[k].returnAddressArr[3] = concatLV[2]
-                stackDataArr[k].returnAddressArr[2] = concatLV[1]
-                stackDataArr[k].returnAddressArr[1] = concatLV[0]
-                this.setState({segFault: true})
-              }
-              if(sfpOverFlowLength === 8){
-                stackDataArr[k].sfpArr[3] = concatLV[7]
-                stackDataArr[k].sfpArr[2] = concatLV[6]
-                stackDataArr[k].sfpArr[1] = concatLV[5]
-                stackDataArr[k].sfpArr[0] = concatLV[4]
-                stackDataArr[k].returnAddressArr[3] = concatLV[3]
-                stackDataArr[k].returnAddressArr[2] = concatLV[2]
-                stackDataArr[k].returnAddressArr[1] = concatLV[1]
-                stackDataArr[k].returnAddressArr[0] = concatLV[0]
-                this.setState({segFault: true})
-              }
-
-              // Correctly overwrritten return address 
-              if(sfpOverFlowLength === 9){
-
-                stackDataArr[k].sfpArr[3] = concatLV[8]
-                stackDataArr[k].sfpArr[2] = concatLV[7]
-                stackDataArr[k].sfpArr[1] = concatLV[6]
-                stackDataArr[k].sfpArr[0] = concatLV[5]
-                stackDataArr[k].returnAddressArr[3] = concatLV[4]
-                stackDataArr[k].returnAddressArr[2] = concatLV[3]
-                stackDataArr[k].returnAddressArr[1] = concatLV[2]
-                stackDataArr[k].returnAddressArr[0] = concatLV[1]
-
-                var tempReturnAddress = concatLV[4] + concatLV[3] + concatLV[2] + concatLV[1]
-                var returnAddressHex = tempReturnAddress.replaceAll("\\x", "")
-                var newReturnAddressInt = parseInt(returnAddressHex, 16)
-
-                var startAddress = 2882404344 - reversedUserInputArray.length
-                var currentStackFrameAddressLength = stackDataArr[k].parametersLetterArray.length + 8
-
-                var totalLen = 0
-                for(var j=0; j < this.state.stackFrameRunningFunctions.length-1; j++){
-                  totalLen += this.state.stackFrameRunningFunctions[j].parametersLetterArray.length + this.state.stackFrameRunningFunctions[j].localVariablesLetterArray.length + 8
-                }
-                
-                
-                var finalLen = currentStackFrameAddressLength + totalLen
-                var lowBoundAddress = startAddress - finalLen
-                var highBoundHigh = lowBoundAddress - 16
-
-                var validReturnAddressArr = []
-
-                var last16Vars = variableArr.slice(-16)
-                for(var j=0; j<last16Vars.length; j++){
-                  if(last16Vars[j] === "\\x90"){
-                    var address = lowBoundAddress - (j+1)
-                    validReturnAddressArr.push(address)
-                  }
-                }
-                if(validReturnAddressArr.includes(newReturnAddressInt)){
-                  var tempMalFuncNameArr = this.state.malFuncNameArr
-                  tempMalFuncNameArr.push(stackDataArr[k].functionName)
-                  var uniqueNames = [...new Set(tempMalFuncNameArr)];
-                  this.setState({malFuncNameArr: uniqueNames})
-                }
-              }
-
-              // seg fault
-              if(sfpOverFlowLength > 9){
-                stackDataArr[k].sfpArr[3] = concatLV[8]
-                stackDataArr[k].sfpArr[2] = concatLV[7]
-                stackDataArr[k].sfpArr[1] = concatLV[6]
-                stackDataArr[k].sfpArr[0] = concatLV[5]
-                stackDataArr[k].returnAddressArr[3] = []
-                stackDataArr[k].returnAddressArr[2] = []
-                stackDataArr[k].returnAddressArr[1] = []
-                stackDataArr[k].returnAddressArr[0] = []
-
-                this.setState({segFault: true})
-              }
-
-            }
-            else{
-              stackDataArr[k].localVariablesLetterArray = variableArr
-            }
-          }
-        }
-      }
-    }*/
 
     this.setState({
       running: true, 
@@ -3184,7 +2953,6 @@ class Stack extends Component {
   }
 
   calculateStackFrame(index){
-
     var stackFramesStartAddress = this.state.endParametersAddress - 7
     var runningFunctions = this.state.stackFrameDataArray
 
@@ -3201,8 +2969,6 @@ class Stack extends Component {
       runningFunctions[index].startAddress = stackFramesStartAddress - 1 - prevStackFrameLen
     }
     if(this.state.stackFrameRunningFunctions.length === 2){
-
-      console.log("2 on")
 
       var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
       var prevVars1 = this.state.stackFrameRunningFunctions[0].localVariablesLetterArray.length
@@ -3224,7 +2990,7 @@ class Stack extends Component {
         raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
       }
 
-      runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
+      runningFunctions[index].returnAddressArr = raHexAddressArr
     }
     if(this.state.stackFrameRunningFunctions.length === 2){
       var prevParamsLen1 = this.state.stackFrameRunningFunctions[0].parametersLetterArray.length
@@ -3237,7 +3003,7 @@ class Stack extends Component {
         raHexAddressArr[j] = "\\x" + raHexAddressArr[j].toUpperCase() 
       }
 
-      runningFunctions[index].returnAddressArr = raHexAddressArr.reverse()
+      runningFunctions[index].returnAddressArr = raHexAddressArr
     }
 
 
@@ -3269,7 +3035,7 @@ class Stack extends Component {
         sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
       }
 
-      runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+      runningFunctions[index].sfpArr = sfpHexAddressArr
 
       return runningFunctions[index]
 
@@ -3292,7 +3058,13 @@ class Stack extends Component {
         shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
       }
 
-      var payload = this.state.nopSled + shellcode + this.state.returnAddress
+      var payload = ""
+      if(this.state.attemptAttack === false){
+        payload = this.state.userInput
+      }
+      else{
+        payload = this.state.nopSled + shellcode + this.state.returnAddress
+      }
 
       var userInputArr = payload.split(" ")
       var tempUserInput = userInputArr[0].split("")
@@ -3345,7 +3117,7 @@ class Stack extends Component {
         sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
       }
 
-      runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+      runningFunctions[index].sfpArr = sfpHexAddressArr
 
       return runningFunctions[index]
     }
@@ -3449,7 +3221,7 @@ class Stack extends Component {
           sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
         }
 
-        runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+        runningFunctions[index].sfpArr = sfpHexAddressArr
 
         return runningFunctions[index]
       }
@@ -3474,7 +3246,13 @@ class Stack extends Component {
           shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
         }
 
-        var payload = this.state.nopSled + shellcode + this.state.returnAddress
+        var payload = ""
+        if(this.state.attemptAttack === false){
+          payload = this.state.userInput
+        }
+        else{
+          payload = this.state.nopSled + shellcode + this.state.returnAddress
+        }
 
         var userInputArr = payload.split(" ")
         var tempUserInput = userInputArr[0].split("")
@@ -3589,7 +3367,7 @@ class Stack extends Component {
           sfpHexAddressArr[j] = "\\x" + sfpHexAddressArr[j].toUpperCase() 
         }
 
-        runningFunctions[index].sfpArr = sfpHexAddressArr.reverse()
+        runningFunctions[index].sfpArr = sfpHexAddressArr
 
 
         // Update overwritten SFP
@@ -3657,28 +3435,8 @@ class Stack extends Component {
           runningFunctions[index].returnAddressArr[0] = variableArr[1]
 
           // Calculate if its a NOP sled
-          
-          // Calulating user input
-          var tempUserInputArray = []
-          for(var i=0; i<userInputArr.length; i++){
-            var tempUserInput = userInputArr[i].split("")
-            for(var j=0; j<tempUserInput.length; j++){
-              if(tempUserInput[j] === "\\" && tempUserInput[j+1] === "x"){
-                var val = tempUserInput[j] + tempUserInput[j+1] + tempUserInput[j+2] + tempUserInput[j+3]
-                tempUserInputArray.push(val)
-                j +=3
-              }
-              else{
-                tempUserInputArray.push(tempUserInput[j])
-              }
-            }
-            tempUserInputArray.push("\\0")
-          }
-
-          var reversedUserInputArray = tempUserInputArray.reverse()
 
           // Converting new return address to hex
-
           var tempReturnAddress = variableArr[1] + variableArr[2] + variableArr[3] + variableArr[4]
           var returnAddressHex = tempReturnAddress.replaceAll("\\x", "")
           var newReturnAddressInt = parseInt(returnAddressHex, 16)
@@ -3709,8 +3467,6 @@ class Stack extends Component {
             }
           }
 
-          console.log(validReturnAddressArr)
-          console.log(newReturnAddressInt)
           // Checking if new return address is included in valid return address array
           if(validReturnAddressArr.includes(newReturnAddressInt)){
             var tempMalFuncNameArr = this.state.malFuncNameArr
@@ -3719,37 +3475,6 @@ class Stack extends Component {
             this.setState({malFuncNameArr: uniqueNames})
           }
 
-
-          /*var startAddress = 2882404352 - reversedUserInputArray.length
-          var currentStackFrameAddressLength = tempUserInputArray.length + 8
-
-          var totalLen = 0
-          for(var j=0; j < this.state.stackFrameRunningFunctions.length-1; j++){
-            totalLen += this.state.stackFrameRunningFunctions[j].parametersLetterArray.length + this.state.stackFrameRunningFunctions[j].localVariablesLetterArray.length + 8
-          }
-          
-          
-          var finalLen = currentStackFrameAddressLength + totalLen
-          var lowBoundAddress = startAddress - finalLen
-
-          var validReturnAddressArr = []
-
-          var last16Vars = variableArr.slice(-16)
-          for(var j=0; j<last16Vars.length; j++){
-            if(last16Vars[j] === "\\x90"){
-              var address = lowBoundAddress - (j+1)
-              validReturnAddressArr.push(address)
-            }
-          }
-
-          console.log(validReturnAddressArr)
-
-          if(validReturnAddressArr.includes(newReturnAddressInt)){
-            var tempMalFuncNameArr = this.state.malFuncNameArr
-            tempMalFuncNameArr.push(stackDataArr[k].functionName)
-            var uniqueNames = [...new Set(tempMalFuncNameArr)];
-            this.setState({malFuncNameArr: uniqueNames})
-          }*/
         }
         if(variableArr.length > 25){
           runningFunctions[index].returnAddressArr[3] = "\\x00"
@@ -3865,6 +3590,10 @@ class Stack extends Component {
     })
   }
 
+  attemptAttackChecked(event){
+    this.setState({attemptAttack: event})
+  }
+
   gettingRootPriviledgesChecked(event){
     this.setState({
       gettingRootPriviledges: event,
@@ -3891,6 +3620,8 @@ class Stack extends Component {
       startingShell: false
     })
   }
+
+  updateUserInput(event){this.setState({userInput: event.target.value})}
 
   render() {
     return(
@@ -3957,6 +3688,10 @@ class Stack extends Component {
             wipeOsChecked={(val) => this.wipeOsChecked(val)}
             returnAddress={this.state.returnAddress}
             updateReturnAddress={(val) => this.setState({returnAddress: val})}
+            attemptAttack={this.state.attemptAttack}
+            attemptAttackChecked={(bool) => this.attemptAttackChecked(bool)}
+            userInput = {this.state.userInput}
+            updateUserInput={(val) => this.updateUserInput(val)}
           />
           <div className="second-main-container">
             <ExecutionStatusButtons

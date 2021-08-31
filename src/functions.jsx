@@ -478,7 +478,7 @@ class Functions extends Component {
       result[i] = temp
     }
 
-    var returnAddressArr = ["\\x00", "\\x00", "\\xCE", "\\xAB"]
+    var returnAddressArr = ["\\xAB", "\\xCE", "\\x00", "\\x00"]
     var sfpArr = ["\\x00", "\\x00", "\\x00", "\\x00"]
 
     savedFramePointer = result
