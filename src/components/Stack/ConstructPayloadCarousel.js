@@ -231,7 +231,7 @@ function ConstructPayloadCarousel(props) {
               <div className="instruction-sub-text">4.3</div>
             </div>
             <div style={{marginLeft: "2%", marginTop: "1%", marginRight: '2%'}}>
-              <h1 className="construct-payload-sub-text">End with repeating Return Address</h1>
+              <h1 className="construct-payload-sub-text">End with Return Address</h1>
             </div>
             <OverlayTrigger
                 placement="right"
@@ -247,7 +247,6 @@ function ConstructPayloadCarousel(props) {
             <h1 className="hints-title">Hints</h1>
             <h1 className="hints">* Any address that contains a NOP from our payload</h1>
             <h1 className="hints">* Little endian based CPU</h1>
-            <h1 className="hints">* Repeating occurances of address increases attack success probability </h1>
           </div>
         </div>
         {props.running && (

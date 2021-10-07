@@ -565,7 +565,6 @@
 }
 
 .malicious-execution-starting-text{
-    font-size: 15px;
     color: #00e600;
     font-weight: bold;
     margin-left: 1%;
@@ -622,14 +621,12 @@
 
 .success-string-container{
     margin-left: 1vh;
-    overflow: hidden;
     white-space: nowrap;
 }
 
 .stack-smashing-status-title-container{
-    width: 55vh;
     display: flex;
-    justify-content: center;
+    align-items: center;
 }
 
 div.scrollmenu {
