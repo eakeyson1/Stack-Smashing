@@ -85,6 +85,7 @@ function MaliciousExecutionStatus(props) {
       )
     }
     else if(props.maliciousExecution === "Segmentation Fault"){
+      console.log(props.maliciousExecution)
       return(
       <div className="stack-smashing-status-container">
         <div style={{display: 'flex', marginTop: '1%', justifyContent: 'center'}}>

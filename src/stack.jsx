@@ -73,7 +73,7 @@ class Stack extends Component {
 
   startProgram(){
 
-    this.setState({malFuncNameArr: []}) 
+    this.setState({malFuncNameArr: [], maliciousExecution: "Running",}) 
 
     /***** Must create a deep copy of the stackFrameDataArr prop *****/
     var stackDataArr = []
@@ -156,6 +156,7 @@ class Stack extends Component {
     this.setState({
       running: true, 
       displaySegFault: false,
+      segFault: false,
       mainStackParams: reversedUserInputArray, 
       endParametersAddress: endParametersAddress,
       stackFrameDataArray: stackDataArr,
@@ -165,7 +166,7 @@ class Stack extends Component {
 
   programNext(){
 
-    console.log(this.state.stepProgramClickNumber)
+    console.log("malicious execution " + this.state.maliciousExecution)
 
     this.setState({highlightArgv: false})
 
