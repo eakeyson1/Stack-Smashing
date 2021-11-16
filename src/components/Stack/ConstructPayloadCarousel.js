@@ -166,7 +166,7 @@ function ConstructPayloadCarousel(props) {
                   <div className="shellcode-title-text">Shut down OS</div>
                 </div>
               </div>
-              <div className="shellcode-text">\xFF\D3\x99\xA0</div>
+              <div className="shellcode-text">\xFF\xD3\x99\xA0</div>
               <div style={{display: 'flex', marginTop: '8%'}}>
                 <Checkbox
                   checked={props.wipeOs}
@@ -177,7 +177,7 @@ function ConstructPayloadCarousel(props) {
                   <div className="shellcode-title-text">Wipe OS</div>
                 </div>
               </div>
-              <div className="shellcode-text">\FA\xDA\x00\xB0\x77</div>
+              <div className="shellcode-text">\xFA\xDA\x00\xB0\x77</div>
             </div>
           </div>
         )}
@@ -203,13 +203,13 @@ function ConstructPayloadCarousel(props) {
                   <div className="shellcode-title-text">Shut down OS</div>
                 </div>
               </div>
-              <div className="shellcode-text">\xFF\D3\x99\xA0</div>
+              <div className="shellcode-text">\xFF\xD3\x99\xA0</div>
               <div style={{display: 'flex', marginTop: '8%'}}>
                 <div style={{marginTop: '6%'}}>
                   <div className="shellcode-title-text">Wipe OS</div>
                 </div>
               </div>
-              <div className="shellcode-text">\FA\xDA\x00\xB0\x77</div>
+              <div className="shellcode-text">\xFA\xDA\x00\xB0\x77</div>
             </div>
           </div>
         )}
