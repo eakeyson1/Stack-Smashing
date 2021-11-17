@@ -15,12 +15,12 @@ function DisplayShellcode(props) {
     }
     if(props.shutDownOs === true){
       return(
-        <div className="payload-diagram-text">\xFF\D3\x99\xA0</div>
+        <div className="payload-diagram-text">\xFF\xD3\x99\xA0</div>
       )
     }
     if(props.wipeOs === true){
       return(
-        <div className="payload-diagram-text">\FA\xDA\x00\xB0\x77</div>
+        <div className="payload-diagram-text">\xFA\xDA\x00\xB0\x77</div>
       )
     }
   }

@@ -376,12 +376,12 @@
 
 .stack-frame-variable-container{
     background-color: #416788;
-    width: 300px;
+    width: 40vh;
 }
 
 .stack-frame-variable-title-container{
     background-color: #416788;
-    width: 150px;
+    width: 20vh;
     display: flex;
     justify-content: center;
     align-items: center;

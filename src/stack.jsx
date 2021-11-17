@@ -90,10 +90,10 @@ class Stack extends Component {
       shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
     }
     if(this.state.shutDownOs === true){
-      shellcode = "\\xFF\\D3\\x99\\xA0"
+      shellcode = "\\xFF\\xD3\\x99\\xA0"
     }
     if(this.state.wipeOs === true){
-      shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+      shellcode = "\\xFA\\xDA\\x00\\xB0\\x77"
     }
 
     var startUserInput = ""
@@ -3053,10 +3053,10 @@ class Stack extends Component {
         shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
       }
       if(this.state.shutDownOs === true){
-        shellcode = "\\xFF\\D3\\x99\\xA0"
+        shellcode = "\\xFF\\xD3\\x99\\xA0"
       }
       if(this.state.wipeOs === true){
-        shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+        shellcode = "\\xFA\\xDA\\x00\\xB0\\x77"
       }
 
       var payload = ""
@@ -3241,10 +3241,10 @@ class Stack extends Component {
           shellcode = "\\xCC\\xB2\\xBB\\xA1\\x7B\\xC8\\xF4\\xC6"
         }
         if(this.state.shutDownOs === true){
-          shellcode = "\\xFF\\D3\\x99\\xA0"
+          shellcode = "\\xFF\\xD3\\x99\\xA0"
         }
         if(this.state.wipeOs === true){
-          shellcode = "\\FA\\xDA\\x00\\xB0\\x77"
+          shellcode = "\\xFA\\xDA\\x00\\xB0\\x77"
         }
 
         var payload = ""

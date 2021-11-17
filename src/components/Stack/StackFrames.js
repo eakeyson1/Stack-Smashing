@@ -124,7 +124,7 @@ function StackFrames(props) {
                         </div>                
                       )}
                     </div>
-                  </div>                
+                  </div>                 
   
                   <div style={{display: 'flex'}}>
                     <div className="stack-frame-variable-title-container">
